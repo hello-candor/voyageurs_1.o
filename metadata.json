@@ -1,0 +1,9 @@
+{
+  "name": "Copy of Voyageurs 7.o",
+  "description": "A Mediterranean-inspired event planning site for large group celebrations, includes RSVP management, bill splitting, group connections, booking links, etc. ",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation",
+    "microphone"
+  ]
+}
