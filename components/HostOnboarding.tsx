@@ -1,18 +1,17 @@
 
-import React, { useState } from 'react';
-import { useUser } from '../context/UserContext';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { useAppConfig } from '../context/AppConfigContext';
 import { DEFAULT_CONFIG } from '../data/defaults';
 import { Button } from './Button';
-import { ArrowRight, Sparkles, MapPin, Calendar, User, Mail, PenTool } from 'lucide-react';
+import { ArrowRight, Sparkles, MapPin, Calendar, User, Mail, PenTool, Globe } from 'lucide-react';
 
 interface HostOnboardingProps {
     onComplete: () => void;
 }
 
 export const HostOnboarding: React.FC<HostOnboardingProps> = ({ onComplete }) => {
-    // Destructure login as updateUserProfile to match the logic flow
-    const { login: updateUserProfile } = useUser();
+    const { loginHostWithGoogle, firebaseUser, isLoading: authLoading } = useAuth();
     const { updateConfig } = useAppConfig();
     const [isFinishing, setIsFinishing] = useState(false);
     
@@ -24,40 +23,41 @@ export const HostOnboarding: React.FC<HostOnboardingProps> = ({ onComplete }) =>
         hostEmail: ""
     });
 
+    useEffect(() => {
+        if (firebaseUser) {
+            setFormData(prev => ({
+                ...prev,
+                hostName: firebaseUser.displayName || prev.hostName,
+                hostEmail: firebaseUser.email || prev.hostEmail,
+            }));
+        }
+    }, [firebaseUser]);
+
     const handleFinish = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
+        if (!firebaseUser) {
+            alert("Please sign in with Google first.");
+            return;
+        }
+
         setIsFinishing(true);
 
         try {
-            // 1. Create the Host User Profile
-            // CRITICAL FIX: Added 'await' so this finishes before we proceed
-            // updateUserProfile is an async function from UserContext (login)
-            await updateUserProfile(
-                formData.hostName, 
-                formData.hostEmail, 
-                1, 
-                'Confirmed', 
-                '', 
-                '', 
-                {}, 
-                { shareSocial: true, sharePhone: true, shareInterests: true, publicRegistry: true }
-            );
-
-            // 2. Configure the App
-            // We also await this to ensure config is saved before completion
+            // App config is the primary task here
             await updateConfig({
                 appName: formData.appName,
                 destination: formData.destination,
                 occasion: formData.occasion,
                 welcomeMessage: `Welcome to ${formData.destination}`,
                 enableAI: true, // Default to enabled for hosts
-                modules: DEFAULT_CONFIG.modules
+                modules: DEFAULT_CONFIG.modules,
+                // Associate the config with the host
+                hostId: firebaseUser.uid,
             });
             
         } catch (error) {
             console.error("Onboarding configuration error:", error);
         } finally {
-            // 3. Finish
             setTimeout(() => {
                 setIsFinishing(false);
                 onComplete();
@@ -72,109 +72,79 @@ export const HostOnboarding: React.FC<HostOnboardingProps> = ({ onComplete }) =>
                     <div className="w-16 h-16 bg-med-blue rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-med-blue/20">
                         <Sparkles className="text-white w-8 h-8" />
                     </div>
-                    <h2 className="font-serif text-3xl text-white mb-2">Event Setup</h2>
-                    <p className="text-slate-400 text-sm">Configure your Voyageurs experience.</p>
+                    <h2 className="font-serif text-3xl text-white mb-2">Host Setup</h2>
+                    <p className="text-slate-400 text-sm">Let's configure your event experience.</p>
                 </div>
 
-                <form onSubmit={handleFinish} className="space-y-6">
-                    <div className="space-y-4">
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4 border-b border-slate-800 pb-2">Host Identity</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Your Name</label>
-                                <div className="relative">
-                                    <User size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                    <input 
-                                        type="text" 
-                                        required
-                                        value={formData.hostName}
-                                        onChange={(e) => setFormData({...formData, hostName: e.target.value})}
-                                        className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors"
-                                        placeholder="Jean Dupont"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Email</label>
-                                <div className="relative">
-                                    <Mail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                    <input 
-                                        type="email" 
-                                        required
-                                        value={formData.hostEmail}
-                                        onChange={(e) => setFormData({...formData, hostEmail: e.target.value})}
-                                        className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors"
-                                        placeholder="host@example.com"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4 pt-4">
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4 border-b border-slate-800 pb-2">Event Details</h3>
-                        
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">App Name</label>
-                            <div className="relative">
-                                <PenTool size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                <input 
-                                    type="text" 
-                                    required
-                                    value={formData.appName}
-                                    onChange={(e) => setFormData({...formData, appName: e.target.value})}
-                                    className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors"
-                                    placeholder="e.g. Bryan's 40th"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Destination</label>
-                                <div className="relative">
-                                    <MapPin size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                    <input 
-                                        type="text" 
-                                        required
-                                        value={formData.destination}
-                                        onChange={(e) => setFormData({...formData, destination: e.target.value})}
-                                        className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors"
-                                        placeholder="e.g. Montpellier"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Occasion</label>
-                                <div className="relative">
-                                    <Calendar size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                    <input 
-                                        type="text" 
-                                        required
-                                        value={formData.occasion}
-                                        onChange={(e) => setFormData({...formData, occasion: e.target.value})}
-                                        className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors"
-                                        placeholder="e.g. Birthday Trip"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="pt-6">
+                {!firebaseUser ? (
+                    <div className="text-center">
+                         <p className="text-slate-400 text-sm mb-6">To get started, please sign in with your Google account. This will be used to manage your event.</p>
                         <Button 
-                            type="submit" 
-                            fullWidth 
-                            variant="action" 
+                            onClick={loginHostWithGoogle}
+                            variant="secondary"
                             size="lg"
-                            isLoading={isFinishing}
-                            loadingText="Creating Hub..."
-                            disabled={!formData.hostName || !formData.hostEmail || !formData.appName}
+                            isLoading={authLoading}
+                            loadingText="Redirecting..."
                         >
-                            Initialize App <ArrowRight size={16} className="ml-2" />
+                           <Globe size={16} className="mr-2"/> Sign In with Google
                         </Button>
                     </div>
-                </form>
+                ) : (
+                    <form onSubmit={handleFinish} className="space-y-6 animate-in fade-in duration-500">
+                        <div className="space-y-4">
+                            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4 border-b border-slate-800 pb-2">Host Identity (from Google)</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Your Name</label>
+                                    <div className="relative">
+                                        <User size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                                        <input type="text" readOnly value={formData.hostName} className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white/70 cursor-not-allowed" />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Email</label>
+                                    <div className="relative">
+                                        <Mail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                                        <input type="email" readOnly value={formData.hostEmail} className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white/70 cursor-not-allowed" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 pt-4">
+                            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4 border-b border-slate-800 pb-2">Event Details</h3>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">App Name</label>
+                                <div className="relative">
+                                    <PenTool size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                                    <input type="text" required value={formData.appName} onChange={(e) => setFormData({...formData, appName: e.target.value})} className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors" placeholder="e.g. Bryan's 40th" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Destination</label>
+                                    <div className="relative">
+                                        <MapPin size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                                        <input type="text" required value={formData.destination} onChange={(e) => setFormData({...formData, destination: e.target.value})} className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors" placeholder="e.g. Montpellier" />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Occasion</label>
+                                    <div className="relative">
+                                        <Calendar size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                                        <input type="text" required value={formData.occasion} onChange={(e) => setFormData({...formData, occasion: e.target.value})} className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors" placeholder="e.g. Birthday Trip" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="pt-6">
+                            <Button type="submit" fullWidth variant="action" size="lg" isLoading={isFinishing} loadingText="Finalizing Setup..." disabled={!formData.appName}>
+                                Complete Setup <ArrowRight size={16} className="ml-2" />
+                            </Button>
+                        </div>
+                    </form>
+                )}
             </div>
         </div>
     );

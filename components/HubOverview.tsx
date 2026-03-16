@@ -308,7 +308,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                         <div className="flex items-center justify-between mb-5 border-b border-white/10 pb-3">
                             <div className="flex items-center gap-2 text-med-terracotta">
                                 <MapPin size={16} />
-                                <span className="text-[10px] font-bold uppercase tracking-widest">Get to know</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest">Your Destination</span>
                             </div>
                             <ArrowRight size={14} className="text-white/40 group-hover:text-white transition-colors" />
                         </div>

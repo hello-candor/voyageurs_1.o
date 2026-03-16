@@ -178,8 +178,6 @@ const App = () => {
         <ThemeInjector />
         <MarketingPage 
             onHostLogin={() => setShowAdmin(true)} 
-            onPrivacyClick={() => setShowPrivacy(true)}
-            onTermsClick={() => setShowTerms(true)}
         />
         {showAdmin && (
             <div className="fixed inset-0 z-[500] bg-slate-950 animate-in fade-in duration-300">

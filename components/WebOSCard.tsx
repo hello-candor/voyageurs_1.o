@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, PanInfo } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Minus, Maximize2, Minimize2 } from 'lucide-react';
 
 interface WebOSCardProps {
   id: string;
@@ -14,6 +14,9 @@ interface WebOSCardProps {
   stackSize: number;
   onClose: () => void;
   onFocus: () => void;
+  onMinimize: () => void;
+  isFullScreen: boolean;
+  onToggleFullScreen: () => void;
 }
 
 export const WebOSCard: React.FC<WebOSCardProps> = ({ 
@@ -26,7 +29,10 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
     stackIndex = 0,
     stackSize = 1,
     onClose, 
-    onFocus 
+    onFocus,
+    onMinimize,
+    isFullScreen,
+    onToggleFullScreen
 }) => {
   const [isDismissing, setIsDismissing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -130,7 +136,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
         <div className={`
             w-full h-full flex flex-col overflow-hidden bg-white dark:bg-gray-900 
             shadow-2xl transition-all duration-300 relative
-            ${isOverview ? 'rounded-[2.5rem] ring-2 ring-white/10' : 'rounded-none md:rounded-[2rem]'}
+            ${isOverview ? 'rounded-[2.5rem] ring-2 ring-white/10' : isFullScreen ? 'rounded-none' : 'rounded-none md:rounded-[2rem]'}
         `}>
             {/* Header Bar */}
             <div className={`
@@ -143,12 +149,29 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
                 </div>
                 
                 {!isOverview && (
-                    <button 
-                        onClick={(e) => { e.stopPropagation(); onClose(); }}
-                        className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 rounded-full transition-colors"
-                    >
-                        <X size={18} />
-                    </button>
+                    <div className="flex items-center gap-1">
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); onMinimize(); }}
+                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-500 rounded-full transition-colors"
+                            title="Minimize"
+                        >
+                            <Minus size={18} />
+                        </button>
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); onToggleFullScreen(); }}
+                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-500 rounded-full transition-colors"
+                            title={isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
+                        >
+                            {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                        </button>
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); onClose(); }}
+                            className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 rounded-full transition-colors"
+                            title="Close"
+                        >
+                            <X size={18} />
+                        </button>
+                    </div>
                 )}
             </div>
 

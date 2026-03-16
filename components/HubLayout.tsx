@@ -83,6 +83,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
   const [stacks, setStacks] = useState<CardStack[]>([]);
   const [activeStackId, setActiveStackId] = useState<string | null>(null);
   const [isOverviewMode, setIsOverviewMode] = useState(false); 
+  const [fullScreenStackId, setFullScreenStackId] = useState<string | null>(null);
   
   // Overlay States
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -142,6 +143,9 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
 
   // Window Management Functions
   const launchApp = useCallback((view: HubView, context?: any, addToStack: boolean = false) => {
+    setFullScreenStackId(null); // Always exit fullscreen when launching a new app
+    setIsOverviewMode(false);
+
       setStacks(prev => {
           // If we want to add to current stack and there is an active one
           if (addToStack && activeStackId) {
@@ -166,7 +170,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
           const existingStackIndex = prev.findIndex(s => s.cards.some(c => c.view === view));
           if (existingStackIndex !== -1 && !addToStack) {
               setActiveStackId(prev[existingStackIndex].id);
-              setIsOverviewMode(false);
               return prev;
           }
           
@@ -184,7 +187,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
           };
           
           setActiveStackId(newStackId);
-          setIsOverviewMode(false);
           return [...prev, newStack];
       });
   }, [activeStackId]);
@@ -199,6 +201,10 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
               };
           }).filter(stack => stack.cards.length > 0); 
 
+          if (stackId === fullScreenStackId) {
+            setFullScreenStackId(null);
+          }
+
           // If we closed the active stack
           if (!newStacks.find(s => s.id === activeStackId)) {
               if (newStacks.length > 0) setActiveStackId(newStacks[newStacks.length - 1].id);
@@ -206,17 +212,32 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
           }
           return newStacks;
       });
-  }, [activeStackId]);
+  }, [activeStackId, fullScreenStackId]);
+
+  const handleMinimize = () => {
+    setIsOverviewMode(true);
+    setFullScreenStackId(null);
+  };
+
+  const handleToggleFullScreen = (stackId: string) => {
+    setFullScreenStackId(prev => {
+        const newFullScreenId = prev === stackId ? null : stackId;
+        if (newFullScreenId) {
+            setIsOverviewMode(false);
+            setActiveStackId(stackId);
+        }
+        return newFullScreenId;
+    });
+  };
 
   const handleCenterButton = useCallback(() => {
-      if (stacks.length === 0) return; // Already on dashboard
+      if (stacks.length === 0) return;
       
       if (isOverviewMode) {
-          // If in overview, go to focus on active window
           setIsOverviewMode(false);
       } else {
-          // If in focus, go to overview
           setIsOverviewMode(true);
+          setFullScreenStackId(null); // Always exit fullscreen when entering overview
       }
   }, [isOverviewMode, stacks.length]);
 
@@ -238,22 +259,17 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
   const renderAppContent = (view: HubView, props?: any) => {
     switch (view) {
       case 'overview': return <div className="p-8 text-center">Journal View</div>; 
-      case 'rsvp': return <HubRSVP onComplete={() => launchApp('logistics')} />; // Has internal scroll/padding
-      case 'messages': return <ChatSystem onNavigate={(v) => launchApp(v)} />; // Full bleed layout for split view
-      
-      // Apps needing padding
+      case 'rsvp': return <HubRSVP onComplete={() => launchApp('logistics')} />;
+      case 'messages': return <ChatSystem onNavigate={(v) => launchApp(v)} />;
       case 'calendar': return <WithPadding><SeptemberCalendar onOpenMap={() => launchApp('map')} /></WithPadding>;
       case 'expenses': return <WithPadding><ExpenseTracker /></WithPadding>;
       case 'registry': return <WithPadding><HubConnections /></WithPadding>;
       case 'guide': return <WithPadding><EssentialsToolkit onNavigate={(v) => launchApp(v)} initialTab="guides" /></WithPadding>;
-      case 'faq': return <WithPadding><FAQApp onContact={() => launchApp('messages')} /></WithPadding>; // New FAQ App
+      case 'faq': return <WithPadding><FAQApp onContact={() => launchApp('messages')} /></WithPadding>;
       case 'profile': return <WithPadding><GuestProfile /></WithPadding>;
-      
-      // Apps handling their own layout (SlidingPanes) or needing full bleed
       case 'logistics': return <TripPlanner initialTab={props?.tab || 'travel'} onTabChange={(v) => launchApp(v)} />;
       case 'activities': return <Activities initialItemId={props?.itemId} />;
       case 'map': return <GlobalMap />;
-      
       case 'detail': 
         if (props?.item) {
              return (
@@ -268,20 +284,18 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
     }
   };
 
-  // Current view for nav highlight
   const currentActiveView = useMemo(() => {
       const activeStack = stacks.find(s => s.id === activeStackId);
       if (!activeStack) return 'overview';
       return activeStack.cards[activeStack.cards.length - 1].view;
   }, [stacks, activeStackId]);
 
-  // Is Dashboard Visible? (Empty stack or Overview mode allows peeking)
   const isDashboardVisible = stacks.length === 0 || isOverviewMode;
+  const isFullScreenActive = !!fullScreenStackId && !isOverviewMode;
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-slate-900 font-sans select-none">
       
-      {/* 1. Background Wallpaper */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div 
             className="absolute inset-0 bg-cover bg-center transition-all duration-[1.2s] ease-out"
@@ -294,7 +308,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
         <div className="absolute inset-0 bg-gradient-to-br from-med-blue/60 via-slate-900/80 to-black/90" />
       </div>
 
-      {/* 2. Dashboard Widgets Layer (Z-10) */}
       <div 
         className={`
             absolute inset-0 z-10 flex flex-col items-center justify-center transition-all duration-700
@@ -309,13 +322,10 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
           />
       </div>
       
-      {/* 3. Global Overlays (Z-50) */}
       <WelcomeTour isOpen={isTourOpen} onClose={() => { localStorage.setItem('tour_seen', 'true'); setIsTourOpen(false); }} />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} onNavigate={(v) => launchApp(v)} />
 
-      {/* 5. Top Bar Controls (Z-110) */}
-      <div className={`fixed top-0 left-0 right-0 h-16 md:h-20 flex items-center justify-between px-4 md:px-10 z-[110] transition-all duration-700 pointer-events-none`}>
-        {/* Branding - Always Visible */}
+      <div className={`fixed top-0 left-0 right-0 h-16 md:h-20 flex items-center justify-between px-4 md:px-10 z-[110] transition-all duration-700 pointer-events-none ${isFullScreenActive ? 'opacity-0 -translate-y-full' : 'opacity-100'}`}>
         <div className="flex items-center gap-4 text-white/90 pointer-events-auto">
             <div className="flex flex-col">
                 <span className="font-serif italic text-2xl md:text-3xl leading-none block drop-shadow-md">{config.appName}</span>
@@ -347,7 +357,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
 
           <WeatherWidget />
 
-          {/* Notification Dropdown */}
           <div className="relative" ref={notificationRef}>
               <button 
                 onClick={() => setIsNotificationCenterOpen(!isNotificationCenterOpen)}
@@ -372,7 +381,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
               )}
           </div>
           
-          {/* User Menu Dropdown */}
           <div className="relative" ref={userMenuRef}>
               <button 
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -383,7 +391,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
 
               {isUserMenuOpen && (
                 <div className="absolute top-full right-0 mt-4 w-64 bg-slate-900/95 backdrop-blur-3xl rounded-3xl p-6 shadow-2xl border border-white/10 animate-in fade-in slide-in-from-top-2 duration-200 z-[120] overflow-hidden">
-                    {/* Header */}
                     <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
                         <div className="w-10 h-10 rounded-full bg-med-blue flex items-center justify-center text-white shrink-0">
                             <span className="font-serif font-bold text-lg">{user?.name?.charAt(0)}</span>
@@ -393,8 +400,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                             <p className="text-[10px] text-white/50 truncate">{user?.email}</p>
                         </div>
                     </div>
-
-                    {/* Menu Items */}
                     <div className="space-y-2">
                         <button 
                             onClick={() => { launchApp('profile'); setIsUserMenuOpen(false); }}
@@ -403,7 +408,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                             <UserCircle size={18} />
                             <span className="text-xs font-bold uppercase tracking-wider">My Profile</span>
                         </button>
-
                         <button 
                             onClick={() => { launchApp('faq'); setIsUserMenuOpen(false); }}
                             className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 text-white/80 hover:text-white transition-colors text-left"
@@ -411,7 +415,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                             <HelpCircle size={18} />
                             <span className="text-xs font-bold uppercase tracking-wider">Help & FAQ</span>
                         </button>
-
                         <button 
                             onClick={toggleTheme}
                             className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/10 text-white/80 hover:text-white transition-colors"
@@ -424,7 +427,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                                 {theme === 'dark' ? 'Light' : 'Dark'}
                             </span>
                         </button>
-
                         {user?.isAdmin && (
                              <button 
                                 onClick={() => { setIsUserMenuOpen(false); onSwitchToHost(); }}
@@ -434,9 +436,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                                 <span className="text-xs font-bold uppercase tracking-wider">Host Admin</span>
                             </button>
                         )}
-
                         <div className="h-px bg-white/10 my-2" />
-
                         <button 
                             onClick={() => { logout(); setIsUserMenuOpen(false); }}
                             className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors text-left"
@@ -451,17 +451,17 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
         </div>
       </div>
 
-      {/* 6. Main Stage (Card Stack) (Z-20) */}
-      <div className="relative w-full h-full flex flex-col items-center justify-start pt-20 pb-32 overflow-hidden z-20 pointer-events-none">
-          {/* Navigation Arrows */}
-          {stacks.length > 1 && (
+      <div className={`relative w-full h-full flex flex-col items-center justify-start z-20 pointer-events-none
+          ${isFullScreenActive ? 'pt-0 pb-0' : 'pt-20 pb-32'}
+      `}>
+          {stacks.length > 1 && !isFullScreenActive && (
               <>
                   <button 
                       onClick={handlePrevStack}
                       disabled={activeStackIndex === 0}
                       className={`
                           absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all pointer-events-auto z-50
-                          ${activeStackIndex === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+                          ${activeStackIndex === 0 || isOverviewMode ? 'opacity-0 pointer-events-none' : 'opacity-100'}
                       `}
                   >
                       <ChevronLeft size={32} />
@@ -471,7 +471,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                       disabled={activeStackIndex === stacks.length - 1}
                       className={`
                           absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all pointer-events-auto z-50
-                          ${activeStackIndex === stacks.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+                          ${activeStackIndex === stacks.length - 1 || isOverviewMode ? 'opacity-0 pointer-events-none' : 'opacity-100'}
                       `}
                   >
                       <ChevronRight size={32} />
@@ -483,19 +483,22 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
             className={`
                 flex-1 w-full flex items-center transition-transform duration-500 pointer-events-auto
                 ${isOverviewMode ? 'cursor-grab active:cursor-grabbing' : ''}
+                ${isFullScreenActive ? '!transform-none' : ''}
             `}
             style={{ 
-                // If empty, hide stack container logic
                 display: stacks.length === 0 ? 'none' : 'flex',
                 transform: isOverviewMode 
                     ? `translateX(calc(50vw - 50% - ${activeStackIndex * 280}px))` 
                     : `translateX(0)`
             }}
           >
-              <div className="relative w-[95vw] md:w-[92vw] max-w-[1600px] h-full flex-shrink-0 mx-auto">
+              <div className={`relative ${isFullScreenActive ? 'w-full' : 'w-[95vw] md:w-[92vw] max-w-[1600px]'} h-full flex-shrink-0 mx-auto`}>
                 <AnimatePresence>
-                    {stacks.map((stack, stackIdx) => (
-                        <div key={stack.id} className="absolute inset-0" style={{ zIndex: stack.id === activeStackId ? 100 : 0 }}>
+                    {stacks.map((stack, stackIdx) => {
+                        if (isFullScreenActive && stack.id !== fullScreenStackId) return null;
+
+                        return (
+                        <div key={stack.id} className="absolute inset-0" style={{ zIndex: stack.id === activeStackId ? (isFullScreenActive ? 150 : 100) : (isOverviewMode ? 1 : 0) }}>
                             {stack.cards.map((card, cardIdx) => (
                                 <WebOSCard 
                                     key={card.key}
@@ -508,34 +511,34 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                                     stackIndex={cardIdx}
                                     stackSize={stack.cards.length}
                                     onClose={() => closeCard(stack.id, card.id)}
-                                    onFocus={() => { setActiveStackId(stack.id); setIsOverviewMode(false); }}
+                                    onFocus={() => { setActiveStackId(stack.id); setIsOverviewMode(false); setFullScreenStackId(null); }}
+                                    onMinimize={handleMinimize}
+                                    isFullScreen={fullScreenStackId === stack.id}
+                                    onToggleFullScreen={() => handleToggleFullScreen(stack.id)}
                                 >
                                     <Suspense fallback={<div className="w-full h-full flex items-center justify-center"><Loader2 size={40} className="animate-spin text-med-terracotta" /></div>}>
                                         {renderAppContent(card.view, card.props)}
                                     </Suspense>
                                 </WebOSCard>
-                            ))}
+                            ))}"
                         </div>
-                    ))}
+                    )})}
                 </AnimatePresence>
               </div>
           </div>
       </div>
 
-      {/* 7. Bottom Dock (Z-100) */}
       <FloatingHubNav 
         activeView={currentActiveView} 
         onViewChange={(v) => launchApp(v)} 
         onOpenMap={() => launchApp('map')} 
-        forceVisible={isOverviewMode || stacks.length === 0}
+        forceVisible={isOverviewMode || stacks.length === 0 || isFullScreenActive}
         onSwitchToHost={onSwitchToHost} 
         onToggleOverview={handleCenterButton}
         isOverviewOpen={isOverviewMode && stacks.length > 0}
       />
 
        <Suspense fallback={null}>
-            {/* If user is logged in but hasn't finished onboarding, force the TravelHub open */}
-            {/* ALSO force open if they verified via code but haven't created profile yet (isVerified && !user) */}
             <TravelHub 
                 isOpen={isProfileOpen || (!!user && !user.hasCompletedOnboarding) || (isVerified && !user)} 
                 onClose={toggleProfile} 
