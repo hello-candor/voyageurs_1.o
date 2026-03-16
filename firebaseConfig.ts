@@ -1,4 +1,3 @@
-
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { initializeFirestore } from "firebase/firestore";
@@ -24,7 +23,7 @@ const getEnvVar = (key: string, defaultValue: string) => {
   return defaultValue;
 };
 
-// Configuration for 'v6yage4rs' project with provided API Key
+// Configuration for 'v6yage4rs' project
 const firebaseConfig = {
   // Update your .env file to use VITE_ prefix (e.g. VITE_FIREBASE_API_KEY)
   apiKey: getEnvVar('VITE_FIREBASE_API_KEY', "AIzaSyAC5sjtZnu9ccHXLVeoiawnjq0w_dwNeq8"),

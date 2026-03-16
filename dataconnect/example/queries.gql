@@ -1,0 +1,81 @@
+query ListUserTrips @auth(level: USER) {
+  trips(where: {creatorId: {eq_expr: "auth.uid"}}) {
+    id
+    name
+    startDate
+    endDate
+    destination
+    description
+    createdAt
+  }
+}
+
+mutation CreateNewTrip($name: String!, $startDate: Date!, $endDate: Date!, $destination: String!, $description: String) @auth(level: USER) {
+  trip_insert(data: {
+    creatorId_expr: "auth.uid",
+    name: $name,
+    startDate: $startDate,
+    endDate: $endDate,
+    destination: $destination,
+    description: $description,
+    createdAt_expr: "request.time"
+  })
+}
+
+query GetTripDetails($tripId: UUID!) @auth(level: USER, insecureReason: "This query fetches details for a specific trip, and relies on the caller to have access control implemented at a higher level if needed.") {
+  trip(id: $tripId) {
+    id
+    name
+    startDate
+    endDate
+    destination
+    description
+    creator {
+      displayName
+      email
+    }
+    accommodations_on_trip {
+      id
+      name
+      type
+      checkInDate
+      checkOutDate
+      address
+      bookingConfirmation
+      notes
+    }
+    activities_on_trip {
+      id
+      name
+      type
+      startTime
+      endTime
+      location
+      description
+      bookingReference
+    }
+    tripGuests_on_trip {
+      user {
+        displayName
+        email
+      }
+      status
+      role
+    }
+  }
+}
+
+mutation UpdateAccommodationDetails($accommodationId: UUID!, $name: String, $type: String, $checkInDate: Date, $checkOutDate: Date, $address: String, $bookingConfirmation: String, $notes: String) @auth(level: USER, insecureReason: "This mutation updates accommodation details, and relies on the caller to have access control implemented at a higher level if needed.") {
+  accommodation_update(
+    id: $accommodationId,
+    data: {
+      name: $name,
+      type: $type,
+      checkInDate: $checkInDate,
+      checkOutDate: $checkOutDate,
+      address: $address,
+      bookingConfirmation: $bookingConfirmation,
+      notes: $notes
+    }
+  )
+}

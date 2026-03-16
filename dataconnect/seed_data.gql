@@ -1,0 +1,131 @@
+mutation CreateDemoData @transaction @auth(level: USER, insecureReason: "This is a seed data mutation, only accessible by authenticated users for populating data. It's not part of the regular app flow.") {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      displayName: "Alice Smith",
+      email: "alice.smith@example.com",
+      createdAt: "2023-10-26T10:00:00Z",
+      photoUrl: "https://example.com/alice.jpg"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      displayName: "Bob Johnson",
+      email: "bob.johnson@example.com",
+      createdAt: "2023-10-26T10:05:00Z",
+      photoUrl: "https://example.com/bob.jpg"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440002",
+      displayName: "Charlie Brown",
+      email: "charlie.brown@example.com",
+      createdAt: "2023-10-26T10:10:00Z"
+    }
+  ])
+  trip_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440010",
+      creatorId: "550e8400-e29b-41d4-a716-446655440000",
+      name: "European Adventure",
+      startDate: "2024-06-01",
+      endDate: "2024-06-15",
+      destination: "Europe",
+      createdAt: "2023-10-26T10:30:00Z",
+      description: "A two-week trip through major European cities."
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440011",
+      creatorId: "550e8400-e29b-41d4-a716-446655440001",
+      name: "Mountain Retreat",
+      startDate: "2024-07-20",
+      endDate: "2024-07-25",
+      destination: "Rocky Mountains",
+      createdAt: "2023-10-26T10:35:00Z",
+      description: "A relaxing getaway in the mountains."
+    }
+  ])
+  tripGuest_insertMany(data: [
+    {
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      tripId: "550e8400-e29b-41d4-a716-446655440010",
+      status: "Accepted",
+      createdAt: "2023-10-26T10:40:00Z",
+      role: "Traveler"
+    },
+    {
+      userId: "550e8400-e29b-41d4-a716-446655440002",
+      tripId: "550e8400-e29b-41d4-a716-446655440010",
+      status: "Pending",
+      createdAt: "2023-10-26T10:42:00Z",
+      role: "Guest"
+    },
+    {
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      tripId: "550e8400-e29b-41d4-a716-446655440011",
+      status: "Accepted",
+      createdAt: "2023-10-26T10:45:00Z",
+      role: "Traveler"
+    }
+  ])
+  accommodation_insertMany(data: [
+    {
+      tripId: "550e8400-e29b-41d4-a716-446655440010",
+      name: "Grand Hotel Paris",
+      type: "Hotel",
+      checkInDate: "2024-06-01",
+      checkOutDate: "2024-06-05",
+      createdAt: "2023-10-26T10:50:00Z",
+      address: "123 Rue de la Paix, Paris, France",
+      bookingConfirmation: "PARISXYZ"
+    },
+    {
+      tripId: "550e8400-e29b-41d4-a716-446655440010",
+      name: "Rome Airbnb",
+      type: "Airbnb",
+      checkInDate: "2024-06-06",
+      checkOutDate: "2024-06-10",
+      createdAt: "2023-10-26T10:55:00Z",
+      address: "Via del Corso, Rome, Italy",
+      notes: "Close to the Colosseum."
+    },
+    {
+      tripId: "550e8400-e29b-41d4-a716-446655440011",
+      name: "Mountain Cabin",
+      type: "Cabin",
+      checkInDate: "2024-07-20",
+      checkOutDate: "2024-07-25",
+      createdAt: "2023-10-26T11:00:00Z",
+      address: "100 Forest Road, Aspen, CO",
+      bookingConfirmation: "CABIN123"
+    }
+  ])
+  activity_insertMany(data: [
+    {
+      tripId: "550e8400-e29b-41d4-a716-446655440010",
+      name: "Eiffel Tower Visit",
+      type: "Sightseeing",
+      startTime: "2024-06-02T14:00:00Z",
+      endTime: "2024-06-02T16:00:00Z",
+      createdAt: "2023-10-26T11:05:00Z",
+      location: "Paris, France"
+    },
+    {
+      tripId: "550e8400-e29b-41d4-a716-446655440010",
+      name: "Colosseum Tour",
+      type: "Sightseeing",
+      startTime: "2024-06-07T09:00:00Z",
+      endTime: "2024-06-07T12:00:00Z",
+      createdAt: "2023-10-26T11:10:00Z",
+      location: "Rome, Italy",
+      bookingReference: "COLTOUR456"
+    },
+    {
+      tripId: "550e8400-e29b-41d4-a716-446655440011",
+      name: "Hiking Trail",
+      type: "Outdoor",
+      startTime: "2024-07-21T08:00:00Z",
+      endTime: "2024-07-21T16:00:00Z",
+      createdAt: "2023-10-26T11:15:00Z",
+      location: "Rocky Mountains"
+    }
+  ])
+}
