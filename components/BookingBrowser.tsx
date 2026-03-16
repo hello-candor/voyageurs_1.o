@@ -126,7 +126,7 @@ export const BookingBrowser: React.FC<BookingBrowserProps> = ({ item, url, onClo
                     <div className={`flex-1 relative transition-all duration-500 ${isConfirming ? 'scale-95 opacity-40 blur-sm pointer-events-none' : 'scale-100 opacity-100'}`}>
                         {!iframeLoaded && (
                             <div className="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-gray-900 z-10">
-                                <Loader2 size={32} className="animate-spin text-med-terracotta mb-4" />
+                                <Spinner size={32} className="animate-spin text-med-terracotta mb-4" />
                                 <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Opening Secure Connection...</p>
                                 <p className="text-[10px] text-gray-400 mt-2 italic px-8 text-center">Redirecting you to the official reservation system for {item.name}.</p>
                             </div>
@@ -255,6 +255,6 @@ export const BookingBrowser: React.FC<BookingBrowserProps> = ({ item, url, onClo
     );
 };
 
-const Loader2 = ({ size, className }: { size: number, className?: string }) => (
+const Spinner = ({ size, className }: { size: number, className?: string }) => (
     <RefreshCw size={size} className={`${className} animate-spin`} />
 );

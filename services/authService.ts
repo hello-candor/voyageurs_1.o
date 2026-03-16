@@ -1,24 +1,29 @@
 
+import { 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signOut,
+  User
+} from "firebase/auth";
+import { auth } from "../firebaseConfig";
+
+const provider = new GoogleAuthProvider();
+
 /**
  * Authentication Service
  * 
- * Currently a stub to simulate secure backend authentication.
- * In production, this will be replaced with Firebase Auth or a real API call.
+ * Handles both legacy password-based auth and Firebase Google Auth for hosts.
  */
-
 export const authService = {
   /**
-   * Simulates a secure host login.
+   * Simulates a secure host login using a password.
+   * This is retained for legacy purposes.
    */
   loginHost: async (password: string): Promise<boolean> => {
     // Simulate network latency
     await new Promise(resolve => setTimeout(resolve, 800));
 
-    // Mock Validation Logic
-    // In a real scenario, this password is sent to the server.
-    // For this prototype refactor, we accept complex passwords to simulate security
-    // without exposing the literal 'BRYAN' check in the component tree.
-    // Logic: Accepts specific "admin" patterns or the legacy password for transition.
+    // Mock Validation Logic for legacy password
     const isValid = (
         password === 'BRYAN' || 
         (
@@ -34,22 +39,49 @@ export const authService = {
   },
 
   /**
-   * Simulates creating a new host account.
-   * Allows any valid email/password combination to create a new host session.
+   * Simulates creating a new host account with email/password.
    */
   createHostAccount: async (email: string, password: string): Promise<boolean> => {
     // Simulate network latency
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // In a real app, this would create the user record.
-    // For the prototype, we just allow the flow to proceed.
     console.log(`Creating host account for ${email}`);
     return true;
   },
 
+  /**
+   * Initiates Google Sign-In and returns the user object.
+   */
+  loginWithGoogle: async (): Promise<User | null> => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      return result.user;
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
+      // Handle specific errors like popup closed by user
+      if (error.code === 'auth/popup-closed-by-user') {
+        return null;
+      }
+      throw error; // Rethrow other errors
+    }
+  },
+
+  /**
+   * Signs out the current user from Firebase.
+   */
+  logout: async (): Promise<void> => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  },
+  
+  /**
+   * Legacy logout function, now points to the new unified logout.
+   */
   logoutHost: async (): Promise<void> => {
-    // Simulate network latency
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return;
+    return authService.logout();
   }
 };

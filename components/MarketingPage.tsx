@@ -12,9 +12,7 @@ import {
   Moon, Users
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { GoogleGenAI } from "@google/genai";
 import { useAuth } from '../context/AuthContext';
-import { useUser } from '../context/UserContext';
 import { useNotification } from '../context/NotificationContext';
 import { useTheme } from '../context/ThemeContext';
 import { PrivacyPolicyModal } from './PrivacyPolicyModal';
@@ -85,7 +83,6 @@ const BentoCard = ({ children, back, className = "", isHero = false }: any) => {
         const rotateX = ((y - centerY) / centerY) * -3;
         const rotateY = ((x - centerX) / centerX) * 3;
         
-        // Use inline style for performant tilt
         cardRef.current.style.transition = 'none';
         cardRef.current.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
     };
@@ -93,17 +90,13 @@ const BentoCard = ({ children, back, className = "", isHero = false }: any) => {
     const handleMouseLeave = () => {
         if (!cardRef.current || flipped) return;
         
-        // Reset tilt
         cardRef.current.style.transition = 'transform 0.5s ease-out';
         cardRef.current.style.transform = `rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
     };
 
-    // Sync flip state with transform
     useEffect(() => {
         if (cardRef.current) {
-            // We want smooth transition for the flip
             cardRef.current.style.transition = 'transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            // Clear inline transform to let CSS class `is-flipped` take precedence
             cardRef.current.style.transform = ''; 
         }
     }, [flipped]);
@@ -132,18 +125,77 @@ const BentoCard = ({ children, back, className = "", isHero = false }: any) => {
     );
 };
 
+const AuthModal = ({ isOpen, onClose, onHostLogin }: { isOpen: boolean, onClose: () => void, onHostLogin: () => void }) => {
+    const { loginHostWithGoogle, isLoading } = useAuth();
+    const [code, setCode] = useState('');
+    const [error, setError] = useState('');
+
+    const handleGoogleLogin = async () => {
+        try {
+            await loginHostWithGoogle();
+            onClose(); 
+        } catch (err) {
+            setError("Google sign-in failed. Please try again.");
+        }
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-med-blue/60 dark:bg-black/80 backdrop-blur-md"
+                onClick={onClose}
+            />
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-[3rem] shadow-2xl overflow-hidden"
+            >
+                <button onClick={onClose} className="absolute top-6 right-6 p-2 text-slate-400 hover:text-med-blue transition-colors z-10"><X size={24}/></button>
+                <div className="p-12 text-center">
+                    <Logo className="w-16 h-16 mx-auto mb-6" />
+                    <h2 className="text-3xl font-heading italic text-med-blue dark:text-white mb-2">Event Access</h2>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-med-terracotta mb-8">Host or Guest Entry</p>
+                    
+                    <div className="space-y-4">
+                        <button onClick={handleGoogleLogin} className="w-full py-4 bg-med-blue text-white rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2" disabled={isLoading}>
+                            {isLoading ? <Loader2 className="animate-spin" /> : <><Globe size={14} /> Sign in with Google</>}
+                        </button>
+
+                        <div className="my-4 flex items-center">
+                            <div className="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+                            <span className="flex-shrink mx-4 text-slate-400 dark:text-slate-500 text-xs uppercase">Or</span>
+                            <div className="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+                        </div>
+                        
+                        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onHostLogin(); }}>
+                            <input type="text" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} className="w-full p-4 text-center bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none focus:ring-1 focus:ring-med-terracotta transition-all text-med-blue dark:text-white font-serif tracking-widest text-xl" placeholder="ENTER INVITE CODE" />
+                            <button type="submit" className="w-full py-4 bg-[#E2923D] text-white rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-[#d17e2b] transition-all">
+                                Access as Guest
+                            </button>
+                        </form>
+                    </div>
+                    {error && <p className="text-red-500 text-xs mt-4">{error}</p>}
+                </div>
+            </motion.div>
+        </div>
+    );
+};
+
 export const MarketingPage = ({ onHostLogin }: any) => {
     const { theme, toggleTheme } = useTheme();
-    const { login: guestLogin } = useUser();
     const [isAnnual, setIsAnnual] = useState(false);
     const [showPrivacy, setShowPrivacy] = useState(false);
     const [showTerms, setShowTerms] = useState(false);
     const [showAbout, setShowAbout] = useState(false);
     const [showFeatures, setShowFeatures] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
-    const [authMode, setAuthMode] = useState<'login' | 'signup' | 'host'>('signup');
 
-    // Céleste Cycle Logic
     const [celesteIndex, setCelesteIndex] = useState(0);
     const celesteExamples = [
         { q: "What's the dress code for Saturday?", a: "Black Tie Creative. Think velvet, sparkle, and Mediterranean flair." },
@@ -159,16 +211,10 @@ export const MarketingPage = ({ onHostLogin }: any) => {
         return () => clearInterval(interval);
     }, []);
 
-    const openAuth = (mode: 'login' | 'signup' | 'host' = 'signup') => {
-        setAuthMode(mode);
-        setShowAuthModal(true);
-    };
-
     return (
         <div className="font-body bg-med-sand dark:bg-gray-950 text-slate-800 dark:text-slate-200 selection:bg-med-terracotta selection:text-white transition-colors duration-500 overflow-x-hidden">
             <Styles />
             
-            {/* Navigation */}
             <nav className="fixed w-full z-50 top-0 left-0 transition-all duration-500 px-4 py-6">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -186,14 +232,13 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                         <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-full bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border border-med-blue/10 dark:border-white/10 shadow-sm text-slate-500 dark:text-slate-400 hover:text-med-blue dark:hover:text-white transition-colors">
                             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
                         </button>
-                        <button onClick={() => openAuth('signup')} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] shadow-xl hover:shadow-2xl shadow-[#E2923D]/20 px-6 py-2.5 text-[10px] sm:px-8 sm:py-3.5 sm:text-xs">
-                            Early Access
+                        <button onClick={() => setShowAuthModal(true)} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] shadow-xl hover:shadow-2xl shadow-[#E2923D]/20 px-6 py-2.5 text-[10px] sm:px-8 sm:py-3.5 sm:text-xs">
+                            Access
                         </button>
                     </div>
                 </div>
             </nav>
 
-            {/* Hero Section */}
             <section className="relative pt-48 pb-20 overflow-hidden min-h-screen flex flex-col justify-center">
                 <div className="container mx-auto px-4 max-w-7xl relative z-10">
                     <div className="flex flex-col lg:flex-row items-center gap-16">
@@ -210,8 +255,8 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                                 Orchestrate your next group trip without the spreadsheet fatigue. Voyageurs unifies collaborative itinerary planning, shared expense tracking, and local discovery into one fluid experience.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <button onClick={() => openAuth('signup')} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] px-8 py-3.5 text-xs shadow-xl">
-                                    Early Access <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                                <button onClick={() => setShowAuthModal(true)} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] px-8 py-3.5 text-xs shadow-xl">
+                                    Access <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
                                 </button>
                             </div>
                         </div>
@@ -237,7 +282,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                 </div>
             </section>
 
-            {/* Philosophy Section */}
             <section id="philosophy" className="py-24 bg-white dark:bg-[#1e293b] relative overflow-hidden">
                 <div className="container mx-auto px-4 max-w-7xl relative z-10">
                     <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
@@ -283,7 +327,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                 </div>
             </section>
 
-            {/* Bento Grid Features */}
             <section id="features" className="py-24 bg-med-sand dark:bg-gray-950 relative overflow-hidden">
                 <div className="container mx-auto px-4 max-w-7xl relative z-10">
                     <div className="text-center mb-16">
@@ -301,7 +344,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(280px,auto)]">
-                        {/* 1. Céleste Hero Card */}
                         <BentoCard 
                             className="md:col-span-2 md:row-span-2"
                             back={
@@ -339,7 +381,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                                     </p>
                                 </div>
 
-                                {/* Dynamic Chat Bubble Simulation */}
                                 <div className="mt-8 space-y-4 relative max-w-md ml-auto min-h-[120px]">
                                     <AnimatePresence mode="wait">
                                         <motion.div 
@@ -376,7 +417,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                             </div>
                         </BentoCard>
 
-                        {/* 2. Planning */}
                         <BentoCard 
                             back={
                                 <div className="flex flex-col items-center">
@@ -409,7 +449,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                             </div>
                         </BentoCard>
 
-                        {/* 3. Finance */}
                         <BentoCard 
                             back={
                                 <div className="flex flex-col items-center">
@@ -442,7 +481,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                             </div>
                         </BentoCard>
 
-                        {/* 4. Discovery */}
                         <BentoCard 
                             back={
                                 <div className="flex flex-col items-center">
@@ -475,7 +513,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                             </div>
                         </BentoCard>
 
-                        {/* 5. Matchmaker */}
                         <BentoCard 
                             back={
                                 <div className="flex flex-col items-center">
@@ -508,7 +545,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                             </div>
                         </BentoCard>
 
-                        {/* 6. Device */}
                         <BentoCard 
                             back={
                                 <div className="flex flex-col items-center">
@@ -544,7 +580,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                 </div>
             </section>
 
-            {/* Pricing Section */}
             <section id="pricing" className="py-24 bg-white dark:bg-[#1e293b]">
                 <div className="container mx-auto px-4 max-w-7xl">
                     <div className="text-center mb-16">
@@ -560,7 +595,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                             Transparent pricing for every kind of group trip. Whether you need essential coordination tools for a weekend getaway or advanced logistics for a destination wedding, choose the plan that fits your party size and travel style.
                         </p>
                         
-                        {/* Billing Toggle */}
                         <div className="flex items-center justify-center gap-4 mt-8">
                             <span className={`text-[10px] font-bold uppercase tracking-[0.2em] cursor-pointer transition-colors ${!isAnnual ? 'text-med-blue dark:text-white' : 'text-slate-400'}`} onClick={() => setIsAnnual(false)}>Monthly</span>
                             <button 
@@ -576,7 +610,6 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                     </div>
                     
                     <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {/* Explorer */}
                         <div className="relative p-8 rounded-[2.5rem] border border-slate-100 dark:border-gray-800 bg-med-sand dark:bg-gray-900 text-slate-800 dark:text-slate-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
                             <div className="mb-8">
                                 <h3 className="text-xl font-heading mb-2 text-med-blue dark:text-white">Explorer</h3>
@@ -591,10 +624,9 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-slate-400 mt-0.5" /> 1 Active Trip</li>
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-slate-400 mt-0.5" /> Mobile App Access</li>
                             </ul>
-                            <button onClick={() => openAuth('signup')} className="w-full py-4 bg-white dark:bg-gray-800 text-med-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 shadow-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Early Access</button>
+                            <button onClick={() => setShowAuthModal(true)} className="w-full py-4 bg-white dark:bg-gray-800 text-med-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 shadow-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Access</button>
                         </div>
 
-                        {/* Connoisseur */}
                         <div className="relative p-8 rounded-[2.5rem] border border-med-blue bg-med-blue text-white shadow-2xl scale-105 z-10 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_25px_50px_-12px_rgba(30,68,114,0.25)]">
                             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-med-terracotta text-white px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-lg">Most Popular</div>
                             <div className="mb-8">
@@ -611,10 +643,9 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-med-terracotta mt-0.5" /> AI Concierge (Céleste)</li>
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-med-terracotta mt-0.5" /> Expense Ledger</li>
                             </ul>
-                            <button onClick={() => openAuth('signup')} className="w-full py-4 bg-med-terracotta text-white hover:bg-[#c56143] shadow-xl hover:shadow-2xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Early Access</button>
+                            <button onClick={() => setShowAuthModal(true)} className="w-full py-4 bg-med-terracotta text-white hover:bg-[#c56143] shadow-xl hover:shadow-2xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Access</button>
                         </div>
 
-                        {/* Artisan */}
                         <div className="relative p-8 rounded-[2.5rem] border border-slate-100 dark:border-gray-800 bg-med-sand dark:bg-gray-900 text-slate-800 dark:text-slate-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
                             <div className="mb-8">
                                 <h3 className="text-xl font-heading mb-2 text-med-blue dark:text-white">Artisan</h3>
@@ -629,7 +660,7 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-slate-400 mt-0.5" /> White-Label Portal</li>
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-slate-400 mt-0.5" /> Priority Support</li>
                             </ul>
-                            <button onClick={() => openAuth('signup')} className="w-full py-4 bg-white dark:bg-gray-800 text-med-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 shadow-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Early Access</button>
+                            <button onClick={() => setShowAuthModal(true)} className="w-full py-4 bg-white dark:bg-gray-800 text-med-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 shadow-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Access</button>
                         </div>
                     </div>
                     
@@ -642,48 +673,29 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                 </div>
             </section>
 
-            {/* Signup/Call to Action */}
             <section id="signup" className="py-24 bg-med-blue dark:bg-[#0f172a] relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] -mr-32 -mt-32"></div>
                     <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-med-terracotta/10 rounded-full blur-[100px] -ml-32 -mb-32"></div>
                 </div>
-
-                <div className="container mx-auto px-4 relative z-10 flex flex-col items-center">
-                    <div className="max-w-2xl w-full text-center mb-12">
-                        <div className="flex items-center justify-center gap-4 mb-6">
-                            <div className="h-px w-8 bg-med-terracotta"></div>
-                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-med-terracotta">Early Access</span>
-                            <div className="h-px w-8 bg-med-terracotta"></div>
-                        </div>
-                        <h2 className="text-4xl md:text-6xl font-heading font-light text-white mb-6 leading-tight">
-                            Start Your <span className="italic text-med-terracotta">Odyssey.</span>
-                        </h2>
-                        <p className="text-blue-100/80 text-lg font-light leading-relaxed">
-                            Be among the first to orchestrate group travel with elegance. Join the waitlist for our next release and simplify your planning.
-                        </p>
+                <div className="container mx-auto px-4 max-w-7xl relative z-10 flex flex-col items-center text-center">
+                    <div className="flex items-center justify-center gap-4 mb-6">
+                        <div className="h-px w-8 bg-med-terracotta"></div>
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-med-terracotta">Start Your Journey</span>
+                        <div className="h-px w-8 bg-med-terracotta"></div>
                     </div>
-
-                    <div className="w-full max-w-md bg-white/10 backdrop-blur-2xl border border-white/10 p-8 md:p-10 rounded-[2.5rem] shadow-2xl">
-                        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); openAuth('signup'); }}>
-                            <div className="space-y-2 text-left">
-                                <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200 ml-1">Full Name</label>
-                                <input type="text" required className="w-full p-4 bg-black/20 rounded-2xl border border-white/10 text-white placeholder:text-white/20 outline-none focus:border-med-terracotta/50 focus:ring-1 focus:ring-med-terracotta/50 transition-all text-sm" placeholder="Jean Dupont" />
-                            </div>
-                            <div className="space-y-2 text-left">
-                                <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200 ml-1">Email Address</label>
-                                <input type="email" required className="w-full p-4 bg-black/20 rounded-2xl border border-white/10 text-white placeholder:text-white/20 outline-none focus:border-med-terracotta/50 focus:ring-1 focus:ring-med-terracotta/50 transition-all text-sm" placeholder="name@example.com" />
-                            </div>
-                            <button type="submit" className="w-full py-4 bg-med-terracotta text-white font-bold uppercase tracking-[0.2em] text-[10px] rounded-full shadow-lg hover:bg-[#c56143] transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 group">
-                                <span>Join Waitlist</span>
-                                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                            </button>
-                        </form>
-                    </div>
+                    <h2 className="text-4xl md:text-6xl font-heading font-light text-white mb-6 leading-tight">
+                        Your <span className="italic text-med-terracotta">Odyssey</span> Awaits.
+                    </h2>
+                    <p className="text-blue-100/80 text-lg font-light leading-relaxed max-w-2xl mx-auto mb-10">
+                        Orchestrate your next group trip with elegance. Access your event or sign up to create a new one.
+                    </p>
+                    <button onClick={() => setShowAuthModal(true)} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] px-8 py-3.5 text-xs shadow-xl">
+                        Access Your Event <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </button>
                 </div>
             </section>
 
-            {/* Footer */}
             <footer className="bg-med-sand dark:bg-gray-950 pt-20 pb-10 border-t border-slate-200 dark:border-slate-800 font-body">
                 <div className="container mx-auto px-4 max-w-7xl">
                     <div className="grid md:grid-cols-5 gap-12 mb-16">
@@ -719,7 +731,8 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                         <div>
                             <h4 className="font-bold text-med-blue dark:text-white uppercase tracking-[0.2em] text-[10px] mb-6">Access</h4>
                             <ul className="space-y-4 text-sm text-slate-500 dark:text-slate-400">
-                                <li><button onClick={() => openAuth('login')} className="hover:text-med-terracotta transition-colors">Login</button></li>
+                                <li><button onClick={() => setShowAuthModal(true)} className="hover:text-med-terracotta transition-colors">Login</button></li>
+                                <li><button onClick={onHostLogin} className="hover:text-med-terracotta transition-colors">Host Login</button></li>
                             </ul>
                         </div>
                     </div>
@@ -735,56 +748,12 @@ export const MarketingPage = ({ onHostLogin }: any) => {
                 </div>
             </footer>
 
-            {/* Modals */}
             <PrivacyPolicyModal isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />
             <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
             <AboutUsModal isOpen={showAbout} onClose={() => setShowAbout(false)} />
             <FeatureBreakdownModal isOpen={showFeatures} onClose={() => setShowFeatures(false)} />
             
-            {/* Auth Modal Wrapper (Instead of full screen) */}
-            <AnimatePresence>
-                {showAuthModal && (
-                    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="absolute inset-0 bg-med-blue/60 dark:bg-black/80 backdrop-blur-md"
-                            onClick={() => setShowAuthModal(false)}
-                        />
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-[3rem] shadow-2xl overflow-hidden"
-                        >
-                            <button onClick={() => setShowAuthModal(false)} className="absolute top-6 right-6 p-2 text-slate-400 hover:text-med-blue transition-colors z-10"><X size={24}/></button>
-                            <div className="p-12 text-center">
-                                <Logo className="w-16 h-16 mx-auto mb-6" />
-                                <h2 className="text-3xl font-heading italic text-med-blue dark:text-white mb-2">{authMode === 'login' ? 'Welcome Back' : 'Early Access'}</h2>
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-med-terracotta mb-8">{authMode === 'login' ? 'Voyageurs Hub' : 'Join the Waitlist'}</p>
-                                
-                                <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); guestLogin('Jean Dupont', 'jean@example.com', 1, 'Pending', '', ''); window.location.href = '/'; }}>
-                                    <div className="space-y-2 text-left">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
-                                        <input type="text" required className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none focus:ring-1 focus:ring-med-terracotta transition-all text-med-blue dark:text-white" placeholder="Jean Dupont" />
-                                    </div>
-                                    <div className="space-y-2 text-left">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Email</label>
-                                        <input type="email" required className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none focus:ring-1 focus:ring-med-terracotta transition-all text-med-blue dark:text-white" placeholder="name@example.com" />
-                                    </div>
-                                    <button type="submit" className="w-full py-4 bg-[#E2923D] text-white rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-[#d17e2b] transition-all">
-                                        {authMode === 'login' ? 'Log In' : 'Join Waitlist'}
-                                    </button>
-                                </form>
-                                <p className="mt-8 text-[10px] text-slate-400 uppercase tracking-widest cursor-pointer hover:text-med-blue transition-colors" onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}>
-                                    {authMode === 'login' ? "Need an account? Sign Up" : "Have an account? Log In"}
-                                </p>
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+            <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} onHostLogin={onHostLogin} />
         </div>
     );
 };

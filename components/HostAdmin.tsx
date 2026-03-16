@@ -29,6 +29,13 @@ import { EmptyState } from './EmptyState';
 import { SegmentedControl } from './SegmentedControl';
 import { SlidingPaneLayout } from './SlidingPaneLayout';
 import { WelcomeTour } from './WelcomeTour';
+import { Hero } from './Hero';
+import { TheCelebration } from './TheCelebration';
+import { Gallery } from './Gallery';
+import { AgendaView } from './AgendaView';
+import { PublicLogistics } from './PublicLogistics';
+import { RSVPForm } from './RSVPForm';
+
 
 interface HostAdminProps {
   onSwitchToGuest?: () => void;
@@ -261,6 +268,46 @@ const HostSplitLayout = ({ children, preview, onSave, onPublish, isDirty, isPubl
   )
 };
 
+const PreviewRouter = ({ tab, page, config, guests }: { tab: string, page: string, config: AppConfig, guests: Guest[] }) => {
+    const { content, modules } = config;
+
+    if (tab === 'experience') {
+        switch (page) {
+            case 'landing':
+                return <Hero content={content.landing} appName={config.appName} />;
+            case 'celebration':
+                return <TheCelebration content={content.celebration} />;
+            case 'gallery':
+                return <Gallery content={content.gallery} />;
+            default:
+                return <div className="p-4 text-sm text-gray-500">Select a page to preview.</div>;
+        }
+    }
+
+    switch (tab) {
+        case 'agenda':
+            return <div className="p-4"><AgendaView agenda={content.agenda} isPublicView={true} /></div>;
+        case 'logistics':
+            return <div className="p-4"><PublicLogistics logistics={content.logistics} /></div>;
+        case 'rsvp':
+            return (
+                <div className="p-6 bg-gray-100 dark:bg-gray-800">
+                    <RSVPForm
+                        guest={guests.length > 0 ? guests[0] : { id: 'preview', name: 'Preview Guest', status: 'Pending', guestsCount: 1, email: '' }}
+                        config={config}
+                        onRSVPSubmit={async () => {
+                            alert("This is a preview. Submission is disabled.");
+                            return true;
+                        }}
+                        isPreview={true}
+                    />
+                </div>
+            );
+        default:
+            return <div className="p-4 text-sm text-gray-500">No preview available for this section.</div>;
+    }
+};
+
 const DashboardApp = ({ allGuests, onLaunch, config }: any) => {
     const stats = useMemo(() => {
         const total = allGuests.reduce((acc: number, g: any) => acc + (g.guestsCount || 1), 0);
@@ -391,11 +438,11 @@ const SetupApp = ({ config, updateConfig, toggleModule, toggleAI }: any) => {
     return <div className="p-6">Setup Component Placeholder</div>;
 };
 
-const BuilderApp = ({ subTab, setSubTab, page, setPage, config, updateContent, updateConfig }: any) => {
+const BuilderApp = ({ subTab, setSubTab, page, setPage, config, updateContent, updateConfig, allGuests }: any) => {
     // ... [Builder App Logic Omitted for Brevity] ...
     return (
         <HostSplitLayout 
-            preview={<div>Preview</div>} 
+            preview={<PreviewRouter tab={subTab} page={page} config={config} guests={allGuests} />} 
             onSave={() => {}} 
             onPublish={() => {}} 
             isDirty={false}
@@ -461,13 +508,16 @@ export const HostAdmin: React.FC<HostAdminProps> = ({ onSwitchToGuest, isOpen, o
 
     setIsOverviewMode(false);
 
-    if (app === 'build' && context) {
-      if (['identity', 'landing', 'celebration', 'gallery'].includes(context)) {
-        setBuilderTab('experience');
-        setBuilderPage(context);
-      } else {
-        setBuilderTab(context);
-      }
+    if (app === 'build') {
+        if (context) {
+            if (['identity', 'landing', 'celebration', 'gallery'].includes(context)) {
+                setBuilderTab('experience');
+                setBuilderPage(context);
+            } else {
+                setBuilderTab(context);
+                setBuilderPage(''); // Reset page when switching to a non-experience tab
+            }
+        }
     }
 
     setWebOS(current => {
@@ -537,7 +587,7 @@ export const HostAdmin: React.FC<HostAdminProps> = ({ onSwitchToGuest, isOpen, o
           case 'communications':
               return <CommsApp />;
           case 'build':
-              return <BuilderApp subTab={builderTab} setSubTab={setBuilderTab} page={builderPage} setPage={setBuilderPage} config={config} updateContent={updateContent} updateConfig={updateConfig} />;
+              return <BuilderApp allGuests={allGuests} subTab={builderTab} setSubTab={setBuilderTab} page={builderPage} setPage={setBuilderPage} config={config} updateContent={updateContent} updateConfig={updateConfig} />;
           case 'setup':
               return <SetupApp config={config} updateConfig={updateConfig} toggleModule={toggleModule} toggleAI={toggleAI} />;
           default: return null;
