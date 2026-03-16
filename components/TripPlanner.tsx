@@ -151,6 +151,25 @@ export const TripPlanner: React.FC<TripPlannerProps> = ({ initialTab, embedded =
       }
   };
 
+  const getRouteImage = (id: string, existingImage?: string) => {
+      if (existingImage) return existingImage;
+      switch (id) {
+          case 'via-paris':
+          case 'flight-cdg':
+              return "https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?q=80&w=800&auto=format&fit=crop";
+          case 'via-bcn':
+          case 'flight-bcn':
+              return "https://images.unsplash.com/photo-1583422409516-2895a77efded?q=80&w=800&auto=format&fit=crop";
+          case 'via-wildcard':
+          case 'flight-wildcard':
+              return "https://images.unsplash.com/photo-1544016768-982d1554f0b9?q=80&w=800&auto=format&fit=crop";
+          case 'fly-mpl':
+          case 'flight-mpl':
+          default:
+              return "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop";
+      }
+  };
+
   const handleSelectOption = (option: any) => {
     let bookingUrl = '';
     let secondaryBookingUrl: string | undefined = undefined;
@@ -189,13 +208,7 @@ export const TripPlanner: React.FC<TripPlannerProps> = ({ initialTab, embedded =
         cost: option.cost * travelers,
         pricingType: 'perPerson',
         details: option.description + (option.duration ? ` (${option.duration})` : ''),
-        image: option.id === 'via-paris' 
-            ? "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop"
-            : option.id === 'via-bcn' 
-                ? "https://images.unsplash.com/photo-1583422409516-2895a77efded?q=80&w=800&auto=format&fit=crop"
-                : option.id === 'via-wildcard'
-                    ? "https://images.unsplash.com/photo-1544016768-982d1554f0b9?q=80&w=800&auto=format&fit=crop"
-                    : "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop",
+        image: getRouteImage(option.id, option.image),
         bookingUrl: bookingUrl,
         secondaryBookingUrl: secondaryBookingUrl
     };
@@ -399,7 +412,7 @@ export const TripPlanner: React.FC<TripPlannerProps> = ({ initialTab, embedded =
                                                 >
                                                     {/* Image Thumbnail */}
                                                     <div className="relative w-full md:w-32 h-32 md:h-32 rounded-2xl overflow-hidden shrink-0 shadow-md">
-                                                        <img src={opt.image} alt={opt.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                                        <img src={getRouteImage(opt.id, opt.image)} alt={opt.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                                         <div className={`absolute inset-0 bg-med-blue/20 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0'}`}></div>
                                                         {isSelected && (
                                                             <div className="absolute inset-0 flex items-center justify-center text-white">
