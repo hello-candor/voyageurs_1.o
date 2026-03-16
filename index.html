@@ -35,27 +35,35 @@
       };
     </script>
     <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              med: {
-                blue: 'var(--color-primary)',       /* Default: #1E4472 */
-                lightBlue: 'var(--color-primary-light)', /* Default: #AEC0D8 */
-                sand: 'var(--color-bg)',            /* Default: #F5F2EB */
-                terracotta: 'var(--color-accent)',  /* Default: #D67252 */
-                olive: 'var(--color-success)',      /* Default: #8A9A5B */
-              }
-            },
-            fontFamily: {
-              serif: ['"Cormorant Garamond"', 'serif'],
-              sans: ['"Montserrat"', 'sans-serif'],
-            }
+  if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+</script>
+    <script>
+  tailwind.config = {
+    // This is the critical line for manual toggling
+    darkMode: 'class', 
+    theme: {
+      extend: {
+        colors: {
+          med: {
+            blue: 'var(--color-primary)',       /* #1E4472 */
+            lightBlue: 'var(--color-primary-light)', /* #AEC0D8 */
+            sand: 'var(--color-bg)',            /* #F5F2EB */
+            terracotta: 'var(--color-accent)',  /* #D67252 */
+            olive: 'var(--color-success)',      /* #8A9A5B */
           }
+        },
+        fontFamily: {
+          serif: ['"Cormorant Garamond"', 'serif'],
+          sans: ['"Montserrat"', 'sans-serif'],
         }
       }
-    </script>
+    }
+  }
+</script>
     <style>
       :root {
         --color-primary: #1E4472;
