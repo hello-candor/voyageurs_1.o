@@ -76,11 +76,11 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
           { 
               id: 1, 
               label: 'Draft', 
-              longLabel: 'Draft Trip', 
+              longLabel: 'Build Your Trip', 
               icon: PenTool, 
               target: 'logistics' as HubView, 
               isComplete: hasDraft,
-              desc: "Start building your budget. Add flights, hotels, and activities to the planner."
+              desc: "Dream with precision. Add flights, accommodations, and curated experiences to shape your ideal itinerary."
           },
           { 
               id: 2, 
@@ -180,10 +180,10 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                 </div>
 
                 {/* JOURNEY STEPPER WIDGET */}
-                <div className={`group relative overflow-hidden backdrop-blur-xl border p-6 md:p-8 rounded-[2rem] shadow-2xl animate-in slide-in-from-bottom-4 duration-700 transition-all ${theme === 'light' ? 'bg-white/60 border-med-blue/10' : 'bg-black/40 border-white/20 hover:bg-black/50'}`}>
+                <div className={`group relative overflow-hidden backdrop-blur-md border p-6 md:p-8 rounded-[2rem] shadow-2xl animate-in slide-in-from-bottom-4 duration-700 transition-all ${theme === 'light' ? 'bg-white/60 border-med-blue/10' : 'bg-black/40 border-white/10 hover:bg-black/50'}`}>
                     
                     {/* Background Layers */}
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522582324369-2dfc36bd9275?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center opacity-10 group-hover:scale-105 transition-transform duration-1000 ease-out" />
+                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522582324369-2dfc36bd9275?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center opacity-20 group-hover:scale-110 transition-transform duration-1000 ease-out" />
                     <div className={`absolute inset-0 bg-gradient-to-t transition-colors ${theme === 'light' ? 'from-white/40 via-transparent to-transparent' : 'from-black via-transparent to-transparent opacity-80'}`} />
 
                     <div className="relative z-10">

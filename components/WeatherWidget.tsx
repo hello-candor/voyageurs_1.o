@@ -10,7 +10,7 @@ const WEATHER_ICONS: { [key: string]: React.ReactElement } = {
     "shower rain": <CloudRain size={20} className="text-blue-400" />,
     "rain": <CloudRain size={20} className="text-blue-400" />,
     "thunderstorm": <CloudRain size={20} className="text-blue-400" />,
-    "snow": <CloudSnow size={20} className="text-white" />,
+    "snow": <CloudSnow size={20} className="text-slate-800 dark:text-white" />,
     "mist": <Cloud size={20} className="text-slate-400" />,
 };
 
@@ -59,7 +59,7 @@ export const WeatherWidget: React.FC = () => {
     };
 
     return (
-        <div className="flex items-center justify-center gap-2 text-white/80 bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-md transition-all cursor-default min-w-[60px]">
+        <div className="flex items-center justify-center gap-2 text-slate-800 dark:text-white/80 bg-slate-900/5 dark:bg-white/5 hover:bg-slate-900/10 dark:hover:bg-white/10 px-3 py-1.5 rounded-full border border-slate-900/10 dark:border-white/10 backdrop-blur-md transition-all cursor-default min-w-[60px]">
             {renderContent()}
         </div>
     );

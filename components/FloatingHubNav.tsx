@@ -177,7 +177,7 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
   const getCategoryBadge = (categoryId: string, children?: string[]) => {
       // Messages Badge
       if (categoryId === 'messages' && unreadTotal > 0) {
-          return <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold h-4 min-w-[16px] px-1 rounded-full border-2 border-gray-900 flex items-center justify-center">{unreadTotal}</div>;
+          return <div className="absolute -top-1 -right-1 bg-red-500 text-slate-800 dark:text-white text-[9px] font-bold h-4 min-w-[16px] px-1 rounded-full border-2 border-gray-900 flex items-center justify-center">{unreadTotal}</div>;
       }
       
       // Planning Badge (RSVP)
@@ -283,11 +283,11 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                         `}
                                         style={{ transitionDelay: `${idx * 50}ms` }}
                                     >
-                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${app.color} text-white shadow-lg ${app.glow} shrink-0`}>
+                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${app.color} text-slate-800 dark:text-white shadow-lg ${app.glow} shrink-0`}>
                                             <app.icon size={24} />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className={`text-[10px] font-bold uppercase tracking-wider whitespace-nowrap leading-none ${theme === 'light' ? 'text-black' : 'text-white'}`}>
+                                            <span className={`text-[10px] font-bold uppercase tracking-wider whitespace-nowrap leading-none ${theme === 'light' ? 'text-black' : 'text-slate-800 dark:text-white'}`}>
                                                 {app.label}
                                             </span>
                                             <span className={`text-[9px] font-medium whitespace-nowrap leading-none mt-1 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
@@ -337,7 +337,7 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                 >
                                     {isHovered && !activeStack && (
                                         <div className={`absolute bottom-full mb-3 left-1/2 -translate-x-1/2 px-3 py-1.5 text-[9px] font-bold rounded-lg shadow-xl border whitespace-nowrap pointer-events-none animate-in fade-in slide-in-from-bottom-1 z-50
-                                            ${theme === 'light' ? 'bg-white text-black border-black/10' : 'bg-gray-900 text-white border-white/10'}
+                                            ${theme === 'light' ? 'bg-white text-black border-black/10' : 'bg-gray-900 text-slate-800 dark:text-white border-white/10'}
                                         `}>
                                             {cat.description}
                                             <div className={`absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent ${theme === 'light' ? 'border-t-white' : 'border-t-gray-900'}`} />
@@ -347,7 +347,7 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                     <div className={`
                                         w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center transition-all duration-500 relative
                                         ${isActive 
-                                            ? `shadow-lg -translate-y-1.5 scale-110 ${theme === 'light' ? 'bg-med-blue text-white' : 'bg-white text-med-blue'}`
+                                            ? `shadow-lg -translate-y-1.5 scale-110 ${theme === 'light' ? 'bg-med-blue text-slate-800 dark:text-white' : 'bg-white text-med-blue'}`
                                             : `group-hover:scale-105 group-active:scale-95 ${theme === 'light' ? 'bg-gray-200 text-gray-700 group-hover:bg-gray-300' : `bg-gray-800 ${cat.color} group-hover:bg-gray-700`}`
                                         }
                                     `}>
@@ -363,7 +363,7 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                     </div>
                                     <span className={`
                                         text-[6px] md:text-[7px] font-bold uppercase tracking-wider leading-none transition-all duration-300
-                                        ${isActive ? (theme === 'light' ? 'text-black' : 'text-white') : (theme === 'light' ? 'text-gray-600 group-hover:text-black' : 'text-gray-400 group-hover:text-gray-200')}
+                                        ${isActive ? (theme === 'light' ? 'text-black' : 'text-slate-800 dark:text-white') : (theme === 'light' ? 'text-gray-600 group-hover:text-black' : 'text-gray-400 group-hover:text-gray-200')}
                                     `}>
                                         {cat.label}
                                     </span>
