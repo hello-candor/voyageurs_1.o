@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(false);
     }
   }, []);
-  
+
   const loginHostWithGoogle = useCallback(async (credential: string) => {
     setIsLoading(true);
     setError(null);
@@ -98,7 +98,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logoutHost = useCallback(async () => {
     setIsLoading(true);
     await authService.logout();
-    safeStorage.removeItem('host_session');
+    // Clear all app storage on logout
+    safeStorage.clearAppStorage();
+    setIsHost(false);
     setIsLoading(false);
   }, []);
 
@@ -106,16 +108,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     setError(null);
     try {
-        const isValid = await authService.verifyGuestCode(code);
-        if (!isValid) {
-            setError('Invalid guest code.');
-        }
-        return isValid;
+      const isValid = await authService.verifyGuestCode(code);
+      if (!isValid) {
+        setError('Invalid guest code.');
+      }
+      return isValid;
     } catch (err) {
-        setError('Guest verification failed.');
-        return false;
+      setError('Guest verification failed.');
+      return false;
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   }, []);
 

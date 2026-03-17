@@ -2,16 +2,17 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HubLayout } from './HubLayout';
 import { HostAdmin } from './HostAdmin';
+import { safeStorage } from '../utils/storage';
 import { Loader2 } from 'lucide-react';
 
 interface OSContainerProps {
-    initialMode?: 'guest' | 'host';
+  initialMode?: 'guest' | 'host';
 }
 
 const LoadingScreen = () => (
-    <div className="absolute inset-0 bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-primary animate-spin"/>
-    </div>
+  <div className="absolute inset-0 bg-background flex items-center justify-center">
+    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+  </div>
 );
 
 export const OSContainer: React.FC<OSContainerProps> = ({ initialMode = 'guest' }) => {
@@ -21,10 +22,21 @@ export const OSContainer: React.FC<OSContainerProps> = ({ initialMode = 'guest' 
     setMode(initialMode);
   }, [initialMode]);
 
+  // Clear admin hub data when switching between modes to prevent hang-ups
+  useEffect(() => {
+    if (mode === 'guest') {
+      // When switching to guest mode, clear admin-related storage
+      safeStorage.clearAppStorage([
+        'host_tour_seen',
+        'host_session'
+      ]);
+    }
+  }, [mode]);
+
   const variants = {
-      initial: { opacity: 0 },
-      animate: { opacity: 1 },
-      exit: { opacity: 0 },
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
   };
 
   return (
@@ -54,8 +66,8 @@ export const OSContainer: React.FC<OSContainerProps> = ({ initialMode = 'guest' 
             exit="exit"
             transition={{ duration: 0.5 }}
           >
-             <Suspense fallback={<LoadingScreen />}>
-                <HostAdmin onSwitchToGuest={() => setMode('guest')} onClose={() => setMode('guest')} />
+            <Suspense fallback={<LoadingScreen />}>
+              <HostAdmin onSwitchToGuest={() => setMode('guest')} onClose={() => setMode('guest')} />
             </Suspense>
           </motion.div>
         )}

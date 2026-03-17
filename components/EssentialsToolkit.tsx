@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-    Train, Car, Footprints, MessageCircle, HeartHandshake, 
-    ShieldCheck, Phone, AlertCircle, Info, Map as MapIcon, 
+import {
+    Train, Car, Footprints, MessageCircle, HeartHandshake,
+    ShieldCheck, Phone, AlertCircle, Info, Map as MapIcon,
     Languages, BookOpen, Briefcase, Check, Sun, Zap, FileText, Sparkles, Printer, ArrowLeft, Clock,
     Square, HelpCircle, GripHorizontal, ArrowRight, Filter
 } from 'lucide-react';
+import { safeStorage } from '../utils/storage';
 import { LanguageHelper } from './LanguageHelper';
 import { EtiquetteGuide } from './EtiquetteGuide';
 import { HubView } from './HubLayout';
@@ -74,7 +75,7 @@ const PACKING_LIST = [
     },
     {
         category: 'Toiletries',
-        icon: Sparkles, 
+        icon: Sparkles,
         color: 'text-purple-500',
         bg: 'bg-purple-500/10',
         items: [
@@ -202,7 +203,7 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
 
     useEffect(() => {
         // Mark guide as seen when component mounts
-        localStorage.setItem('guide_seen', 'true');
+        safeStorage.setItem('guide_seen', 'true');
     }, []);
 
     const toggleItem = (item: string) => {
@@ -276,8 +277,8 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
                 <h2 className="font-serif text-3xl text-med-blue dark:text-white leading-none whitespace-nowrap">
                     Voyageurs <span className="italic text-med-terracotta">Guide</span>
                 </h2>
-                
-                <SegmentedControl 
+
+                <SegmentedControl
                     items={[
                         { id: 'guides', label: 'Insights', icon: BookOpen },
                         { id: 'mobility', label: 'Mobility', icon: MapIcon },
@@ -298,7 +299,7 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
                             {TRANSIT_OPTIONS.map((opt, idx) => (
                                 <div key={idx} className="bg-white dark:bg-gray-900 rounded-[2.5rem] p-8 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all group relative overflow-hidden flex flex-col h-full">
                                     <div className={`absolute top-0 right-0 w-32 h-32 opacity-5 rounded-bl-[100px] transition-transform group-hover:scale-110 pointer-events-none ${opt.color}`} />
-                                    
+
                                     <div className="flex items-start gap-5 mb-6 relative z-10">
                                         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0 ${opt.color}`}>
                                             <opt.icon size={24} strokeWidth={1.5} />
@@ -308,11 +309,11 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
                                             <p className="text-[10px] font-bold uppercase tracking-widest text-med-terracotta">{opt.subtitle}</p>
                                         </div>
                                     </div>
-                                    
+
                                     <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-8 flex-grow relative z-10">
                                         {opt.desc}
                                     </p>
-                                    
+
                                     <div className="mt-auto bg-gray-50 dark:bg-gray-800/50 p-5 rounded-2xl border border-gray-100 dark:border-gray-700/50 flex gap-3 relative z-10">
                                         <AlertCircle size={18} className="text-med-blue shrink-0 mt-0.5" />
                                         <p className="text-xs text-med-blue dark:text-blue-200 font-medium italic leading-relaxed">
@@ -331,14 +332,14 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
                             {/* Left Column: Context */}
                             <div className="lg:w-1/3">
                                 <div className="lg:sticky lg:top-4 bg-med-blue text-white p-10 rounded-[2.5rem] relative overflow-hidden shadow-xl">
-                                     {/* Decorative BG */}
-                                     <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
-                                     <div className="absolute bottom-0 left-0 w-32 h-32 bg-med-terracotta/20 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
-                                     
-                                     <div className="relative z-10">
+                                    {/* Decorative BG */}
+                                    <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+                                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-med-terracotta/20 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
+
+                                    <div className="relative z-10">
                                         <span className="text-med-terracotta font-bold uppercase tracking-[0.2em] text-[10px] block mb-4">Preparation</span>
-                                        <h3 className="font-serif text-4xl mb-6 leading-none">Travel<br/><span className="italic text-white/50">Ready</span></h3>
-                                        
+                                        <h3 className="font-serif text-4xl mb-6 leading-none">Travel<br /><span className="italic text-white/50">Ready</span></h3>
+
                                         <p className="text-blue-100/80 text-sm leading-relaxed mb-8 font-medium">
                                             Montpellier in September is warm but breezy. Pack for sunny days and cooler evenings. Don't forget the power adapter.
                                         </p>
@@ -354,14 +355,14 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
                                                 </p>
                                             </div>
 
-                                            <button 
+                                            <button
                                                 onClick={handlePrintPackingList}
                                                 className="w-full py-4 bg-white text-med-blue rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] shadow-lg hover:bg-med-terracotta hover:text-white transition-all flex items-center justify-center gap-3 active:scale-95"
                                             >
                                                 <Printer size={16} /> Print Checklist
                                             </button>
                                         </div>
-                                     </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -380,23 +381,21 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
                                                 {group.items.map((item, i) => {
                                                     const isChecked = checkedItems.has(item);
                                                     return (
-                                                        <li 
-                                                            key={i} 
-                                                            className="flex items-start gap-3 group cursor-pointer select-none" 
+                                                        <li
+                                                            key={i}
+                                                            className="flex items-start gap-3 group cursor-pointer select-none"
                                                             onClick={() => toggleItem(item)}
                                                         >
-                                                            <div className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-300 ${
-                                                                isChecked 
-                                                                ? 'bg-med-olive border-med-olive text-white' 
-                                                                : 'border-gray-300 dark:border-gray-600 bg-transparent text-transparent group-hover:border-med-blue'
-                                                            }`}>
+                                                            <div className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-300 ${isChecked
+                                                                    ? 'bg-med-olive border-med-olive text-white'
+                                                                    : 'border-gray-300 dark:border-gray-600 bg-transparent text-transparent group-hover:border-med-blue'
+                                                                }`}>
                                                                 <Check size={12} strokeWidth={3} className={`transform transition-transform ${isChecked ? 'scale-100' : 'scale-0'}`} />
                                                             </div>
-                                                            <span className={`text-sm font-medium transition-colors duration-300 ${
-                                                                isChecked 
-                                                                ? 'text-gray-400 line-through decoration-gray-300 dark:decoration-gray-700' 
-                                                                : 'text-gray-600 dark:text-gray-300 group-hover:text-med-blue dark:group-hover:text-white'
-                                                            }`}>
+                                                            <span className={`text-sm font-medium transition-colors duration-300 ${isChecked
+                                                                    ? 'text-gray-400 line-through decoration-gray-300 dark:decoration-gray-700'
+                                                                    : 'text-gray-600 dark:text-gray-300 group-hover:text-med-blue dark:group-hover:text-white'
+                                                                }`}>
                                                                 {item}
                                                             </span>
                                                         </li>
@@ -418,8 +417,8 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
                                 <div className="h-80 relative">
                                     <img src={selectedPost.image} className="w-full h-full object-cover" alt={selectedPost.title} />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                                    
-                                    <button 
+
+                                    <button
                                         onClick={() => setSelectedPost(null)}
                                         className="absolute top-6 left-6 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white p-3 rounded-full transition-all group"
                                     >
@@ -449,11 +448,10 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
                                         <button
                                             key={cat}
                                             onClick={() => setGuideFilter(cat)}
-                                            className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${
-                                                guideFilter === cat 
-                                                ? 'bg-med-blue text-white border-med-blue shadow-md' 
-                                                : 'bg-white dark:bg-gray-800 text-gray-500 border-gray-200 dark:border-gray-700 hover:border-med-blue/30'
-                                            }`}
+                                            className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${guideFilter === cat
+                                                    ? 'bg-med-blue text-white border-med-blue shadow-md'
+                                                    : 'bg-white dark:bg-gray-800 text-gray-500 border-gray-200 dark:border-gray-700 hover:border-med-blue/30'
+                                                }`}
                                         >
                                             {cat}
                                         </button>
@@ -462,23 +460,23 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {filteredPosts.map((post, index) => (
-                                        <article 
+                                        <article
                                             key={post.id}
                                             onClick={() => setSelectedPost(post)}
                                             className={`group relative flex flex-col bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm transition-all hover:shadow-xl cursor-pointer hover:-translate-y-1 duration-500 ${index === 0 && guideFilter === 'All' ? 'md:col-span-2 lg:col-span-2' : ''}`}
                                             style={{ animationDelay: `${index * 100}ms` }}
                                         >
                                             <div className={`relative overflow-hidden ${index === 0 && guideFilter === 'All' ? 'aspect-[2/1]' : 'aspect-[4/3]'}`}>
-                                                <img 
-                                                    src={post.image} 
-                                                    className="object-cover w-full h-full transition-transform duration-1000 group-hover:scale-105" 
-                                                    alt={post.title} 
+                                                <img
+                                                    src={post.image}
+                                                    className="object-cover w-full h-full transition-transform duration-1000 group-hover:scale-105"
+                                                    alt={post.title}
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
                                                 <div className="absolute top-4 left-4 bg-white/90 dark:bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest text-med-blue dark:text-white shadow-sm">
                                                     {post.category}
                                                 </div>
-                                                
+
                                                 {/* Hero Title Overlay */}
                                                 {(index === 0 && guideFilter === 'All') && (
                                                     <div className="absolute bottom-6 left-6 right-6 text-white">

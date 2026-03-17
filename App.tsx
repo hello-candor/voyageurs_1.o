@@ -5,6 +5,7 @@ import { ArrowUp, Lock, Loader2, EyeOff } from 'lucide-react';
 import { useUser } from './context/UserContext';
 import { useAuth } from './context/AuthContext';
 import { useAppConfig } from './context/AppConfigContext';
+import { safeStorage } from './utils/storage';
 import { notificationService } from './services/notificationService';
 import { OSContainer } from './components/OSContainer';
 import { Button } from './components/Button';
@@ -28,7 +29,7 @@ const App = () => {
   const { user, isVerified, isProfileOpen, toggleProfile, loading: userLoading } = useUser();
   const { isHost, isLoading: authLoading } = useAuth();
   const { config } = useAppConfig();
-  
+
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
@@ -38,8 +39,8 @@ const App = () => {
 
   // Determine if this is the initial host setup
   useEffect(() => {
-    if (isHost && config.appName === 'Voyageurs' && !localStorage.getItem('trip_initialized')) {
-        setIsSettingUp(true);
+    if (isHost && config.appName === 'Voyageurs' && !safeStorage.getItem('trip_initialized')) {
+      setIsSettingUp(true);
     }
   }, [isHost, config.appName]);
 
@@ -62,32 +63,32 @@ const App = () => {
     if (isSettingUp) {
       return (
         <Suspense fallback={<LoadingScreen />}>
-          <HostOnboarding onComplete={() => { setIsSettingUp(false); localStorage.setItem('trip_initialized', 'true'); }} />
+          <HostOnboarding onComplete={() => { setIsSettingUp(false); safeStorage.setItem('trip_initialized', 'true'); }} />
         </Suspense>
       );
     }
-    
+
     if (isGuestPreview) {
-        return (
-             <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden relative transition-colors duration-300">
-                <Suspense fallback={<LoadingScreen />}>
-                    <OSContainer initialMode={'guest'} />
-                </Suspense>
-                <InstallPrompt />
-                <Suspense fallback={null}>
-                    <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
-                </Suspense>
-            </div>
-        );
+      return (
+        <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden relative transition-colors duration-300">
+          <Suspense fallback={<LoadingScreen />}>
+            <OSContainer initialMode={'guest'} />
+          </Suspense>
+          <InstallPrompt />
+          <Suspense fallback={null}>
+            <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
+          </Suspense>
+        </div>
+      );
     }
 
     return (
-        <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden transition-colors duration-300">
-            <Suspense fallback={<LoadingScreen />}>
-                <HostAdmin isOpen={true} onSwitchToGuest={() => setIsGuestPreview(true)} />
-            </Suspense>
-            <InstallPrompt />
-        </div>
+      <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden transition-colors duration-300">
+        <Suspense fallback={<LoadingScreen />}>
+          <HostAdmin isOpen={true} onSwitchToGuest={() => setIsGuestPreview(true)} />
+        </Suspense>
+        <InstallPrompt />
+      </div>
     );
   }
 
@@ -95,13 +96,13 @@ const App = () => {
   if (user && user.hasCompletedOnboarding && user.status !== 'Declined') {
     return (
       <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden transition-colors duration-300">
-          <Suspense fallback={<LoadingScreen />}>
-            <OSContainer initialMode={'guest'} />
-          </Suspense>
-          <InstallPrompt />
-          <Suspense fallback={null}>
-             <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
-          </Suspense>
+        <Suspense fallback={<LoadingScreen />}>
+          <OSContainer initialMode={'guest'} />
+        </Suspense>
+        <InstallPrompt />
+        <Suspense fallback={null}>
+          <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
+        </Suspense>
       </div>
     );
   }
@@ -124,7 +125,7 @@ const App = () => {
           </Suspense>
         )}
       </main>
-      
+
 
       {/* Scroll-to-top button */}
       <button onClick={scrollToTop} className={`fixed z-[130] p-3 rounded-full bg-white/90 dark:bg-gray-800/90 text-med-blue shadow-xl transition-all duration-500 bottom-28 right-4 lg:bottom-10 lg:right-10 ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>
@@ -134,9 +135,9 @@ const App = () => {
       {/* Modals and Overlays */}
       <Suspense fallback={null}>
         {showAdmin && (
-            <div className="fixed inset-0 z-[500] bg-background animate-in fade-in duration-300">
-                <HostAdmin onSwitchToGuest={() => setShowAdmin(false)} onClose={() => setShowAdmin(false)} />
-            </div>
+          <div className="fixed inset-0 z-[500] bg-background animate-in fade-in duration-300">
+            <HostAdmin onSwitchToGuest={() => setShowAdmin(false)} onClose={() => setShowAdmin(false)} />
+          </div>
         )}
         <PrivacyPolicyModal isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />
         <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
