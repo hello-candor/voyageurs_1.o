@@ -1,123 +1,147 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Voyageurs... for Better Group Travel</title>
-    <!-- PWA Settings -->
-    <link rel="manifest" href="./manifest.json" />
-    <meta name="theme-color" content="#1E4472" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Voyageurs" />
-    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=V&background=1E4472&color=fff&size=180&rounded=true&bold=true" />
-    
-    <!-- Favicon -->
-    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%231E4472"/><text x="50" y="70" font-family="serif" font-size="55" fill="%23F5F2EB" text-anchor="middle" font-weight="bold">V</text></svg>' type="image/svg+xml">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    
-    <!-- Google Identity Services -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <script>
-      // Polyfill process.env for browser environment
-      window.process = {
-        env: {
-          NODE_ENV: 'production',
-          // API Key availability handled externally
-          API_KEY: ''
-        }
-      };
-    </script>
-    <script>
-  if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-</script>
-    <script>
-  tailwind.config = {
-    // This is the critical line for manual toggling
-    darkMode: 'class', 
-    theme: {
-      extend: {
-        colors: {
-          med: {
-            blue: 'var(--color-primary)',       /* #1E4472 */
-            lightBlue: 'var(--color-primary-light)', /* #AEC0D8 */
-            sand: 'var(--color-bg)',            /* #F5F2EB */
-            terracotta: 'var(--color-accent)',  /* #D67252 */
-            olive: 'var(--color-success)',      /* #8A9A5B */
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Voyageurs... for Better Group Travel</title>
+  <!-- PWA Settings -->
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#1E4472" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Voyageurs" />
+  <link rel="apple-touch-icon"
+    href="https://ui-avatars.com/api/?name=V&background=1E4472&color=fff&size=180&rounded=true&bold=true" />
+
+  <!-- Favicon -->
+  <link rel="icon"
+    href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%231E4472"/><text x="50" y="70" font-family="serif" font-size="55" fill="%23F5F2EB" text-anchor="middle" font-weight="bold">V</text></svg>'
+    type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <script>
+    // Polyfill process.env for browser environment
+    window.process = {
+      env: {
+        NODE_ENV: 'production',
+        // API Key availability handled externally
+        API_KEY: ''
+      }
+    };
+  </script>
+  <script>
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+  <script>
+    tailwind.config = {
+      // This is the critical line for manual toggling
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            med: {
+              blue: 'var(--color-primary)',       /* #1E4472 */
+              lightBlue: 'var(--color-primary-light)', /* #AEC0D8 */
+              sand: 'var(--color-bg)',            /* #F5F2EB */
+              terracotta: 'var(--color-accent)',  /* #D67252 */
+              olive: 'var(--color-success)',      /* #8A9A5B */
+            }
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Montserrat"', 'sans-serif'],
           }
-        },
-        fontFamily: {
-          serif: ['"Cormorant Garamond"', 'serif'],
-          sans: ['"Montserrat"', 'sans-serif'],
         }
       }
     }
-  }
-</script>
-    <style>
-      :root {
-        --color-primary: #1E4472;
-        --color-primary-light: #AEC0D8;
-        --color-bg: #F5F2EB;
-        --color-accent: #D67252;
-        --color-success: #8A9A5B;
+  </script>
+  <style>
+    :root {
+      --color-primary: #1E4472;
+      --color-primary-light: #AEC0D8;
+      --color-bg: #F5F2EB;
+      --color-accent: #D67252;
+      --color-success: #8A9A5B;
+    }
+
+    .dark {
+      --color-primary: #AEC0D8;
+      --color-bg: #111827;
+      /* Deep dark background */
+    }
+
+    html {
+      scroll-padding-top: 100px;
+    }
+
+    body {
+      background-color: var(--color-bg) !important;
+      color: var(--color-primary);
+      transition: background-color 0.3s ease;
+    }
+
+    .scroll-smooth {
+      scroll-behavior: smooth;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Leaflet overrides */
+    .leaflet-container {
+      width: 100%;
+      height: 100%;
+      background-color: #f0f0f0;
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 12px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .leaflet-popup-content {
+      margin: 0;
+    }
+
+    @keyframes subtle-pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
       }
-      .dark {
-    --color-primary: #AEC0D8;
-    --color-bg: #111827; /* Deep dark background */
-  }
-      html {
-        scroll-padding-top: 100px;
+
+      50% {
+        transform: scale(1.1);
       }
-      body {
-        background-color: var(--color-bg);
-        color: var(--color-primary);
-        overscroll-behavior-y: none;
-        padding-bottom: env(safe-area-inset-bottom);
-        transition: background-color 0.3s ease;
-      }
-      .scroll-smooth {
-        scroll-behavior: smooth;
-      }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
-      }
-      .scrollbar-hide {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-      /* Leaflet overrides */
-      .leaflet-container {
-        width: 100%;
-        height: 100%;
-        background-color: #f0f0f0;
-      }
-      .leaflet-popup-content-wrapper {
-        border-radius: 12px;
-        padding: 0;
-        overflow: hidden;
-      }
-      .leaflet-popup-content {
-        margin: 0;
-      }
-      @keyframes subtle-pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-      }
-      .animate-subtle-pulse {
-        animation: subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      }
-    </style>
+    }
+
+    .animate-subtle-pulse {
+      animation: subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -141,8 +165,10 @@
 }
 </script>
 </head>
-  <body class="scroll-smooth antialiased transition-colors duration-300">
-    <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
-  </body>
+
+<body class="scroll-smooth antialiased transition-colors duration-300">
+  <div id="root"></div>
+  <script type="module" src="./index.tsx"></script>
+</body>
+
 </html>
