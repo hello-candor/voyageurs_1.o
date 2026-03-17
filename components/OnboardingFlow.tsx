@@ -11,6 +11,28 @@ import { debounce } from 'lodash';
 
 const GOOGLE_CLIENT_ID = "436751288359-kg1n1timqtrdr1damc19fertgocs8paf.apps.googleusercontent.com";
 
+export const HostOnboarding: React.FC<HostOnboardingProps> = ({ onComplete }) => {
+    const { loginHostWithGoogle, logoutHost, firebaseUser, isLoading: authLoading } = useAuth();
+    // ... existing state ...
+
+    const handleGoogleLogin = () => {
+        try {
+            if (!(window as any).google) return;
+
+            (window as any).google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                use_fedcm_for_prompt: false,
+                callback: async (response: any) => {
+                    await loginHostWithGoogle(response.credential);
+                }
+            });
+            (window as any).google.accounts.id.prompt();
+        } catch (err) {
+            console.error("Google Sign-In failed to initialize", err);
+        }
+    };
+    
+    // ...
 type Step = 'welcome' | 'preferences' | 'identity';
 
 interface Suggestion {
@@ -235,6 +257,12 @@ export const OnboardingFlow: React.FC = () => {
                         <Button onClick={() => setCurrentStep('preferences')} size="lg" fullWidth>
                             Start Journey <ArrowRight size={16} className="ml-2" />
                         </Button>
+                        <button 
+                            onClick={logoutHost} 
+                            className="mt-6 text-slate-500 hover:text-white text-xs underline"
+                        >
+                            Cancel and Return to Home
+                        </button>
                     </div>
                 </div>
             </div>
@@ -356,11 +384,11 @@ export const OnboardingFlow: React.FC = () => {
                         <Button
                             onClick={handleGoogleLogin}
                             variant="secondary"
-                            fullWidth
-                            isLoading={isAuthLoading}
+                            size="lg"
+                            isLoading={AuthLoading}
                             loadingText="Connecting..."
                         >
-                            Continue with Google
+                            <Globe size={16} className="mr-2"/> Sign in with Google
                         </Button>
                         <div className="relative flex items-center justify-center py-2">
                             <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100 dark:border-gray-800"></div></div>
