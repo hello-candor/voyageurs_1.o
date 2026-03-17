@@ -412,15 +412,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSharedExpenses([]);
         setCoordinatedGroups([]);
         // Clear all guest-related storage
-        safeStorage.clearAppStorage([
-            'guest_user',
-            'is_verified',
-            'rsvp_status',
-            'host_session',
-            'local_guests',
-            'shared_expenses',
-            'coordinated_groups'
-        ]);
+        safeStorage.clearAppStorage();
+        
         setIsProfileOpen(false);
     }, []);
 
