@@ -1,15 +1,23 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '../context/UserContext';
 import { useTripPlanner } from '../context/TripPlannerContext';
 import { useNotification } from '../context/NotificationContext';
 import { User, Mail, Users, ShieldCheck, Globe, Loader2, MapPin, Calendar, ArrowRight, Plane, Sparkles, Check } from 'lucide-react';
 import { isValidEmail, isValidName } from '../utils/validation';
 import { Button } from './Button';
+import { debounce } from 'lodash';
 
 const GOOGLE_CLIENT_ID = "436751288359-kg1n1timqtrdr1damc19fertgocs8paf.apps.googleusercontent.com";
 
 type Step = 'welcome' | 'preferences' | 'identity';
+
+interface Suggestion {
+  airport_name: string;
+  iata_code: string;
+  city_name: string;
+  country_name: string;
+}
 
 export const OnboardingFlow: React.FC = () => {
   const { user, login, loginWithGoogle, submitRSVP, completeOnboarding, updateTravelDetails } = useUser();
@@ -35,6 +43,44 @@ export const OnboardingFlow: React.FC = () => {
       email: user?.email || '',
       publicRegistry: user?.privacy?.publicRegistry ?? true
   });
+
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const fetchSuggestions = async (query: string) => {
+    if (query.length < 3) {
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/places?query=${query}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setSuggestions(data.data || []);
+      setShowSuggestions(true);
+    } catch (error) {
+      console.error("Failed to fetch suggestions:", error);
+      setSuggestions([]);
+    }
+  };
+
+  const debouncedFetch = useCallback(debounce(fetchSuggestions, 300), []);
+
+  const handleOriginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPreferences({ ...preferences, origin: value });
+    debouncedFetch(value);
+  };
+
+  const handleSuggestionClick = (suggestion: Suggestion) => {
+    const formattedLocation = `${suggestion.city_name}, ${suggestion.country_name} (${suggestion.iata_code})`;
+    setPreferences({ ...preferences, origin: formattedLocation });
+    setSuggestions([]);
+    setShowSuggestions(false);
+  };
 
   useEffect(() => {
     if (user) {
@@ -209,7 +255,7 @@ export const OnboardingFlow: React.FC = () => {
                   </div>
 
                   {/* Origin */}
-                  <div className="space-y-2 group">
+                  <div className="space-y-2 group relative">
                       <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2 group-focus-within:text-med-blue transition-colors">
                           <Plane size={12} /> Flying From
                       </label>
@@ -217,10 +263,25 @@ export const OnboardingFlow: React.FC = () => {
                           type="text" 
                           placeholder="City or Airport (e.g. JFK)" 
                           value={preferences.origin} 
-                          onChange={(e) => setPreferences({ ...preferences, origin: e.target.value })} 
+                          onChange={handleOriginChange} 
                           className="w-full p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 outline-none focus:border-med-blue focus:ring-4 focus:ring-med-blue/10 transition-all dark:text-white font-medium" 
                           autoFocus
                       />
+                      {showSuggestions && suggestions.length > 0 && (
+                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg">
+                          <ul>
+                            {suggestions.map((suggestion, index) => (
+                              <li 
+                                key={index}
+                                onClick={() => handleSuggestionClick(suggestion)}
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                              >
+                                {suggestion.airport_name} ({suggestion.iata_code}) - {suggestion.city_name}, {suggestion.country_name}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                   </div>
 
                   {/* Dates */}
