@@ -55,27 +55,8 @@ export const safeStorage = {
           }
         });
       } else {
-        // Clear all voyageur-related keys
-        const keysToDelete = [
-          'voyageur_trips',
-          'voyageur_active_trip',
-          'local_guests',
-          'guest_user',
-          'is_verified',
-          'rsvp_status',
-          'host_session',
-          'shared_expenses',
-          'coordinated_groups',
-          'trip_planner_items',
-          'trip_planner_travelers',
-          'trip_planner_days',
-          'host_tour_seen',
-          'tour_seen',
-          'guide_seen',
-          'trip_initialized'
-        ];
-
-        keysToDelete.forEach(key => {
+       // Clear all app-related keys by iterating over localStorage
+        Object.keys(window.localStorage).forEach(key => {
           if (!PERSISTENT_KEYS.includes(key)) {
             window.localStorage.removeItem(key);
           }
