@@ -19,8 +19,8 @@ const MarketingPage = React.lazy(() => import('./components/MarketingPage').then
 const HostOnboarding = React.lazy(() => import('./components/HostOnboarding').then(m => ({ default: m.HostOnboarding })));
 
 const LoadingScreen = () => (
-  <div className="fixed inset-0 bg-med-blue flex items-center justify-center z-[9999]">
-    <Loader2 className="w-10 h-10 text-white animate-spin" />
+  <div className="fixed inset-0 bg-background flex items-center justify-center z-[9999]">
+    <Loader2 className="w-10 h-10 text-primary animate-spin" />
   </div>
 );
 
@@ -69,7 +69,7 @@ const App = () => {
     
     if (isGuestPreview) {
         return (
-             <div className="min-h-[100dvh] bg-med-sand dark:bg-slate-900 selection:bg-med-terracotta/30 overflow-hidden relative">
+             <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden relative transition-colors duration-300">
                 <Suspense fallback={<LoadingScreen />}>
                     <OSContainer initialMode={'guest'} />
                 </Suspense>
@@ -82,7 +82,7 @@ const App = () => {
     }
 
     return (
-        <div className="min-h-[100dvh] bg-slate-900 selection:bg-med-terracotta/30 overflow-hidden">
+        <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden transition-colors duration-300">
             <Suspense fallback={<LoadingScreen />}>
                 <HostAdmin isOpen={true} onSwitchToGuest={() => setIsGuestPreview(true)} />
             </Suspense>
@@ -94,7 +94,7 @@ const App = () => {
   // SCENARIO 2: GUEST LOGGED IN (verified, has profile)
   if (user && user.hasCompletedOnboarding && user.status !== 'Declined') {
     return (
-      <div className="min-h-[100dvh] bg-med-sand dark:bg-slate-900 selection:bg-med-terracotta/30 overflow-hidden">
+      <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden transition-colors duration-300">
           <Suspense fallback={<LoadingScreen />}>
             <OSContainer initialMode={'guest'} />
           </Suspense>
@@ -110,7 +110,7 @@ const App = () => {
   const showGuestOnboarding = isVerified || (user && user.status !== 'Declined');
 
   return (
-    <div className="min-h-screen font-sans selection:bg-med-terracotta/30 dark:bg-slate-900 transition-colors duration-300 flex flex-col overflow-x-hidden">
+    <div className="min-h-screen font-sans selection:bg-med-terracotta/30 bg-background transition-colors duration-300 flex flex-col overflow-x-hidden">
       <main id="main-content" className="flex-1 w-full">
         {showGuestOnboarding ? (
           // Guest Hub is triggered for onboarding or profile view
@@ -134,7 +134,7 @@ const App = () => {
       {/* Modals and Overlays */}
       <Suspense fallback={null}>
         {showAdmin && (
-            <div className="fixed inset-0 z-[500] bg-slate-900 animate-in fade-in duration-300">
+            <div className="fixed inset-0 z-[500] bg-background animate-in fade-in duration-300">
                 <HostAdmin onSwitchToGuest={() => setShowAdmin(false)} onClose={() => setShowAdmin(false)} />
             </div>
         )}

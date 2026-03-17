@@ -266,7 +266,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
   // App Content Renderer
   const renderAppContent = (view: HubView, props?: any) => {
     switch (view) {
-      case 'overview': return <div className="p-8 text-center">Journal View</div>; 
+      case 'overview': return <div className="p-8 text-center text-primary">Journal View</div>; 
       case 'rsvp': return <HubRSVP onComplete={() => launchApp('logistics')} />;
       case 'messages': return <ChatSystem onNavigate={(v) => launchApp(v)} />;
       case 'calendar': return <WithPadding><SeptemberCalendar onOpenMap={() => launchApp('map')} /></WithPadding>;
@@ -302,7 +302,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
   const isFullScreenActive = !!fullScreenStackId && !isOverviewMode;
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-slate-900 font-sans select-none">
+    <div className="relative h-full w-full overflow-hidden bg-background font-sans select-none transition-colors duration-300">
       
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div 
@@ -310,10 +310,10 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
             style={{ 
                 backgroundImage: "url('https://images.unsplash.com/photo-1512403913063-e380f68288ce?q=80&w=1920&auto=format&fit=crop')", 
                 transform: isOverviewMode || stacks.length === 0 ? 'scale(1.1)' : 'scale(1.0) blur(20px)',
-                opacity: 0.6
+                opacity: theme === 'dark' ? 0.6 : 0.4
             }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-med-blue/60 via-slate-900/80 to-black/90" />
+        <div className={`absolute inset-0 transition-colors duration-700 ${theme === 'dark' ? 'bg-gradient-to-br from-med-blue/60 via-slate-900/80 to-black/90' : 'bg-white/20'}`} />
       </div>
 
       <div 
@@ -336,14 +336,14 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
       <div className={`fixed top-0 left-0 right-0 h-12 flex items-center justify-between px-4 md:px-6 z-[110] transition-all duration-700 pointer-events-none ${isFullScreenActive ? 'opacity-0 -translate-y-full' : 'opacity-100'}`}>
         <div className="flex items-center gap-4 text-white/90 pointer-events-auto">
             <div className="flex flex-col">
-                <span className="font-serif italic text-xl md:text-2xl leading-none block drop-shadow-md">{config.appName}</span>
-                <span className="text-[9px] uppercase tracking-[0.2em] opacity-70 font-sans hidden md:block">{config.destination}</span>
+                <span className={`font-serif italic text-xl md:text-2xl leading-none block drop-shadow-md ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{config.appName}</span>
+                <span className={`text-[9px] uppercase tracking-[0.2em] opacity-70 font-sans hidden md:block ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{config.destination}</span>
             </div>
         </div>
         
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center pointer-events-auto">
           {config.enableAI && (
-              <button id="hub-search-btn" onClick={() => setIsSearchOpen(true)} className="flex items-center gap-3 text-white/70 hover:text-white transition-all bg-white/5 hover:bg-white/10 px-4 md:px-6 py-1.5 rounded-full border border-white/10 hover:border-white/30 backdrop-blur-2xl shadow-2xl active:scale-95 group">
+              <button id="hub-search-btn" onClick={() => setIsSearchOpen(true)} className={`flex items-center gap-3 transition-all px-4 md:px-6 py-1.5 rounded-full border backdrop-blur-2xl shadow-2xl active:scale-95 group ${theme === 'light' ? 'bg-white/80 text-med-blue border-med-blue/20' : 'bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:border-white/30'}`}>
                 <Search size={16} className="group-hover:scale-110 transition-transform text-med-terracotta" />
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] hidden md:block">Ask Céleste</span>
               </button>
@@ -370,7 +370,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                 onClick={() => setIsNotificationCenterOpen(!isNotificationCenterOpen)}
                 className={`
                     p-2 rounded-full transition-all duration-300 relative
-                    ${isNotificationCenterOpen ? 'bg-white/10 text-white' : 'text-white/60 hover:text-white hover:bg-white/5'}
+                    ${isNotificationCenterOpen ? 'bg-white/10 text-white' : (theme === 'light' ? 'text-med-blue/60 hover:text-med-blue hover:bg-med-blue/5' : 'text-white/60 hover:text-white hover:bg-white/5')}
                 `}
                 title="Notifications"
               >
@@ -398,53 +398,53 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
               </button>
 
               {isUserMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 w-64 bg-slate-900/95 backdrop-blur-3xl rounded-3xl p-6 shadow-2xl border border-white/10 animate-in fade-in slide-in-from-top-2 duration-200 z-[120] overflow-hidden">
-                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                <div className={`absolute top-full right-0 mt-2 w-64 backdrop-blur-3xl rounded-3xl p-6 shadow-2xl border animate-in fade-in slide-in-from-top-2 duration-200 z-[120] overflow-hidden ${theme === 'light' ? 'bg-white/95 border-gray-200' : 'bg-slate-900/95 border-white/10'}`}>
+                    <div className={`flex items-center gap-3 mb-6 pb-4 border-b ${theme === 'light' ? 'border-gray-100' : 'border-white/10'}`}>
                         <div className="w-10 h-10 rounded-full bg-med-blue flex items-center justify-center text-white shrink-0">
                             <span className="font-serif font-bold text-lg">{user?.name?.charAt(0)}</span>
                         </div>
                         <div className="min-w-0">
-                            <p className="text-sm font-bold text-white truncate">{user?.name}</p>
-                            <p className="text-[10px] text-white/50 truncate">{user?.email}</p>
+                            <p className={`text-sm font-bold truncate ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{user?.name}</p>
+                            <p className={`text-[10px] truncate ${theme === 'light' ? 'text-gray-500' : 'text-white/50'}`}>{user?.email}</p>
                         </div>
                     </div>
                     <div className="space-y-2">
                         <button 
                             onClick={() => { launchApp('profile'); setIsUserMenuOpen(false); }}
-                            className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 text-white/80 hover:text-white transition-colors text-left"
+                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${theme === 'light' ? 'hover:bg-gray-100 text-gray-700 hover:text-med-blue' : 'hover:bg-white/10 text-white/80 hover:text-white'}`}
                         >
                             <UserCircle size={18} />
                             <span className="text-xs font-bold uppercase tracking-wider">My Profile</span>
                         </button>
                         <button 
                             onClick={() => { launchApp('faq'); setIsUserMenuOpen(false); }}
-                            className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 text-white/80 hover:text-white transition-colors text-left"
+                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${theme === 'light' ? 'hover:bg-gray-100 text-gray-700 hover:text-med-blue' : 'hover:bg-white/10 text-white/80 hover:text-white'}`}
                         >
                             <HelpCircle size={18} />
                             <span className="text-xs font-bold uppercase tracking-wider">Help & FAQ</span>
                         </button>
                         <button 
                             onClick={toggleTheme}
-                            className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+                            className={`w-full flex items-center justify-between p-3 rounded-xl transition-colors ${theme === 'light' ? 'hover:bg-gray-100 text-gray-700 hover:text-med-blue' : 'hover:bg-white/10 text-white/80 hover:text-white'}`}
                         >
                             <div className="flex items-center gap-3">
                                 {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                                 <span className="text-xs font-bold uppercase tracking-wider">Theme</span>
                             </div>
-                            <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded text-white/60">
+                            <span className={`text-[10px] px-2 py-0.5 rounded ${theme === 'light' ? 'bg-gray-200 text-gray-600' : 'bg-white/20 text-white/60'}`}>
                                 {theme === 'dark' ? 'Light' : 'Dark'}
                             </span>
                         </button>
                         {user?.isAdmin && (
                              <button 
                                 onClick={() => { setIsUserMenuOpen(false); onSwitchToHost(); }}
-                                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 text-white/80 hover:text-white transition-colors text-left"
+                                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${theme === 'light' ? 'hover:bg-gray-100 text-gray-700 hover:text-med-blue' : 'hover:bg-white/10 text-white/80 hover:text-white'}`}
                             >
                                 <Lock size={18} />
                                 <span className="text-xs font-bold uppercase tracking-wider">Host Admin</span>
                             </button>
                         )}
-                        <div className="h-px bg-white/10 my-2" />
+                        <div className={`h-px my-2 ${theme === 'light' ? 'bg-gray-100' : 'bg-white/10'}`} />
                         <button 
                             onClick={() => { logout(); setIsUserMenuOpen(false); }}
                             className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors text-left"

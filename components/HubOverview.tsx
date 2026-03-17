@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useUser } from '../context/UserContext';
 import { useTripPlanner } from '../context/TripPlannerContext';
 import { useAppConfig } from '../context/AppConfigContext';
+import { useTheme } from '../context/ThemeContext';
 import { 
     Sparkles, Compass, ArrowRight, Calendar, Check,
     MapPin, PenTool, Users, Ticket, Binoculars
@@ -23,6 +24,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
   const { user } = useUser();
   const { config } = useAppConfig();
   const { items } = useTripPlanner();
+  const { theme } = useTheme();
   const [timeLeft, setTimeLeft] = useState<{d: number, h: number} | null>(null);
   const [previewStepId, setPreviewStepId] = useState<number | null>(null);
 
@@ -143,7 +145,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
           badgeStyle = "bg-med-olive/20 text-med-olive border-med-olive/20";
       } else if (actualCurrentStep && displayedStep.id > actualCurrentStep.id) {
           badgeLabel = "Upcoming";
-          badgeStyle = "bg-blue-500/20 text-blue-300 border-blue-500/20";
+          badgeStyle = theme === 'dark' ? "bg-blue-500/20 text-blue-300 border-blue-500/20" : "bg-blue-100 text-blue-600 border-blue-200";
       }
   }
 
@@ -161,7 +163,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
   if (!user || !displayedStep) return null;
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center p-6 md:p-12 text-white overflow-y-auto scrollbar-hide">
+    <div className="w-full h-full flex flex-col justify-center items-center p-6 md:p-12 text-primary overflow-y-auto scrollbar-hide">
         
         {/* Main Dashboard Container */}
         <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-center py-20">
@@ -169,26 +171,26 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
             {/* 1. Welcome / Status / Stepper Widget */}
             <div className="col-span-1 lg:col-span-2 space-y-8">
                 <div>
-                    <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl mb-2 drop-shadow-lg">
+                    <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl mb-2 drop-shadow-lg text-primary">
                         Bonjour, <span className="italic text-med-terracotta">{user.name.split(' ')[0]}</span>
                     </h1>
-                    <p className="text-lg md:text-xl text-blue-100/80 font-light drop-shadow-md">
+                    <p className={`text-lg md:text-xl font-light drop-shadow-md ${theme === 'light' ? 'text-med-blue/80' : 'text-blue-100/80'}`}>
                         {timeLeft ? `${timeLeft.d} days until Montpellier.` : "Welcome to the Celebration."}
                     </p>
                 </div>
 
                 {/* JOURNEY STEPPER WIDGET */}
-                <div className="group relative overflow-hidden bg-black/40 hover:bg-black/50 backdrop-blur-xl border border-white/20 p-6 md:p-8 rounded-[2rem] shadow-2xl animate-in slide-in-from-bottom-4 duration-700 transition-all">
+                <div className={`group relative overflow-hidden backdrop-blur-xl border p-6 md:p-8 rounded-[2rem] shadow-2xl animate-in slide-in-from-bottom-4 duration-700 transition-all ${theme === 'light' ? 'bg-white/60 border-med-blue/10' : 'bg-black/40 border-white/20 hover:bg-black/50'}`}>
                     
                     {/* Background Layers */}
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522582324369-2dfc36bd9275?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-1000 ease-out" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522582324369-2dfc36bd9275?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center opacity-10 group-hover:scale-105 transition-transform duration-1000 ease-out" />
+                    <div className={`absolute inset-0 bg-gradient-to-t transition-colors ${theme === 'light' ? 'from-white/40 via-transparent to-transparent' : 'from-black via-transparent to-transparent opacity-80'}`} />
 
                     <div className="relative z-10">
                         {/* Horizontal Progress Bar */}
                         <div className="relative flex justify-between items-center mb-8 px-2">
                             {/* Connecting Line */}
-                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-0.5 bg-white/10 -z-10 rounded-full"></div>
+                            <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-full h-0.5 -z-10 rounded-full ${theme === 'light' ? 'bg-med-blue/10' : 'bg-white/10'}`}></div>
                             <div 
                                 className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-med-olive -z-10 transition-all duration-1000 ease-out rounded-full"
                                 style={{ width: `${(Math.max(0, activeStepIndex === -1 ? 4 : activeStepIndex) / 4) * 100}%` }}
@@ -212,9 +214,9 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                                                     ? 'bg-med-olive border-med-olive text-white' 
                                                     : isActualActive 
                                                         ? 'bg-med-terracotta border-med-terracotta text-white shadow-lg shadow-med-terracotta/40' 
-                                                        : 'bg-black/40 border-white/20 text-white/40'
+                                                        : (theme === 'light' ? 'bg-white border-med-blue/20 text-med-blue/40' : 'bg-black/40 border-white/20 text-white/40')
                                                 }
-                                                ${isSelected ? 'scale-125 ring-2 ring-white ring-offset-2 ring-offset-transparent' : 'scale-90 hover:scale-100'}
+                                                ${isSelected ? 'scale-125 ring-2 ring-med-terracotta ring-offset-2 ring-offset-transparent' : 'scale-90 hover:scale-100'}
                                             `}
                                         >
                                             {isPast ? <Check size={16} strokeWidth={4} /> : <step.icon size={16} />}
@@ -223,7 +225,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                                         <span 
                                             className={`
                                                 absolute top-full mt-2 text-[9px] font-bold uppercase tracking-widest whitespace-nowrap transition-all duration-300
-                                                ${isSelected ? 'text-white opacity-100 translate-y-0' : 'text-white/40 opacity-0 group-hover/step:opacity-100 translate-y-1 group-hover/step:translate-y-0'}
+                                                ${isSelected ? 'text-primary opacity-100 translate-y-0' : 'text-primary/40 opacity-0 group-hover/step:opacity-100 translate-y-1 group-hover/step:translate-y-0'}
                                             `}
                                         >
                                             Step {step.id}
@@ -234,9 +236,9 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                         </div>
 
                         {/* Active Step Details */}
-                        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between border-t border-white/10 pt-6">
+                        <div className={`flex flex-col md:flex-row gap-6 items-start md:items-center justify-between border-t pt-6 ${theme === 'light' ? 'border-med-blue/10' : 'border-white/10'}`}>
                             <div>
-                                <h3 className="text-2xl font-serif font-bold mb-1 flex flex-wrap items-center gap-3">
+                                <h3 className="text-2xl font-serif font-bold mb-1 flex flex-wrap items-center gap-3 text-primary">
                                     {showAllSetView ? "You're All Set!" : displayedStep.longLabel}
                                     {showAllSetView ? (
                                         <span className="px-2 py-0.5 bg-med-olive/20 text-med-olive rounded text-[9px] font-sans font-bold uppercase tracking-widest border border-med-olive/20 flex items-center gap-1">
@@ -248,7 +250,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                                         </span>
                                     )}
                                 </h3>
-                                <p className="text-sm text-blue-100/70 max-w-md leading-relaxed">
+                                <p className={`text-sm max-w-md leading-relaxed ${theme === 'light' ? 'text-gray-600' : 'text-blue-100/70'}`}>
                                     {showAllSetView ? "Your itinerary is crafted and your spot is saved. See you in Montpellier." : displayedStep.desc}
                                 </p>
                             </div>
@@ -270,26 +272,26 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                 {/* Official Agenda Widget */}
                 <div 
                     onClick={() => onTabChange('calendar')}
-                    className="group relative overflow-hidden bg-black/40 hover:bg-black/50 backdrop-blur-md border border-white/10 p-6 rounded-[2rem] shadow-xl cursor-pointer transition-all duration-500"
+                    className={`group relative overflow-hidden backdrop-blur-md border p-6 rounded-[2rem] shadow-xl cursor-pointer transition-all duration-500 ${theme === 'light' ? 'bg-white/60 border-med-blue/10' : 'bg-black/40 border-white/10 hover:bg-black/50'}`}
                 >
                     {/* Background Layers */}
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1514525253440-b393452e8d26?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-30 group-hover:scale-110 transition-transform duration-1000 ease-out" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1514525253440-b393452e8d26?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-20 group-hover:scale-110 transition-transform duration-1000 ease-out" />
+                    <div className={`absolute inset-0 bg-gradient-to-t transition-colors ${theme === 'light' ? 'from-white/40 via-transparent to-transparent' : 'from-black via-transparent to-transparent opacity-80'}`} />
 
                     <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-5 border-b border-white/10 pb-3">
+                        <div className={`flex items-center justify-between mb-5 border-b pb-3 ${theme === 'light' ? 'border-med-blue/10' : 'border-white/10'}`}>
                             <div className="flex items-center gap-2 text-med-terracotta">
                                 <Calendar size={16} />
                                 <span className="text-[10px] font-bold uppercase tracking-widest">Official Agenda</span>
                             </div>
-                            <ArrowRight size={14} className="text-white/40 group-hover:text-white transition-colors" />
+                            <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/40' : 'text-white/40'} group-hover:text-primary transition-colors`} />
                         </div>
                         
                         <div className="flex justify-between gap-3">
                             {officialDays.map((day) => (
-                                <div key={day.date} className="flex-1 flex flex-col items-center bg-white/10 rounded-2xl py-4 border border-white/10 group-hover:border-white/20 transition-colors backdrop-blur-sm">
-                                    <span className="block text-[9px] font-bold uppercase text-white/60 leading-none mb-1.5">{day.dayName}</span>
-                                    <span className="block text-2xl font-serif text-white leading-none">{day.dayNum}</span>
+                                <div key={day.date} className={`flex-1 flex flex-col items-center rounded-2xl py-4 border transition-colors backdrop-blur-sm ${theme === 'light' ? 'bg-med-blue/5 border-med-blue/10 group-hover:border-med-blue/20' : 'bg-white/10 border-white/10 group-hover:border-white/20'}`}>
+                                    <span className={`block text-[9px] font-bold uppercase leading-none mb-1.5 ${theme === 'light' ? 'text-med-blue/60' : 'text-white/60'}`}>{day.dayName}</span>
+                                    <span className={`block text-2xl font-serif leading-none ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{day.dayNum}</span>
                                 </div>
                             ))}
                         </div>
@@ -299,21 +301,21 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                 {/* Destination Highlight Card */}
                 <div 
                     onClick={() => onTabChange('guide')}
-                    className="group bg-black/40 hover:bg-black/50 backdrop-blur-md border border-white/10 p-6 rounded-[2rem] shadow-xl cursor-pointer transition-all duration-500 relative overflow-hidden"
+                    className={`group backdrop-blur-md border p-6 rounded-[2rem] shadow-xl cursor-pointer transition-all duration-500 relative overflow-hidden ${theme === 'light' ? 'bg-white/60 border-med-blue/10' : 'bg-black/40 border-white/10 hover:bg-black/50'}`}
                 >
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1587574293340-e0011c4e8ecf?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center opacity-40 group-hover:scale-110 transition-transform duration-1000 ease-out" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1587574293340-e0011c4e8ecf?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center opacity-20 group-hover:scale-110 transition-transform duration-1000 ease-out" />
+                    <div className={`absolute inset-0 bg-gradient-to-t transition-colors ${theme === 'light' ? 'from-white/40 via-transparent to-transparent' : 'from-black via-transparent to-transparent opacity-80'}`} />
                     
                     <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-5 border-b border-white/10 pb-3">
+                        <div className={`flex items-center justify-between mb-5 border-b pb-3 ${theme === 'light' ? 'border-med-blue/10' : 'border-white/10'}`}>
                             <div className="flex items-center gap-2 text-med-terracotta">
                                 <MapPin size={16} />
                                 <span className="text-[10px] font-bold uppercase tracking-widest">Your Destination</span>
                             </div>
-                            <ArrowRight size={14} className="text-white/40 group-hover:text-white transition-colors" />
+                            <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/40' : 'text-white/40'} group-hover:text-primary transition-colors`} />
                         </div>
-                        <h3 className="font-serif text-2xl leading-tight text-white mb-2">Montpellier</h3>
-                        <p className="text-xs text-white/70 leading-relaxed line-clamp-2">
+                        <h3 className="font-serif text-2xl leading-tight text-primary mb-2">Montpellier</h3>
+                        <p className={`text-xs leading-relaxed line-clamp-2 ${theme === 'light' ? 'text-gray-600' : 'text-white/70'}`}>
                             Discover the medieval streets, hidden courtyards, and why they call it "The Gifted One".
                         </p>
                     </div>

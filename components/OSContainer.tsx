@@ -9,8 +9,8 @@ interface OSContainerProps {
 }
 
 const LoadingScreen = () => (
-    <div className="absolute inset-0 bg-slate-900 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-white animate-spin"/>
+    <div className="absolute inset-0 bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-primary animate-spin"/>
     </div>
 );
 
@@ -28,7 +28,7 @@ export const OSContainer: React.FC<OSContainerProps> = ({ initialMode = 'guest' 
   };
 
   return (
-    <div className="fixed inset-0 bg-black overflow-hidden font-sans z-[100]">
+    <div className="fixed inset-0 bg-background overflow-hidden font-sans z-[100] transition-colors duration-300">
       <AnimatePresence initial={false} mode="wait">
         {mode === 'guest' ? (
           <motion.div

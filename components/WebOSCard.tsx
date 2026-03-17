@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, PanInfo } from 'framer-motion';
 import { X, Minus, Maximize2, Minimize2 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface WebOSCardProps {
   id: string;
@@ -36,6 +37,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
 }) => {
   const [isDismissing, setIsDismissing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const { theme } = useTheme();
   
   // Is this the card at the top of its stack?
   const isTopCard = stackIndex === stackSize - 1;
@@ -70,7 +72,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
     : (isActive && isTopCard ? 100 : 0);
   
   // Brightness/Blur: De-emphasize inactive/occluded cards
-  const targetBrightness = (isOverview && !isActive) ? 0.6 : (isOverview && !isTopCard) ? 0.8 : 1;
+  const targetBrightness = (isOverview && !isActive) ? (theme === 'dark' ? 0.6 : 0.9) : (isOverview && !isTopCard) ? 0.8 : 1;
   const targetBlur = (isOverview && !isActive) ? 'blur(4px)' : 'none';
 
   // --- Interaction Rules ---
@@ -139,39 +141,40 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
       `}
     >
         <div className={`
-            w-full h-full flex flex-col overflow-hidden bg-white dark:bg-gray-900 
-            shadow-2xl transition-all duration-300 relative
+            w-full h-full flex flex-col overflow-hidden shadow-2xl transition-all duration-300 relative
+            ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-slate-900 border-white/5'}
             ${isOverview ? 'rounded-[2.5rem] ring-2 ring-white/10' : isFullScreen ? 'rounded-none' : 'rounded-none md:rounded-[2rem]'}
         `}>
             {/* Header Bar */}
             <div className={`
-                h-14 shrink-0 flex items-center justify-between px-6 bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 relative z-20 select-none
+                h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-xl border-b relative z-20 select-none
+                ${theme === 'light' ? 'bg-gray-50/90 border-gray-200' : 'bg-gray-800/90 border-gray-700'}
                 ${isOverview ? 'pointer-events-none' : ''}
             `}>
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">{title}</span>
+                    <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>{title}</span>
                 </div>
                 
                 {!isOverview && (
                     <div className="flex items-center gap-1">
                         <button 
                             onClick={(e) => { e.stopPropagation(); onMinimize(); }}
-                            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-500 rounded-full transition-colors"
+                            className={`p-2 rounded-full transition-colors ${theme === 'light' ? 'hover:bg-gray-200 text-gray-400 hover:text-gray-500' : 'hover:bg-gray-700 text-gray-400 hover:text-gray-500'}`}
                             title="Minimize"
                         >
                             <Minus size={18} />
                         </button>
                         <button 
                             onClick={(e) => { e.stopPropagation(); onToggleFullScreen(); }}
-                            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-500 rounded-full transition-colors"
+                            className={`p-2 rounded-full transition-colors ${theme === 'light' ? 'hover:bg-gray-200 text-gray-400 hover:text-gray-500' : 'hover:bg-gray-700 text-gray-400 hover:text-gray-500'}`}
                             title={isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
                         >
                             {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
                         </button>
                         <button 
                             onClick={(e) => { e.stopPropagation(); handleClose(); }}
-                            className="p-2 hover:bg-red-100 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 rounded-full transition-colors"
+                            className={`p-2 rounded-full transition-colors ${theme === 'light' ? 'hover:bg-red-100 text-gray-400 hover:text-red-500' : 'hover:bg-red-900/20 text-gray-400 hover:text-red-500'}`}
                             title="Close"
                         >
                             <X size={18} />
@@ -181,7 +184,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
             </div>
 
             {/* Content Mask */}
-            <div className={`flex-1 relative overflow-hidden bg-med-sand dark:bg-gray-950 ${isOverview ? 'pointer-events-none' : ''}`}>
+            <div className={`flex-1 relative overflow-hidden ${isOverview ? 'pointer-events-none' : ''} ${theme === 'light' ? 'bg-background' : 'bg-gray-950'}`}>
                 <div className="w-full h-full overflow-y-auto scrollbar-hide">
                     {children}
                 </div>
@@ -197,8 +200,8 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
                     transition={{ delay: 0.2 }}
                     className="absolute -bottom-16 left-0 right-0 text-center pointer-events-none"
                 >
-                    <span className="text-white text-sm font-bold uppercase tracking-widest shadow-black drop-shadow-md">{title}</span>
-                    {stackSize > 1 && <p className="text-white/60 text-[10px] uppercase tracking-wider mt-1">{stackSize} Cards</p>}
+                    <span className={`text-sm font-bold uppercase tracking-widest drop-shadow-md ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{title}</span>
+                    {stackSize > 1 && <p className={`text-[10px] uppercase tracking-wider mt-1 ${theme === 'light' ? 'text-med-blue/60' : 'text-white/60'}`}>{stackSize} Cards</p>}
                 </motion.div>
             )}
         </div>
