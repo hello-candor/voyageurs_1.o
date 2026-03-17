@@ -7,13 +7,14 @@ import { auth } from '../firebaseConfig';
 
 interface AuthContextType {
   isHost: boolean;
-  firebaseUser: User | null; // Expose Firebase user state
+  firebaseUser: User | null;
   isLoading: boolean;
   error: string | null;
   loginHost: (password: string) => Promise<boolean>;
-  loginHostWithGoogle: () => Promise<void>;
+  loginHostWithGoogle: (credential: string) => Promise<void>;
   signupHost: (email: string, password: string) => Promise<void>;
   logoutHost: () => Promise<void>;
+  verifyGuestCode: (code: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,19 +22,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isHost, setIsHost] = useState(false);
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Start with loading true
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Unified session check
   useEffect(() => {
-    // 1. Check for Firebase auth state change
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setFirebaseUser(user);
       if (user) {
         setIsHost(true);
         safeStorage.setItem('host_session', 'active_firebase');
       } else {
-        // 2. If no Firebase user, check for legacy session
         const legacySession = safeStorage.getItem('host_session');
         if (legacySession === 'active') {
           setIsHost(true);
@@ -44,7 +42,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       setIsLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -69,14 +66,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
   
-  const loginHostWithGoogle = useCallback(async () => {
+  const loginHostWithGoogle = useCallback(async (credential: string) => {
     setIsLoading(true);
     setError(null);
     try {
-      const user = await authService.loginWithGoogle();
-      if (user) {
-        // State will be updated by onAuthStateChanged listener
-      } else {
+      const user = await authService.loginWithGoogle(credential);
+      if (!user) {
         setError('Google Sign-In was cancelled.');
       }
     } catch (err) {
@@ -90,7 +85,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     setError(null);
     try {
-      // This can be enhanced to use Firebase email/password creation
       await authService.createHostAccount(email, password);
       setIsHost(true);
       safeStorage.setItem('host_session', 'active');
@@ -103,10 +97,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logoutHost = useCallback(async () => {
     setIsLoading(true);
-    await authService.logout(); // Universal logout
-    // State updates will be handled by onAuthStateChanged
+    await authService.logout();
     safeStorage.removeItem('host_session');
     setIsLoading(false);
+  }, []);
+
+  const verifyGuestCode = useCallback(async (code: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+        const isValid = await authService.verifyGuestCode(code);
+        if (!isValid) {
+            setError('Invalid guest code.');
+        }
+        return isValid;
+    } catch (err) {
+        setError('Guest verification failed.');
+        return false;
+    } finally {
+        setIsLoading(false);
+    }
   }, []);
 
   const value = useMemo(() => ({
@@ -117,8 +127,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loginHost,
     loginHostWithGoogle,
     signupHost,
-    logoutHost
-  }), [isHost, firebaseUser, isLoading, error, loginHost, loginHostWithGoogle, signupHost, logoutHost]);
+    logoutHost,
+    verifyGuestCode
+  }), [isHost, firebaseUser, isLoading, error, loginHost, loginHostWithGoogle, signupHost, logoutHost, verifyGuestCode]);
 
   return (
     <AuthContext.Provider value={value}>

@@ -1,18 +1,14 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { Hero } from './components/Hero';
-import { MontpellierInfo } from './components/MontpellierInfo';
-import { Navigation } from './components/Navigation';
-import { TheCelebration } from './components/TheCelebration';
-import { Gallery } from './components/Gallery';
 import { InstallPrompt } from './components/InstallPrompt';
-import { ArrowUp, Lock, Loader2 } from 'lucide-react';
+import { ArrowUp, Lock, Loader2, EyeOff } from 'lucide-react';
 import { useUser } from './context/UserContext';
 import { useAuth } from './context/AuthContext';
 import { useAppConfig } from './context/AppConfigContext';
 import { notificationService } from './services/notificationService';
-import { ThemeInjector } from './components/ThemeInjector';
 import { OSContainer } from './components/OSContainer';
+import { Button } from './components/Button';
+import './styles/global.css';
 
 // Lazy load heavy components
 const TravelHub = React.lazy(() => import('./components/TravelHub').then(m => ({ default: m.TravelHub })));
@@ -38,6 +34,7 @@ const App = () => {
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [isSettingUp, setIsSettingUp] = useState(false);
+  const [isGuestPreview, setIsGuestPreview] = useState(false);
 
   // Determine if this is the initial host setup
   useEffect(() => {
@@ -69,11 +66,25 @@ const App = () => {
         </Suspense>
       );
     }
+    
+    if (isGuestPreview) {
+        return (
+             <div className="min-h-[100dvh] bg-med-sand dark:bg-slate-900 selection:bg-med-terracotta/30 overflow-hidden relative">
+                <Suspense fallback={<LoadingScreen />}>
+                    <OSContainer initialMode={'guest'} />
+                </Suspense>
+                <InstallPrompt />
+                <Suspense fallback={null}>
+                    <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
+                </Suspense>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-[100dvh] bg-slate-900 selection:bg-med-terracotta/30 overflow-hidden">
-            <ThemeInjector />
             <Suspense fallback={<LoadingScreen />}>
-                <HostAdmin isOpen={true} />
+                <HostAdmin isOpen={true} onSwitchToGuest={() => setIsGuestPreview(true)} />
             </Suspense>
             <InstallPrompt />
         </div>
@@ -84,7 +95,6 @@ const App = () => {
   if (user && user.hasCompletedOnboarding && user.status !== 'Declined') {
     return (
       <div className="min-h-[100dvh] bg-med-sand dark:bg-slate-900 selection:bg-med-terracotta/30 overflow-hidden">
-          <ThemeInjector />
           <Suspense fallback={<LoadingScreen />}>
             <OSContainer initialMode={'guest'} />
           </Suspense>
@@ -101,8 +111,6 @@ const App = () => {
 
   return (
     <div className="min-h-screen font-sans selection:bg-med-terracotta/30 dark:bg-slate-900 transition-colors duration-300 flex flex-col overflow-x-hidden">
-      <ThemeInjector />
-      {!showGuestOnboarding && <Navigation />} 
       <main id="main-content" className="flex-1 w-full">
         {showGuestOnboarding ? (
           // Guest Hub is triggered for onboarding or profile view
@@ -111,30 +119,12 @@ const App = () => {
           </Suspense>
         ) : (
           // Standard public marketing page content
-          <>
-            <Hero />
-            <MontpellierInfo />
-            <TheCelebration />
-            <Gallery />
-          </>
+          <Suspense fallback={<LoadingScreen />}>
+            <MarketingPage />
+          </Suspense>
         )}
       </main>
       
-      {/* Footer is visible on the public page */}
-      {!showGuestOnboarding && (
-          <footer className="bg-slate-900 py-20 border-t border-white/5 relative z-10">
-            <div className="w-full max-w-xl mx-auto flex flex-col items-center justify-center text-center px-6 space-y-5">
-                <div className="flex items-center justify-center gap-8 text-[13px] font-medium text-slate-400">
-                    <button onClick={() => setShowPrivacy(true)} className="hover:text-white transition-colors">Privacy Policy</button>
-                    <button onClick={() => setShowTerms(true)} className="hover:text-white transition-colors">Terms of Service</button>
-                    <button onClick={() => setShowAdmin(true)} className="hover:text-white transition-colors flex items-center gap-1.5 opacity-60 hover:opacity-100">
-                      <Lock size={12} className="mb-0.5" /> Host Login
-                    </button>
-                </div>
-                <p className="text-[13px] text-slate-500 font-medium">© 2026 Candor Digital Group. All rights reserved.</p>
-            </div>
-          </footer>
-      )}
 
       {/* Scroll-to-top button */}
       <button onClick={scrollToTop} className={`fixed z-[130] p-3 rounded-full bg-white/90 dark:bg-gray-800/90 text-med-blue shadow-xl transition-all duration-500 bottom-28 right-4 lg:bottom-10 lg:right-10 ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>

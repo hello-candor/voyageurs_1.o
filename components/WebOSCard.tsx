@@ -84,8 +84,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
     setIsDragging(false);
     // "Throw" up to close
     if (isDraggable && (info.velocity.y < -500 || info.offset.y < -200)) {
-      setIsDismissing(true);
-      setTimeout(onClose, 300); // Allow animation to play
+      handleClose();
     }
   };
 
@@ -95,6 +94,12 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
           onFocus();
       }
   };
+  
+  const handleClose = () => {
+      if(isDismissing) return;
+      setIsDismissing(true);
+      setTimeout(onClose, 300); // Allow animation to play
+  }
 
   return (
     <motion.div
@@ -140,7 +145,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
         `}>
             {/* Header Bar */}
             <div className={`
-                h-14 shrink-0 flex items-center justify-between px-6 bg-gray-50/90 dark:bg-gray-900/90 backdrop-blur-xl border-b border-gray-100 dark:border-gray-800 relative z-20 select-none
+                h-14 shrink-0 flex items-center justify-between px-6 bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 relative z-20 select-none
                 ${isOverview ? 'pointer-events-none' : ''}
             `}>
                 <div className="flex items-center gap-3">
@@ -152,21 +157,21 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
                     <div className="flex items-center gap-1">
                         <button 
                             onClick={(e) => { e.stopPropagation(); onMinimize(); }}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-500 rounded-full transition-colors"
+                            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-500 rounded-full transition-colors"
                             title="Minimize"
                         >
                             <Minus size={18} />
                         </button>
                         <button 
                             onClick={(e) => { e.stopPropagation(); onToggleFullScreen(); }}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-500 rounded-full transition-colors"
+                            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-500 rounded-full transition-colors"
                             title={isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
                         >
                             {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
                         </button>
                         <button 
-                            onClick={(e) => { e.stopPropagation(); onClose(); }}
-                            className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 rounded-full transition-colors"
+                            onClick={(e) => { e.stopPropagation(); handleClose(); }}
+                            className="p-2 hover:bg-red-100 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 rounded-full transition-colors"
                             title="Close"
                         >
                             <X size={18} />

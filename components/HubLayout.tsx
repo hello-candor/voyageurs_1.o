@@ -68,7 +68,7 @@ interface WindowInstance {
 }
 
 interface CardStack {
-    id: string;
+    id:string;
     cards: WindowInstance[];
 }
 
@@ -132,6 +132,12 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
       }
   }, [focusedItem]);
 
+  useEffect(() => {
+    if (stacks.length === 0 && isOverviewMode) {
+        setIsOverviewMode(false);
+    }
+  }, [stacks, isOverviewMode]);
+
   const totalAlerts = useMemo(() => {
       let count = 0;
       count += items.filter(i => i.bookingStatus === 'planned').length; // Unsaved items
@@ -192,27 +198,29 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
   }, [activeStackId]);
 
   const closeCard = useCallback((stackId: string, cardId: string) => {
-      setStacks(prev => {
-          const newStacks = prev.map(stack => {
-              if (stack.id !== stackId) return stack;
-              return {
-                  ...stack,
-                  cards: stack.cards.filter(c => c.id !== cardId)
-              };
-          }).filter(stack => stack.cards.length > 0); 
+    setStacks(prev => {
+        const newStacks = prev.map(stack => {
+            if (stack.id !== stackId) return stack;
+            return {
+                ...stack,
+                cards: stack.cards.filter(c => c.id !== cardId)
+            };
+        }).filter(stack => stack.cards.length > 0);
 
-          if (stackId === fullScreenStackId) {
+        if (stackId === fullScreenStackId) {
             setFullScreenStackId(null);
-          }
+        }
 
-          // If we closed the active stack
-          if (!newStacks.find(s => s.id === activeStackId)) {
-              if (newStacks.length > 0) setActiveStackId(newStacks[newStacks.length - 1].id);
-              else setActiveStackId(null); // Show dashboard
-          }
-          return newStacks;
-      });
-  }, [activeStackId, fullScreenStackId]);
+        if (!newStacks.find(s => s.id === activeStackId)) {
+            if (newStacks.length > 0) {
+                setActiveStackId(newStacks[newStacks.length - 1].id);
+            } else {
+                setActiveStackId(null);
+            }
+        }
+        return newStacks;
+    });
+}, [activeStackId, fullScreenStackId]);
 
   const handleMinimize = () => {
     setIsOverviewMode(true);
@@ -325,33 +333,33 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
       <WelcomeTour isOpen={isTourOpen} onClose={() => { localStorage.setItem('tour_seen', 'true'); setIsTourOpen(false); }} />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} onNavigate={(v) => launchApp(v)} />
 
-      <div className={`fixed top-0 left-0 right-0 h-16 md:h-20 flex items-center justify-between px-4 md:px-10 z-[110] transition-all duration-700 pointer-events-none ${isFullScreenActive ? 'opacity-0 -translate-y-full' : 'opacity-100'}`}>
+      <div className={`fixed top-0 left-0 right-0 h-12 flex items-center justify-between px-4 md:px-6 z-[110] transition-all duration-700 pointer-events-none ${isFullScreenActive ? 'opacity-0 -translate-y-full' : 'opacity-100'}`}>
         <div className="flex items-center gap-4 text-white/90 pointer-events-auto">
             <div className="flex flex-col">
-                <span className="font-serif italic text-2xl md:text-3xl leading-none block drop-shadow-md">{config.appName}</span>
-                <span className="text-[10px] uppercase tracking-[0.2em] opacity-70 font-sans hidden md:block">{config.destination}</span>
+                <span className="font-serif italic text-xl md:text-2xl leading-none block drop-shadow-md">{config.appName}</span>
+                <span className="text-[9px] uppercase tracking-[0.2em] opacity-70 font-sans hidden md:block">{config.destination}</span>
             </div>
         </div>
         
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center pointer-events-auto">
           {config.enableAI && (
-              <button id="hub-search-btn" onClick={() => setIsSearchOpen(true)} className="flex items-center gap-4 text-white/70 hover:text-white transition-all bg-white/5 hover:bg-white/10 px-4 md:px-8 py-2 md:py-3 rounded-full border border-white/10 hover:border-white/30 backdrop-blur-2xl shadow-2xl active:scale-95 group">
-                <Search size={18} className="group-hover:scale-110 transition-transform text-med-terracotta" />
-                <span className="text-[11px] font-bold uppercase tracking-[0.4em] hidden md:block">Ask Céleste</span>
+              <button id="hub-search-btn" onClick={() => setIsSearchOpen(true)} className="flex items-center gap-3 text-white/70 hover:text-white transition-all bg-white/5 hover:bg-white/10 px-4 md:px-6 py-1.5 rounded-full border border-white/10 hover:border-white/30 backdrop-blur-2xl shadow-2xl active:scale-95 group">
+                <Search size={16} className="group-hover:scale-110 transition-transform text-med-terracotta" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] hidden md:block">Ask Céleste</span>
               </button>
           )}
         </div>
 
-        <div className="flex items-center gap-1 md:gap-4 pointer-events-auto">
+        <div className="flex items-center gap-1 md:gap-2 pointer-events-auto">
           
           {isHost && (
             <button 
                 onClick={onSwitchToHost}
-                className="flex items-center justify-center p-2 md:px-4 md:py-2 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 backdrop-blur-md transition-all group mr-1 md:mr-0"
+                className="flex items-center justify-center p-2 md:px-3 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 backdrop-blur-md transition-all group"
                 title="Return to Host Console"
             >
-                <Lock size={16} className="md:mr-2" />
-                <span className="hidden md:inline text-[10px] font-bold uppercase tracking-widest">Admin</span>
+                <Lock size={14} className="md:mr-2" />
+                <span className="hidden md:inline text-[9px] font-bold uppercase tracking-widest">Admin</span>
             </button>
           )}
 
@@ -361,14 +369,14 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
               <button 
                 onClick={() => setIsNotificationCenterOpen(!isNotificationCenterOpen)}
                 className={`
-                    p-2 md:p-3 rounded-full transition-all duration-300 relative
+                    p-2 rounded-full transition-all duration-300 relative
                     ${isNotificationCenterOpen ? 'bg-white/10 text-white' : 'text-white/60 hover:text-white hover:bg-white/5'}
                 `}
                 title="Notifications"
               >
-                 <Bell size={20} />
+                 <Bell size={18} />
                  {totalAlerts > 0 && (
-                     <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-med-terracotta rounded-full border-2 border-slate-900/50 animate-pulse" />
+                     <span className="absolute top-1 right-1 w-2 h-2 bg-med-terracotta rounded-full border-2 border-slate-900/50 animate-pulse" />
                  )}
               </button>
               
@@ -384,13 +392,13 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
           <div className="relative" ref={userMenuRef}>
               <button 
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className={`flex items-center gap-3 p-1 rounded-2xl transition-all border ${isUserMenuOpen ? 'bg-white/10 border-white/20' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
+                className={`flex items-center gap-2 p-1 rounded-full transition-all border ${isUserMenuOpen ? 'bg-white/10 border-white/20' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
               >
-                    <img src={user?.avatar} alt="" className="w-8 h-8 md:w-9 md:h-9 rounded-xl border border-white/10 object-cover" />
+                    <img src={user?.avatar} alt="" className="w-7 h-7 rounded-md border border-white/10 object-cover" />
               </button>
 
               {isUserMenuOpen && (
-                <div className="absolute top-full right-0 mt-4 w-64 bg-slate-900/95 backdrop-blur-3xl rounded-3xl p-6 shadow-2xl border border-white/10 animate-in fade-in slide-in-from-top-2 duration-200 z-[120] overflow-hidden">
+                <div className="absolute top-full right-0 mt-2 w-64 bg-slate-900/95 backdrop-blur-3xl rounded-3xl p-6 shadow-2xl border border-white/10 animate-in fade-in slide-in-from-top-2 duration-200 z-[120] overflow-hidden">
                     <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
                         <div className="w-10 h-10 rounded-full bg-med-blue flex items-center justify-center text-white shrink-0">
                             <span className="font-serif font-bold text-lg">{user?.name?.charAt(0)}</span>
@@ -452,7 +460,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
       </div>
 
       <div className={`relative w-full h-full flex flex-col items-center justify-start z-20 pointer-events-none
-          ${isFullScreenActive ? 'pt-0 pb-0' : 'pt-20 pb-32'}
+          ${isFullScreenActive ? 'pt-0 pb-0' : 'pt-12 pb-16'}
       `}>
           {stacks.length > 1 && !isFullScreenActive && (
               <>
@@ -520,7 +528,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                                         {renderAppContent(card.view, card.props)}
                                     </Suspense>
                                 </WebOSCard>
-                            ))}"
+                            ))}
                         </div>
                     )})}
                 </AnimatePresence>
@@ -532,7 +540,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
         activeView={currentActiveView} 
         onViewChange={(v) => launchApp(v)} 
         onOpenMap={() => launchApp('map')} 
-        forceVisible={isOverviewMode || stacks.length === 0 || isFullScreenActive}
+        forceVisible={stacks.length === 0}
         onSwitchToHost={onSwitchToHost} 
         onToggleOverview={handleCenterButton}
         isOverviewOpen={isOverviewMode && stacks.length > 0}

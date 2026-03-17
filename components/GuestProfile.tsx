@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../context/UserContext';
-import { Bell, Plane, Calendar, UserCircle2, Mail, Instagram, Twitter, Facebook, Phone, Share2, DollarSign, ShieldCheck, Users, Compass, Globe, Camera, Loader2 } from 'lucide-react';
+import { Bell, Plane, Calendar, UserCircle2, Mail, Instagram, Twitter, Facebook, Phone, Share2, DollarSign, ShieldCheck, Users, Compass, Globe, Camera, Loader2, LogOut } from 'lucide-react';
 import { OnboardingFlow } from './OnboardingFlow';
 import { isValidEmail, isValidName, isValidPhone, isValidInstagram } from '../utils/validation';
 import { Button } from './Button';
@@ -215,6 +215,11 @@ export const GuestProfile: React.FC = () => {
                                 <div className="min-w-0">
                                     <h4 className="font-serif text-xl text-med-blue dark:text-white truncate">{user.name}</h4>
                                     <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Verified Voyageur</p>
+                                </div>
+                                <div className="ml-auto">
+                                    <button onClick={logout} className="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                        <LogOut size={20} className="text-gray-500" />
+                                    </button>
                                 </div>
                             </div>
 

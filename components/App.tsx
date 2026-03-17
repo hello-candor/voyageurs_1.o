@@ -14,6 +14,7 @@ import { useAppConfig } from './context/AppConfigContext';
 import { notificationService } from './services/notificationService';
 import { ThemeInjector } from './components/ThemeInjector';
 import { OSContainer } from './components/OSContainer';
+import { OnboardingFlow } from './components/OnboardingFlow';
 
 // Lazy load heavy components
 const TravelHub = React.lazy(() => import('./components/TravelHub').then(module => ({ default: module.TravelHub }))) as any;
@@ -40,12 +41,13 @@ const App = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [isSettingUp, setIsSettingUp] = useState(false);
 
-  // If host is logged in but has no trips, or specifically triggers setup
   useEffect(() => {
-    // Only check if we haven't already marked initialization complete
     const hasInitialized = localStorage.getItem('trip_initialized');
     if (isHost && !hasInitialized && allTrips.length === 1 && allTrips[0].id === 'default') {
         setIsSettingUp(true);
+    }
+    if(isHost) {
+        setShowAdmin(true);
     }
   }, [isHost, allTrips]);
 
@@ -56,7 +58,6 @@ const App = () => {
     const timer = setTimeout(requestNotifs, 5000); 
 
     const handleScroll = () => {
-      // Only attach scroll listener if not in the OS view
       if (!isHost && !(user && user.hasCompletedOnboarding)) {
         setShowScrollTop(window.scrollY > 400);
       }
@@ -73,21 +74,22 @@ const App = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
-  // CASE 0: NEW HOST ONBOARDING
   if (isHost && isSettingUp) {
       return (
           <Suspense fallback={<LoadingScreen />}>
               <HostOnboarding onComplete={() => { 
                   localStorage.setItem('trip_initialized', 'true');
                   setIsSettingUp(false);
-                  // Force a reload to ensure context state is clean for the new trip
                   window.location.reload(); 
               }} />
           </Suspense>
       );
   }
+  
+    if (isVerified && !user?.hasCompletedOnboarding) {
+        return <OnboardingFlow />;
+    }
 
-  // CASE 1: Host or Fully Onboarded Guest -> OS VIEW
   if (isHost || (user && user.hasCompletedOnboarding && user.status !== 'Declined')) {
     return (
       <div className="min-h-[100dvh] bg-med-sand dark:bg-gray-950 selection:bg-med-terracotta/30 overflow-hidden">
@@ -103,7 +105,6 @@ const App = () => {
     );
   }
 
-  // CASE 2: Verified user (code entered) -> EVENT LANDING PAGE + Onboarding Modal
   if (isVerified || (user && user.status !== 'Declined')) {
      return (
         <div className="min-h-screen font-sans selection:bg-med-terracotta/30 dark:bg-gray-900 transition-colors duration-300 flex flex-col overflow-x-hidden">
@@ -172,12 +173,13 @@ const App = () => {
       );
   }
 
-  // CASE 3: ANONYMOUS USER -> MARKETING PAGE
   return (
     <Suspense fallback={<LoadingScreen />}>
         <ThemeInjector />
         <MarketingPage 
-            onHostLogin={() => setShowAdmin(true)} 
+            onHostLoginSuccess={() => {
+                setShowAdmin(true);
+            }} 
         />
         {showAdmin && (
             <div className="fixed inset-0 z-[500] bg-slate-950 animate-in fade-in duration-300">

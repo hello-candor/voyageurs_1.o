@@ -10,6 +10,7 @@ import { HubView } from './HubLayout';
 import { useUser } from '../context/UserContext';
 import { useChat } from '../context/ChatContext';
 import { useAppConfig } from '../context/AppConfigContext';
+import { useTheme } from '../context/ThemeContext';
 
 interface FloatingHubNavProps {
   activeView: HubView;
@@ -90,42 +91,46 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
   const { user } = useUser();
   const { unreadTotal } = useChat();
   const { config } = useAppConfig();
+  const { theme } = useTheme();
 
-  // Reactive visibility for forced states (e.g. Dashboard)
+  // Handle dock visibility
   useEffect(() => {
-      if (forceVisible) {
-          setIsVisible(true);
-      }
-  }, [forceVisible]);
-
-  // Mouse proximity logic for Desktop
-  useEffect(() => {
-    // On touch devices, we rely on the swipe gesture, not proximity
     const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
     if (isTouch) {
-        setIsVisible(!!forceVisible);
-        return;
+      // On touch devices, visibility is based on forceVisible prop
+      setIsVisible(!!forceVisible);
+      return; // No mouse listener needed
     }
 
+    // --- Desktop logic ---
     const handleMouseMove = (e: MouseEvent) => {
-        if (rafRef.current) return;
-        rafRef.current = requestAnimationFrame(() => {
-            const threshold = 100; 
-            const distanceToBottom = window.innerHeight - e.clientY;
-            // If mouse is near bottom, or a stack is open, or it's forced (Dashboard)
-            if (distanceToBottom < threshold || activeStack || forceVisible) {
-                setIsVisible(true);
-            } else {
-                setIsVisible(false);
-            }
-            rafRef.current = null;
-        });
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        const threshold = 100;
+        const distanceToBottom = window.innerHeight - e.clientY;
+
+        if (distanceToBottom < threshold || activeStack || forceVisible) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+        rafRef.current = null;
+      });
     };
 
+    // Set initial state based on props and add listener
+    if (forceVisible || activeStack) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+
     window.addEventListener('mousemove', handleMouseMove);
+
     return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [forceVisible, activeStack]);
 
@@ -201,8 +206,13 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
         <div className="fixed bottom-2 left-0 right-0 z-[130] flex justify-center pb-safe pointer-events-none group">
             <motion.div 
                 id="webos-home-pill"
-                className="relative w-36 h-2 md:w-48 md:h-2.5 bg-white/20 hover:bg-white/40 active:bg-white rounded-full cursor-pointer pointer-events-auto backdrop-blur-2xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] border border-white/10 transition-all duration-300 overflow-hidden"
-                whileTap={{ scale: 0.95, backgroundColor: "rgba(255,255,255,0.9)" }}
+                className={`relative w-20 h-1 md:w-28 md:h-1.5 rounded-full cursor-pointer pointer-events-auto backdrop-blur-2xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] border transition-all duration-300 overflow-hidden
+                    ${theme === 'light' 
+                        ? 'bg-black/10 hover:bg-black/20 active:bg-black/30 border-black/10' 
+                        : 'bg-white/20 hover:bg-white/40 active:bg-white border-white/10'
+                    }
+                `}
+                whileTap={{ scale: 0.95, backgroundColor: theme === 'light' ? "rgba(0,0,0,0.3)" : "rgba(255,255,255,0.9)" }}
                 whileHover={{ scale: 1.05 }}
                 drag="y"
                 dragConstraints={{ top: 0, bottom: 0 }}
@@ -213,7 +223,7 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
             >
                 {/* Flowing Trace Animation */}
                 <motion.div 
-                    className="absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-12"
+                    className={`absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-12 ${theme === 'light' ? 'via-black/20' : 'via-white/50'}`}
                     initial={{ x: '-150%' }}
                     animate={{ x: '350%' }}
                     transition={{ 
@@ -241,7 +251,6 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                     const isOpen = activeStack === cat.id;
                     if (!cat.children) return null;
 
-                    // Filter enabled children
                     const enabledChildren = cat.children.filter(id => isModuleEnabled(id));
                     if (enabledChildren.length === 0) return null;
 
@@ -266,19 +275,22 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                         key={appId}
                                         onClick={() => handleAppClick(appId)}
                                         className={`
-                                            group flex items-center gap-3 p-1 pr-4 rounded-full backdrop-blur-xl border shadow-xl transition-all duration-300 text-left
-                                            ${isActive ? 'bg-white/10 border-white/20' : 'bg-gray-900/90 border-white/10 hover:bg-gray-800'}
+                                            group flex items-center gap-4 p-1.5 pr-5 rounded-full backdrop-blur-xl border shadow-xl transition-all duration-300 text-left
+                                            ${theme === 'light' 
+                                                ? `border-black/10 ${isActive ? 'bg-black/5' : 'bg-white/90 hover:bg-gray-200'}`
+                                                : `border-white/10 ${isActive ? 'bg-white/10' : 'bg-gray-900/90 hover:bg-gray-800'}`
+                                            }
                                         `}
                                         style={{ transitionDelay: `${idx * 50}ms` }}
                                     >
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${app.color} text-white shadow-lg ${app.glow} shrink-0`}>
-                                            <app.icon size={18} />
+                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${app.color} text-white shadow-lg ${app.glow} shrink-0`}>
+                                            <app.icon size={24} />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap leading-none">
+                                            <span className={`text-sm font-bold uppercase tracking-wider whitespace-nowrap leading-none ${theme === 'light' ? 'text-black' : 'text-white'}`}>
                                                 {app.label}
                                             </span>
-                                            <span className="text-[9px] text-gray-400 font-medium whitespace-nowrap leading-none mt-1">
+                                            <span className={`text-xs font-medium whitespace-nowrap leading-none mt-1.5 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                                                 {app.description}
                                             </span>
                                         </div>
@@ -291,21 +303,20 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
 
                 {/* MAIN DOCK */}
                 <div className="pointer-events-auto flex items-center gap-4">
-                    
-                    <nav className="bg-gray-900/80 backdrop-blur-2xl border border-white/10 p-3 rounded-[3.5rem] shadow-2xl flex items-end gap-2 md:gap-3 ring-1 ring-black/50">
-                        
+                    <nav className={`backdrop-blur-2xl border p-1.5 rounded-[2.5rem] shadow-2xl flex items-end gap-3 md:gap-4 ring-1
+                        ${theme === 'light' 
+                            ? 'bg-white/80 border-black/10 ring-black/5' 
+                            : 'bg-gray-900/80 border-white/10 ring-black/50'
+                        }
+                    `}>
                         {NAV_CATEGORIES.map((cat) => {
                             const isChildActive = cat.children?.includes(activeView as string);
                             const isTargetActive = cat.target === activeView;
                             const isActive = (isChildActive || isTargetActive || activeStack === cat.id) && !isOverviewOpen;
                             const isHovered = hoveredCategory === cat.id;
                             
-                            if (cat.children) {
-                                const enabledCount = cat.children.filter(id => isModuleEnabled(id)).length;
-                                if (enabledCount === 0) return null;
-                            } else if (cat.target && !isModuleEnabled(cat.target)) {
-                                return null;
-                            }
+                            if (cat.children && cat.children.filter(id => isModuleEnabled(id)).length === 0) return null;
+                            if (cat.target && !isModuleEnabled(cat.target)) return null;
 
                             return (
                                 <button
@@ -314,41 +325,45 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                     onMouseEnter={() => setHoveredCategory(cat.id)}
                                     onMouseLeave={() => setHoveredCategory(null)}
                                     className={`
-                                        group flex flex-col items-center justify-end gap-2
-                                        min-w-[68px] md:min-w-[80px] 
-                                        pb-3 pt-3
-                                        rounded-[2.5rem] transition-all duration-300 relative
-                                        ${isActive ? 'bg-white/10' : 'hover:bg-white/5'}
+                                        group flex flex-col items-center justify-end gap-1.5
+                                        min-w-[37px] md:min-w-[47px] 
+                                        pb-1.5 pt-1.5
+                                        rounded-[1.25rem] transition-all duration-300 relative
+                                        ${isActive 
+                                            ? (theme === 'light' ? 'bg-black/10' : 'bg-white/10')
+                                            : (theme === 'light' ? 'hover:bg-black/5' : 'hover:bg-white/5')
+                                        }
                                     `}
                                 >
-                                    {/* Tooltip */}
                                     {isHovered && !activeStack && (
-                                        <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-gray-900 text-white text-[10px] font-bold rounded-lg shadow-xl border border-white/10 whitespace-nowrap pointer-events-none animate-in fade-in slide-in-from-bottom-1 z-50">
+                                        <div className={`absolute bottom-full mb-3 left-1/2 -translate-x-1/2 px-3 py-1.5 text-[10px] font-bold rounded-lg shadow-xl border whitespace-nowrap pointer-events-none animate-in fade-in slide-in-from-bottom-1 z-50
+                                            ${theme === 'light' ? 'bg-white text-black border-black/10' : 'bg-gray-900 text-white border-white/10'}
+                                        `}>
                                             {cat.description}
-                                            <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900" />
+                                            <div className={`absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent ${theme === 'light' ? 'border-t-white' : 'border-t-gray-900'}`} />
                                         </div>
                                     )}
 
                                     <div className={`
-                                        w-10 h-10 md:w-11 md:h-11 rounded-2xl flex items-center justify-center transition-all duration-500 relative
+                                        w-5 h-5 md:w-7 md:h-7 rounded-lg flex items-center justify-center transition-all duration-500 relative
                                         ${isActive 
-                                            ? `bg-white text-med-blue shadow-lg -translate-y-2 scale-110` 
-                                            : `bg-gray-800 ${cat.color} group-hover:bg-gray-700 group-hover:scale-105 group-active:scale-95`
+                                            ? `shadow-lg -translate-y-2 scale-110 ${theme === 'light' ? 'bg-med-blue text-white' : 'bg-white text-med-blue'}`
+                                            : `group-hover:scale-105 group-active:scale-95 ${theme === 'light' ? 'bg-gray-200 text-gray-700 group-hover:bg-gray-300' : `bg-gray-800 ${cat.color} group-hover:bg-gray-700`}`
                                         }
                                     `}>
                                         <cat.icon 
-                                            size={isActive ? 22 : 20} 
+                                            size={isActive ? 16 : 13} 
                                             strokeWidth={isActive ? 2.5 : 2} 
                                             className="transition-all duration-300"
                                         />
                                         {isActive && (
-                                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full shadow-[0_0_8px_white] opacity-80" />
+                                            <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${theme === 'light' ? 'bg-med-blue shadow-[0_0_8px_#3B82F6]' : 'bg-white shadow-[0_0_8px_white]'}`} />
                                         )}
                                         {getCategoryBadge(cat.id, cat.children)}
                                     </div>
                                     <span className={`
-                                        text-[9px] md:text-[10px] font-bold uppercase tracking-wider leading-none transition-all duration-300
-                                        ${isActive ? 'text-white translate-y-0' : 'text-gray-400 group-hover:text-gray-200'}
+                                        text-[8px] md:text-[9px] font-bold uppercase tracking-wider leading-none transition-all duration-300
+                                        ${isActive ? (theme === 'light' ? 'text-black' : 'text-white') : (theme === 'light' ? 'text-gray-600 group-hover:text-black' : 'text-gray-400 group-hover:text-gray-200')}
                                     `}>
                                         {cat.label}
                                     </span>

@@ -677,7 +677,7 @@ export const HostAdmin: React.FC<HostAdminProps> = ({ onSwitchToGuest, isOpen, o
             <div className="flex items-center gap-3 pointer-events-auto relative">
                 <button 
                     id="host-exit-btn" 
-                    onClick={onClose} 
+                    onClick={onSwitchToGuest || onClose} 
                     className="flex items-center justify-center p-2 md:px-4 md:py-2 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 backdrop-blur-md transition-all group"
                     title="Return to Guest View"
                 >
@@ -760,7 +760,7 @@ export const HostAdmin: React.FC<HostAdminProps> = ({ onSwitchToGuest, isOpen, o
                 activeApp={isOverviewMode ? null : activeApp}
                 onLaunchApp={launchApp}
                 onClose={onClose}
-                onLogout={onSwitchToGuest || onClose}
+                onLogout={handleSignOut}
             />
         </div>
     </div>
