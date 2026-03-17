@@ -188,7 +188,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
 
                     <div className="relative z-10">
                         {/* Horizontal Progress Bar */}
-                        <div className="relative flex justify-between items-center mb-8 px-2">
+                        <div className="relative flex justify-between items-center mb-10 px-2">
                             {/* Connecting Line */}
                             <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-full h-0.5 -z-10 rounded-full ${theme === 'light' ? 'bg-med-blue/10' : 'bg-white/10'}`}></div>
                             <div 
@@ -214,7 +214,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                                                     ? 'bg-med-olive border-med-olive text-white' 
                                                     : isActualActive 
                                                         ? 'bg-med-terracotta border-med-terracotta text-white shadow-lg shadow-med-terracotta/40' 
-                                                        : (theme === 'light' ? 'bg-white border-med-blue/20 text-med-blue/40' : 'bg-black/40 border-white/20 text-white/40')
+                                                        : (theme === 'light' ? 'bg-white border-med-blue/30 text-med-blue/60' : 'bg-black/40 border-white/30 text-white/60')
                                                 }
                                                 ${isSelected ? 'scale-125 ring-2 ring-med-terracotta ring-offset-2 ring-offset-transparent' : 'scale-90 hover:scale-100'}
                                             `}
@@ -224,8 +224,14 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                                         </div>
                                         <span 
                                             className={`
-                                                absolute top-full mt-2 text-[9px] font-bold uppercase tracking-widest whitespace-nowrap transition-all duration-300
-                                                ${isSelected ? 'text-primary opacity-100 translate-y-0' : 'text-primary/40 opacity-0 group-hover/step:opacity-100 translate-y-1 group-hover/step:translate-y-0'}
+                                                absolute top-full mt-2 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-all duration-300
+                                                ${isSelected 
+                                                    ? 'text-primary opacity-100 translate-y-0' 
+                                                    : (theme === 'light' 
+                                                        ? 'text-med-blue opacity-70 translate-y-0 group-hover/step:opacity-100' 
+                                                        : 'text-white opacity-60 translate-y-0 group-hover/step:opacity-100'
+                                                      )
+                                                }
                                             `}
                                         >
                                             Step {step.id}

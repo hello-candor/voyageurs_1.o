@@ -334,7 +334,7 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
                                 </div>
                                 <div>
                                     <p className="font-heading text-2xl text-med-blue dark:text-white leading-none">Montpellier</p>
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-med-terracotta dark:text-[#C25E3E] mt-1">Sept 18 - 22 • Secured</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-med-terracotta dark:text-[#C25E3E] mt-1">Sept 18 - 20 • RSVP</p>
                                 </div>
                             </div>
                             <div className="absolute top-0 right-0 w-4/5 h-4/5 rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white dark:border-gray-800 transform rotate-3 z-10 transition-all duration-700 ease-out group-hover:rotate-6 group-hover:translate-x-4 hover:!z-30 hover:!scale-105 hover:!rotate-0 cursor-pointer">
@@ -419,8 +419,8 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
                                     <p className="text-blue-100 leading-relaxed max-w-lg mb-8">Built with smart technology that understands travel. Céleste remembers your group's dietary needs, budget limits, and favorite styles to give you the perfect answers.</p>
                                     <div className="grid grid-cols-2 gap-4 w-full max-w-md text-left">
                                         <div className="p-4 bg-white/10 rounded-xl">
-                                            <div className="font-bold text-[10px] uppercase tracking-[0.2em] text-med-terracotta mb-1">Privacy First</div>
-                                            <div className="text-[10px] text-blue-100 leading-tight">Isolated isolated isolated isolated isolated isolated isolated isolated isolated isolated isolated isolated isolated.</div>
+                                            <div className="font-bold text-[10px] uppercase tracking-[0.2em] text-med-terracotta mb-1">Local Intelligence</div>
+                                            <div className="text-[10px] text-blue-100 leading-tight">Trained on curated regional data to provide recommendations that go beyond generic tourist advice.</div>
                                         </div>
                                         <div className="p-4 bg-white/10 rounded-xl">
                                             <div className="font-bold text-[10px] uppercase tracking-[0.2em] text-med-terracotta mb-1">Smart Memory</div>

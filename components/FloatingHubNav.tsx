@@ -287,10 +287,10 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                             <app.icon size={24} />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className={`text-sm font-bold uppercase tracking-wider whitespace-nowrap leading-none ${theme === 'light' ? 'text-black' : 'text-white'}`}>
+                                            <span className={`text-[10px] font-bold uppercase tracking-wider whitespace-nowrap leading-none ${theme === 'light' ? 'text-black' : 'text-white'}`}>
                                                 {app.label}
                                             </span>
-                                            <span className={`text-xs font-medium whitespace-nowrap leading-none mt-1.5 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                                            <span className={`text-[9px] font-medium whitespace-nowrap leading-none mt-1 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                                                 {app.description}
                                             </span>
                                         </div>
@@ -303,7 +303,7 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
 
                 {/* MAIN DOCK */}
                 <div className="pointer-events-auto flex items-center gap-4">
-                    <nav className={`backdrop-blur-2xl border p-1.5 rounded-[2.5rem] shadow-2xl flex items-end gap-3 md:gap-4 ring-1
+                    <nav className={`backdrop-blur-2xl border p-2 rounded-[2.5rem] shadow-2xl flex items-end gap-3 md:gap-4 ring-1
                         ${theme === 'light' 
                             ? 'bg-white/80 border-black/10 ring-black/5' 
                             : 'bg-gray-900/80 border-white/10 ring-black/50'
@@ -326,8 +326,8 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                     onMouseLeave={() => setHoveredCategory(null)}
                                     className={`
                                         group flex flex-col items-center justify-end gap-1.5
-                                        min-w-[37px] md:min-w-[47px] 
-                                        pb-1.5 pt-1.5
+                                        min-w-[42px] md:min-w-[52px] 
+                                        pb-2 pt-2 px-1
                                         rounded-[1.25rem] transition-all duration-300 relative
                                         ${isActive 
                                             ? (theme === 'light' ? 'bg-black/10' : 'bg-white/10')
@@ -336,7 +336,7 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                     `}
                                 >
                                     {isHovered && !activeStack && (
-                                        <div className={`absolute bottom-full mb-3 left-1/2 -translate-x-1/2 px-3 py-1.5 text-[10px] font-bold rounded-lg shadow-xl border whitespace-nowrap pointer-events-none animate-in fade-in slide-in-from-bottom-1 z-50
+                                        <div className={`absolute bottom-full mb-3 left-1/2 -translate-x-1/2 px-3 py-1.5 text-[9px] font-bold rounded-lg shadow-xl border whitespace-nowrap pointer-events-none animate-in fade-in slide-in-from-bottom-1 z-50
                                             ${theme === 'light' ? 'bg-white text-black border-black/10' : 'bg-gray-900 text-white border-white/10'}
                                         `}>
                                             {cat.description}
@@ -345,24 +345,24 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                     )}
 
                                     <div className={`
-                                        w-5 h-5 md:w-7 md:h-7 rounded-lg flex items-center justify-center transition-all duration-500 relative
+                                        w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center transition-all duration-500 relative
                                         ${isActive 
-                                            ? `shadow-lg -translate-y-2 scale-110 ${theme === 'light' ? 'bg-med-blue text-white' : 'bg-white text-med-blue'}`
+                                            ? `shadow-lg -translate-y-1.5 scale-110 ${theme === 'light' ? 'bg-med-blue text-white' : 'bg-white text-med-blue'}`
                                             : `group-hover:scale-105 group-active:scale-95 ${theme === 'light' ? 'bg-gray-200 text-gray-700 group-hover:bg-gray-300' : `bg-gray-800 ${cat.color} group-hover:bg-gray-700`}`
                                         }
                                     `}>
                                         <cat.icon 
-                                            size={isActive ? 16 : 13} 
+                                            size={isActive ? 16 : 14} 
                                             strokeWidth={isActive ? 2.5 : 2} 
                                             className="transition-all duration-300"
                                         />
                                         {isActive && (
-                                            <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${theme === 'light' ? 'bg-med-blue shadow-[0_0_8px_#3B82F6]' : 'bg-white shadow-[0_0_8px_white]'}`} />
+                                            <div className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${theme === 'light' ? 'bg-med-blue shadow-[0_0_8px_#3B82F6]' : 'bg-white shadow-[0_0_8px_white]'}`} />
                                         )}
                                         {getCategoryBadge(cat.id, cat.children)}
                                     </div>
                                     <span className={`
-                                        text-[8px] md:text-[9px] font-bold uppercase tracking-wider leading-none transition-all duration-300
+                                        text-[6px] md:text-[7px] font-bold uppercase tracking-wider leading-none transition-all duration-300
                                         ${isActive ? (theme === 'light' ? 'text-black' : 'text-white') : (theme === 'light' ? 'text-gray-600 group-hover:text-black' : 'text-gray-400 group-hover:text-gray-200')}
                                     `}>
                                         {cat.label}
