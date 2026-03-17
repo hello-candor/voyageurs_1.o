@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '../context/UserContext';
 import { useTripPlanner } from '../context/TripPlannerContext';
 import { useNotification } from '../context/NotificationContext';
-import { User, Mail, Users, ShieldCheck, Globe, Loader2, MapPin, Calendar, ArrowRight, Plane, Sparkles, Check } from 'lucide-react';
+import { User, Mail, Users, ShieldCheck, Globe, Loader2, MapPin, Calendar, ArrowRight, Plane, Sparkles, Check, Crosshair } from 'lucide-react';
 import { isValidEmail, isValidName } from '../utils/validation';
 import { Button } from './Button';
 import { debounce } from 'lodash';
@@ -27,15 +27,16 @@ export const OnboardingFlow: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<Step>('welcome');
   const [isFinishing, setIsFinishing] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   // Form State
   const [preferences, setPreferences] = useState({
       origin: '',
-      arrivalDate: '2026-09-17', // Default to Thursday before
-      departureDate: '2026-09-20', // Default to Sunday after
+      arrivalDate: '2026-09-15',
+      departureDate: '2026-09-22',
       guests: 1,
-      destination: 'Montpellier, France' // Fixed for this event
+      destination: 'Montpellier, France'
   });
 
   const [identity, setIdentity] = useState({
@@ -48,16 +49,13 @@ export const OnboardingFlow: React.FC = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const fetchSuggestions = async (query: string) => {
-    if (query.length < 3) {
+    if (query.length < 2) {
       setSuggestions([]);
       return;
     }
-
     try {
       const response = await fetch(`/api/places?query=${query}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      if (!response.ok) throw new Error('Network error');
       const data = await response.json();
       setSuggestions(data.data || []);
       setShowSuggestions(true);
@@ -74,25 +72,54 @@ export const OnboardingFlow: React.FC = () => {
     setPreferences({ ...preferences, origin: value });
     debouncedFetch(value);
   };
-
+  
   const handleSuggestionClick = (suggestion: Suggestion) => {
     const formattedLocation = `${suggestion.city_name}, ${suggestion.country_name} (${suggestion.iata_code})`;
     setPreferences({ ...preferences, origin: formattedLocation });
     setSuggestions([]);
     setShowSuggestions(false);
   };
+  
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+      addNotification("Geolocation is not supported by your browser.", "error");
+      return;
+    }
+    
+    setIsLocating(true);
+    setShowSuggestions(false);
+
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+      try {
+        const response = await fetch(`/api/places?lat=${latitude}&lon=${longitude}`);
+        if (!response.ok) throw new Error('Failed to find nearby airport.');
+        const data = await response.json();
+        
+        if (data.data) {
+          const nearest = data.data;
+          const formatted = `${nearest.city_name}, ${nearest.country_name} (${nearest.iata_code})`;
+          setPreferences(prev => ({ ...prev, origin: formatted }));
+          addNotification("We've found your nearest major airport!", "success");
+        } else {
+            addNotification("Could not determine a nearby airport.", "error");
+        }
+      } catch (error) {
+        addNotification("Could not determine a nearby airport.", "error");
+      } finally {
+        setIsLocating(false);
+      }
+    }, (error) => {
+      addNotification("Location access denied. Please enable it in your browser settings.", "error");
+      setIsLocating(false);
+    });
+  };
 
   useEffect(() => {
     if (user) {
-        setIdentity(prev => ({
-            ...prev,
-            name: user.name,
-            email: user.email
-        }));
+        setIdentity(prev => ({ ...prev, name: user.name, email: user.email }));
     }
   }, [user]);
-
-  // --- Handlers ---
 
   const validateIdentity = () => {
       const newErrors: Record<string, string> = {};
@@ -104,7 +131,6 @@ export const OnboardingFlow: React.FC = () => {
 
   const handleGoogleLogin = () => {
       setIsAuthLoading(true);
-
       const fallbackTimer = setTimeout(() => {
           if (isAuthLoading) {
             setIsAuthLoading(false);
@@ -127,12 +153,9 @@ export const OnboardingFlow: React.FC = () => {
               clearTimeout(fallbackTimer);
               await loginWithGoogle(response.credential);
               setIsAuthLoading(false);
-              // Google login successful, user context updates, effect will auto-fill data
             }
           });
-          
           (window as any).google.accounts.id.prompt();
-          
       } catch (err) {
           clearTimeout(fallbackTimer);
           console.error(err);
@@ -151,27 +174,16 @@ export const OnboardingFlow: React.FC = () => {
           publicRegistry: identity.publicRegistry
       };
 
-      // 1. Create or Update User
       if (user) {
           submitRSVP({
-              status: 'Pending', // Default to pending until they formally RSVP in Hub
+              status: 'Pending',
               guestsCount: preferences.guests,
               privacy
           });
       } else {
-          login(
-              identity.name, 
-              identity.email, 
-              preferences.guests, 
-              'Pending', 
-              '', 
-              '', 
-              {}, 
-              privacy
-          );
+          login(identity.name, identity.email, preferences.guests, 'Pending', '', '', {}, privacy);
       }
 
-      // 2. Save Travel Preferences
       setTimeout(() => {
           updateTravelDetails({
               arrivalDate: preferences.arrivalDate,
@@ -179,21 +191,18 @@ export const OnboardingFlow: React.FC = () => {
               arrivalMode: 'Plane',
               arrivalNumber: '',
               accommodation: '',
-              hub: preferences.origin // Store origin as hub initially
+              hub: preferences.origin
           });
           
-          // Update Planner Context
           const start = new Date(preferences.arrivalDate);
           const end = new Date(preferences.departureDate);
           const diffDays = Math.ceil(Math.abs(end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
           updateSettings(preferences.guests, diffDays || durationDays);
           
-          localStorage.removeItem('tour_seen'); // Reset tour so they see it
+          localStorage.removeItem('tour_seen');
           completeOnboarding(); 
       }, 800);
   };
-
-  // --- Render Steps ---
 
   const ProgressBar = ({ step }: { step: number }) => (
       <div className="flex gap-2 mb-8">
@@ -203,7 +212,6 @@ export const OnboardingFlow: React.FC = () => {
       </div>
   );
 
-  // Step 1: Welcome
   if (currentStep === 'welcome') {
       return (
           <div className="max-w-md mx-auto w-full py-8 px-6 flex flex-col justify-center min-h-[500px] animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -232,7 +240,6 @@ export const OnboardingFlow: React.FC = () => {
       );
   }
 
-  // Step 2: Trip Preferences
   if (currentStep === 'preferences') {
       return (
           <div className="max-w-md mx-auto w-full py-8 px-6 flex flex-col justify-center min-h-[500px] animate-in fade-in slide-in-from-right-8 duration-500">
@@ -243,7 +250,6 @@ export const OnboardingFlow: React.FC = () => {
               </div>
 
               <div className="space-y-6">
-                   {/* Destination (Read Only) */}
                    <div className="space-y-2">
                       <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2">
                           <MapPin size={12} /> Destination
@@ -254,29 +260,37 @@ export const OnboardingFlow: React.FC = () => {
                       </div>
                   </div>
 
-                  {/* Origin */}
                   <div className="space-y-2 group relative">
                       <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2 group-focus-within:text-med-blue transition-colors">
                           <Plane size={12} /> Flying From
                       </label>
-                      <input 
-                          type="text" 
-                          placeholder="City or Airport (e.g. JFK)" 
-                          value={preferences.origin} 
-                          onChange={handleOriginChange} 
-                          className="w-full p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 outline-none focus:border-med-blue focus:ring-4 focus:ring-med-blue/10 transition-all dark:text-white font-medium" 
-                          autoFocus
-                      />
+                      <div className="relative">
+                        <input 
+                            type="text" 
+                            placeholder={isLocating ? "Searching..." : "City or Airport (e.g. JFK)"}
+                            value={preferences.origin} 
+                            onChange={handleOriginChange} 
+                            onFocus={() => setShowSuggestions(true)}
+                            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                            className="w-full p-4 pr-10 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 outline-none focus:border-med-blue focus:ring-4 focus:ring-med-blue/10 transition-all dark:text-white font-medium" 
+                            autoFocus
+                            disabled={isLocating}
+                        />
+                        <button onClick={handleLocateMe} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-med-blue transition-colors" disabled={isLocating}>
+                            {isLocating ? <Loader2 size={16} className="animate-spin" /> : <Crosshair size={16} />}
+                        </button>
+                      </div>
+
                       {showSuggestions && suggestions.length > 0 && (
-                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg">
-                          <ul>
-                            {suggestions.map((suggestion, index) => (
+                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg animate-in fade-in slide-in-from-top-4 duration-300">
+                          <ul className="py-2">
+                            {suggestions.map((s, index) => (
                               <li 
                                 key={index}
-                                onClick={() => handleSuggestionClick(suggestion)}
-                                className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                                onMouseDown={() => handleSuggestionClick(s)}
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
                               >
-                                {suggestion.airport_name} ({suggestion.iata_code}) - {suggestion.city_name}, {suggestion.country_name}
+                                {s.airport_name} ({s.iata_code}) - {s.city_name}, {s.country_name}
                               </li>
                             ))}
                           </ul>
@@ -284,7 +298,6 @@ export const OnboardingFlow: React.FC = () => {
                       )}
                   </div>
 
-                  {/* Dates */}
                   <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                           <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 ml-1">Arrival</label>
@@ -306,7 +319,6 @@ export const OnboardingFlow: React.FC = () => {
                       </div>
                   </div>
 
-                  {/* Party Size */}
                   <div className="space-y-2">
                       <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2">
                           <Users size={12} /> Party Size
@@ -329,7 +341,6 @@ export const OnboardingFlow: React.FC = () => {
       );
   }
 
-  // Step 3: Identity & Auth
   return (
     <div className="max-w-md mx-auto w-full py-8 px-6 flex flex-col justify-center min-h-[500px] animate-in fade-in slide-in-from-right-8 duration-500">
         <ProgressBar step={3} />
