@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '../context/UserContext';
 import { useTripPlanner } from '../context/TripPlannerContext';
 import { useNotification } from '../context/NotificationContext';
+import { useAuth } from '../context/AuthContext';
 import { safeStorage } from '../utils/storage';
 import { User, Mail, Users, ShieldCheck, Globe, Loader2, MapPin, Calendar, ArrowRight, Plane, Sparkles, Check, Crosshair } from 'lucide-react';
 import { isValidEmail, isValidName } from '../utils/validation';
@@ -11,28 +12,6 @@ import { debounce } from 'lodash';
 
 const GOOGLE_CLIENT_ID = "436751288359-kg1n1timqtrdr1damc19fertgocs8paf.apps.googleusercontent.com";
 
-export const HostOnboarding: React.FC<HostOnboardingProps> = ({ onComplete }) => {
-    const { loginHostWithGoogle, logoutHost, firebaseUser, isLoading: authLoading } = useAuth();
-    // ... existing state ...
-
-    const handleGoogleLogin = () => {
-        try {
-            if (!(window as any).google) return;
-
-            (window as any).google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                use_fedcm_for_prompt: false,
-                callback: async (response: any) => {
-                    await loginHostWithGoogle(response.credential);
-                }
-            });
-            (window as any).google.accounts.id.prompt();
-        } catch (err) {
-            console.error("Google Sign-In failed to initialize", err);
-        }
-    };
-    
-    // ...
 type Step = 'welcome' | 'preferences' | 'identity';
 
 interface Suggestion {
@@ -46,6 +25,7 @@ export const OnboardingFlow: React.FC = () => {
     const { user, login, loginWithGoogle, submitRSVP, completeOnboarding, updateTravelDetails } = useUser();
     const { updateSettings, durationDays } = useTripPlanner();
     const { addNotification } = useNotification();
+    const { logoutHost } = useAuth();
 
     const [currentStep, setCurrentStep] = useState<Step>('welcome');
     const [isFinishing, setIsFinishing] = useState(false);
@@ -385,7 +365,7 @@ export const OnboardingFlow: React.FC = () => {
                             onClick={handleGoogleLogin}
                             variant="secondary"
                             size="lg"
-                            isLoading={AuthLoading}
+                            isLoading={isAuthLoading}
                             loadingText="Connecting..."
                         >
                             <Globe size={16} className="mr-2"/> Sign in with Google
