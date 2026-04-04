@@ -9,7 +9,7 @@ import { auth } from "../firebaseConfig";
 
 // Mock guest codes for demonstration
 const GUEST_CODES = ['GUEST123', 'WELCOME', 'PARTY'];
-const HOST_PASSCODES = ['BRYAN', 'BAXTER', 'QUINCY', 'MONTPELLIER_ADMIN'];
+const HOST_PASSCODES = ['BRYAN', 'BAXTER', 'QUINCY', '_ADMIN'];
 
 /**
  * Authentication Service

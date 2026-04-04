@@ -16,8 +16,8 @@ export const HostOnboarding: React.FC<HostOnboardingProps> = ({ onComplete }) =>
     const [isFinishing, setIsFinishing] = useState(false);
     
     const [formData, setFormData] = useState({
-        appName: "Bryan's 40th",
-        destination: "Montpellier",
+        appName: "September 18-20",
+        destination: "",
         occasion: "The 40th Birthday",
         hostName: "",
         hostEmail: ""
@@ -117,7 +117,7 @@ export const HostOnboarding: React.FC<HostOnboardingProps> = ({ onComplete }) =>
                                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">App Name</label>
                                 <div className="relative">
                                     <PenTool size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                    <input type="text" required value={formData.appName} onChange={(e) => setFormData({...formData, appName: e.target.value})} className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors" placeholder="e.g. Bryan's 40th" />
+                                    <input type="text" required value={formData.appName} onChange={(e) => setFormData({...formData, appName: e.target.value})} className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors" placeholder="e.g. September 18-20" />
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -125,7 +125,7 @@ export const HostOnboarding: React.FC<HostOnboardingProps> = ({ onComplete }) =>
                                     <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Destination</label>
                                     <div className="relative">
                                         <MapPin size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                                        <input type="text" required value={formData.destination} onChange={(e) => setFormData({...formData, destination: e.target.value})} className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors" placeholder="e.g. Montpellier" />
+                                        <input type="text" required value={formData.destination} onChange={(e) => setFormData({...formData, destination: e.target.value})} className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:border-med-blue outline-none transition-colors" placeholder="e.g. " />
                                     </div>
                                 </div>
                                 <div className="space-y-2">

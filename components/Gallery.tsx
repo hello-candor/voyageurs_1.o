@@ -36,7 +36,7 @@ export const Gallery: React.FC = () => {
   const galleryContent = config.content.gallery;
   const COLLECTIONS = galleryContent.collections;
   
-  const [activeTab, setActiveTab] = useState<string>(COLLECTIONS[0]?.id || 'montpellier');
+  const [activeTab, setActiveTab] = useState<string>(COLLECTIONS[0]?.id || '');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [modalImageLoaded, setModalImageLoaded] = useState(false);
   const [dynamicImages, setDynamicImages] = useState<GalleryItem[]>([]);
@@ -105,7 +105,7 @@ export const Gallery: React.FC = () => {
       const newGalleryItems: (GalleryItem & { collectionId: string, isDynamic: boolean })[] = [];
       
       for (const name of newPlaceNames) {
-          const context = activeTab === 'montpellier' ? "Montpellier, France" : "Occitanie, France";
+          const context = activeTab === '' ? ", France" : "Occitanie, France";
           const details = await getPlaceDetails(name, context);
           
           if (details && details.imageUrl) {

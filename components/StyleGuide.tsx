@@ -56,7 +56,7 @@ export const StyleGuide: React.FC = () => {
                     <div>
                         <p className="text-xs text-gray-400 mb-2">Body Text (Montserrat)</p>
                         <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
-                            Montpellier is famously the "15-Minute City." The entire historic center (L'Écusson) is Europe's largest pedestrian zone. Cars are neither necessary nor useful here. Pack comfortable shoes and prepare to wander.
+                             is famously the "15-Minute City." The entire historic center (L'Écusson) is Europe's largest pedestrian zone. Cars are neither necessary nor useful here. Pack comfortable shoes and prepare to wander.
                         </p>
                     </div>
                     <div>

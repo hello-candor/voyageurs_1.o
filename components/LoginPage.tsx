@@ -10,8 +10,12 @@ import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext';
 
 const Logo = ({ className = "w-20 h-20" }) => (
-  <div className={`relative flex items-center justify-center rounded-full bg-med-blue border-2 border-med-terracotta shadow-2xl ${className}`}>
-    <Sailboat className="text-white w-[60%] h-[60%]" strokeWidth={1.5} />
+  <div className={`relative flex items-center justify-center ${className}`}>
+    <img
+      src="/assets/voyageurs-icon.png"
+      alt="Voyageurs"
+      className="w-full h-full object-contain drop-shadow-xl"
+    />
     <motion.div 
       animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -77,11 +81,11 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
         />
       </div>
 
-      <div className="relative w-full max-w-2xl px-4 py-8 h-full flex items-center">
+      <div className="relative w-full max-w-2xl px-5 sm:px-8 py-8 h-full flex items-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[3.5rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] border border-white dark:border-gray-800 p-8 md:p-16 relative flex flex-col justify-center min-h-[85vh] sm:h-auto"
+          className="w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[3.5rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] border border-white dark:border-gray-800 px-8 py-12 sm:px-14 sm:py-16 md:px-20 md:py-20 relative flex flex-col justify-center min-h-[88vh] sm:min-h-0"
         >
           {/* Back button MOVED INSIDE card */}
           {onClose && (
@@ -95,20 +99,23 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
           )}
 
           {/* Internal Accents */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-med-terracotta/10 rounded-full blur-[100px] opacity-60" />
+          <div className="absolute top-0 right-0 w-72 h-72 bg-med-terracotta/10 rounded-full blur-[120px] opacity-60 pointer-events-none" />
           
-          <div className="relative z-10 flex flex-col items-center w-full max-w-md mx-auto">
-            <Logo className="mb-10 w-20 h-20" />
+          <div className="relative z-10 flex flex-col items-center w-full max-w-lg mx-auto">
+            <Logo className="mb-10 w-24 h-24 sm:w-28 sm:h-28" />
             
-            <div className="text-center mb-12">
+            <div className="text-center mb-14">
               <div className="flex items-center justify-center gap-6 mb-6">
                   <div className="h-px w-10 bg-med-terracotta/40"></div>
-                  <span className="text-xs font-bold uppercase tracking-[0.3em] text-med-terracotta">
+                  <span className="text-[11px] font-body font-bold uppercase tracking-[0.4em] text-med-terracotta">
                     You're Invited
                   </span>
                   <div className="h-px w-10 bg-med-terracotta/40"></div>
               </div>
-              <h1 className="text-5xl md:text-7xl font-heading font-light text-med-blue dark:text-blue-100 mb-4 leading-none">
+              <h1 
+                className="font-heading font-light text-med-blue dark:text-blue-100 leading-[0.9] mb-4 tracking-tight"
+                style={{ fontSize: 'clamp(3.5rem, 13vw, 6rem)' }}
+              >
                 Welcome, <br/>
                 <span className="italic text-med-terracotta dark:text-[#C25E3E]">Voyager.</span>
               </h1>
@@ -121,7 +128,8 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value.toUpperCase())}
                   placeholder="INVITE CODE" 
-                  className="w-full h-32 bg-slate-50/50 dark:bg-[#1a1f2e] border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta rounded-none px-6 text-center text-7xl font-body font-bold tracking-[0.2em] text-med-blue dark:text-white outline-none transition-all flex items-center justify-center leading-none placeholder:text-sm placeholder:tracking-[0.5em] placeholder:font-body placeholder:opacity-30 placeholder:font-normal"
+                  className="w-full h-32 bg-slate-50/50 dark:bg-[#1a1f2e] border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta rounded-none px-6 text-center font-body font-bold tracking-[0.2em] text-med-blue dark:text-white outline-none transition-all flex items-center justify-center leading-none placeholder:text-sm placeholder:tracking-[0.5em] placeholder:font-body placeholder:opacity-30 placeholder:font-normal"
+                  style={{ fontSize: 'clamp(2rem, 8vw, 4rem)' }}
                   disabled={isLoading}
                   autoFocus
                 />

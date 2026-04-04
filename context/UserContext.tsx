@@ -89,7 +89,7 @@ const DEFAULT_PRIVACY: PrivacySettings = {
     smsConsent: true
 };
 
-const HOST_EMAILS = ['bryan@montpellier2026.com', 'admin@voyageurs.app', 'host@example.com'];
+const HOST_EMAILS = ['bryan@2026.com', 'admin@voyageurs.app', 'host@example.com'];
 
 const INITIAL_GUESTS: Guest[] = [
     { id: '1', name: "Alice M.", email: "alice@example.com", status: "Confirmed", arrival: "Sep 17 (CDG)", dietary: "Vegetarian", note: "Flying in with Bob.", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80", guestsCount: 2, invitationCode: "ALI921", interests: ['sete', 'hortus'], social: { instagram: '@alice_travels', whatsapp: '+33 6 12 34 56 78', venmo: 'alice-m-bills' }, privacy: DEFAULT_PRIVACY },

@@ -22,7 +22,7 @@ export const CityMobility: React.FC = () => {
                 
                 <div className="prose text-gray-600 text-sm leading-relaxed flex-grow">
                     <p className="mb-4">
-                        Montpellier is famously the <strong>"15-Minute City."</strong> The entire historic center (L'Écusson) is Europe's largest pedestrian zone. Cars are neither necessary nor useful here.
+                         is famously the <strong>"15-Minute City."</strong> The entire historic center (L'Écusson) is Europe's largest pedestrian zone. Cars are neither necessary nor useful here.
                     </p>
                     <p>
                         Pack comfortable shoes (loafers, white sneakers, or sandals). You will walk from your hotel to the café, from the café to the square, and from the square to dinner. It is the rhythm of life here.

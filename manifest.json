@@ -1,14 +1,14 @@
 {
   "short_name": "Voyageurs",
-  "name": "Bryan's 40th Celebration Montpellier",
+  "name": "September 18-20 Celebration ",
   "icons": [
     {
-      "src": "https://ui-avatars.com/api/?name=B4&background=1E4472&color=fff&size=192&rounded=true&bold=true",
+      "src": "/assets/voyageurs-icon.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://ui-avatars.com/api/?name=B4&background=1E4472&color=fff&size=512&rounded=true&bold=true",
+      "src": "/assets/voyageurs-icon.png",
       "type": "image/png",
       "sizes": "512x512"
     }

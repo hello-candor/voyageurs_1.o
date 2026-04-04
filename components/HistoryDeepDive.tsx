@@ -16,14 +16,14 @@ export const HistoryDeepDive: React.FC = () => {
               La Douée: <span className="italic text-med-olive">The Gifted One</span>
             </h2>
             <p className="text-gray-600 font-sans leading-relaxed mb-6">
-              Unlike its neighbors Nîmes or Arles, Montpellier is not a child of Rome. It is a city born of the Middle Ages, rising in the 10th century under the Guilhem Lords. Its trajectory was defined not by conquest, but by commerce, intellect, and a remarkably secular spirit that welcomed diverse cultures long before the concept of internationalism existed.
+              Unlike its neighbors Nîmes or Arles,  is not a child of Rome. It is a city born of the Middle Ages, rising in the 10th century under the Guilhem Lords. Its trajectory was defined not by conquest, but by commerce, intellect, and a remarkably secular spirit that welcomed diverse cultures long before the concept of internationalism existed.
             </p>
           </div>
           <div className="md:w-1/2 relative">
              <img 
-              // Image: Cathédrale Saint-Pierre de Montpellier
+              // Image: Cathédrale Saint-Pierre de 
               src="https://images.unsplash.com/photo-1565099707216-43d939bd9273?q=80&w=800&auto=format&fit=crop" 
-              alt="Montpellier Cathedral" 
+              alt=" Cathedral" 
               className="rounded-lg shadow-xl w-full object-cover h-[400px]"
             />
             <div className="absolute -bottom-6 -left-6 bg-med-sand p-6 rounded-lg shadow-lg max-w-xs border border-med-terracotta/20 hidden md:block">

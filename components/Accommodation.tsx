@@ -34,7 +34,7 @@ export const Accommodation: React.FC<AccommodationProps> = ({ onNavigateToBookNo
     setSelectedHotel(hotel);
     setActiveGalleryIndex(0);
     setRealTimeDetails(null);
-    const details = await getPlaceDetails(hotel.name, "Montpellier, France");
+    const details = await getPlaceDetails(hotel.name, ", France");
     setRealTimeDetails(details);
   };
 

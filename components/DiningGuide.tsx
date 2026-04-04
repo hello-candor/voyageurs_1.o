@@ -24,7 +24,7 @@ export const DiningGuide: React.FC = () => {
       setSelectedRestaurant(restaurant);
       setRealTimeDetails(null);
       setLoadingRealTime(true);
-      const data = await getPlaceDetails(restaurant.googleQuery, "Montpellier, France");
+      const data = await getPlaceDetails(restaurant.googleQuery, ", France");
       setRealTimeDetails(data);
       setLoadingRealTime(false);
   };
@@ -69,7 +69,7 @@ export const DiningGuide: React.FC = () => {
                         <span className="italic text-med-terracotta">Guide</span>
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed font-medium italic mb-8">
-                        "In Montpellier, the table is sacred. Every terrace is an opportunity for connection, and every meal is a celebration of the terroir."
+                        "In , the table is sacred. Every terrace is an opportunity for connection, and every meal is a celebration of the terroir."
                     </p>
                 </div>
 

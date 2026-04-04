@@ -9,7 +9,7 @@ export const Hero: React.FC = () => {
   const { config } = useAppConfig();
 
   const handleScrollDown = () => {
-    const infoSection = document.getElementById('montpellier-info');
+    const infoSection = document.getElementById('-info');
     if (infoSection) {
         infoSection.scrollIntoView({ behavior: 'smooth' });
     }

@@ -26,7 +26,7 @@ const GENERATE_EVENTS = (): CalendarEvent[] => [
         start: new Date(2026, 1, 1, 9, 0), // Feb 1, 2026
         end: new Date(2026, 1, 1, 18, 0),
         type: 'planning',
-        location: "Montpellier",
+        location: "",
         icon: Bed
     },
     {
@@ -180,7 +180,7 @@ export const SeptemberCalendar: React.FC<{ onOpenMap?: () => void }> = ({ onOpen
     const getGoogleCalendarLink = (event: CalendarEvent) => {
         const start = formatFloatingTime(event.start);
         const end = formatFloatingTime(event.end);
-        return `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${start}/${end}&details=${encodeURIComponent(event.subtitle)}&location=${encodeURIComponent(event.location || 'Montpellier, France')}&sf=true&output=xml`;
+        return `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${start}/${end}&details=${encodeURIComponent(event.subtitle)}&location=${encodeURIComponent(event.location || ', France')}&sf=true&output=xml`;
     };
 
     const downloadICS = (event: CalendarEvent) => {
@@ -249,7 +249,7 @@ export const SeptemberCalendar: React.FC<{ onOpenMap?: () => void }> = ({ onOpen
             start: start,
             end: end,
             type: 'personal',
-            location: 'Montpellier',
+            location: '',
             cost: scheduleData.item.cost,
             pricingType: scheduleData.item.pricingType
         };

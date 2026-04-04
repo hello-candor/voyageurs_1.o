@@ -76,7 +76,7 @@ export const GlobalMap: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<CategoryType>('All');
   const [selectedItem, setSelectedItem] = useState<MapItem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [mapCenter, setMapCenter] = useState<[number, number]>([43.610769, 3.876716]); // Montpellier Center
+  const [mapCenter, setMapCenter] = useState<[number, number]>([43.610769, 3.876716]); //  Center
   const [mapZoom, setMapZoom] = useState(13);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [isLocating, setIsLocating] = useState(false);
@@ -112,7 +112,7 @@ export const GlobalMap: React.FC = () => {
         setIsLoadingDetails(true);
         setRealTimeDetails(null);
         // Determine context based on category if possible, or default
-        const context = selectedItem.category === 'Vineyard' ? "Hérault, France" : "Montpellier, France";
+        const context = selectedItem.category === 'Vineyard' ? "Hérault, France" : ", France";
         getPlaceDetails(selectedItem.name, context).then(data => {
             setRealTimeDetails(data);
             setIsLoadingDetails(false);

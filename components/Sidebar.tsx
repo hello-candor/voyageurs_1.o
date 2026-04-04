@@ -82,20 +82,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
     >
       {/* Brand */}
       <div className={`pt-8 pb-6 transition-all duration-500 ${isCollapsed ? 'px-4 items-center' : 'px-8'}`}>
-        <div 
-            onClick={() => onViewChange('rsvp')}
-            className={`flex items-center gap-4 cursor-pointer group ${isCollapsed ? 'flex-col' : ''}`}
-        >
-          <div className="w-10 h-10 bg-med-blue text-white rounded-xl flex items-center justify-center shadow-xl shadow-med-blue/20 rotate-3 transition-transform group-hover:rotate-0 duration-500 shrink-0">
-            <Sparkles size={20} />
+          <div 
+              onClick={() => onViewChange('rsvp')}
+              className={`flex items-center gap-4 cursor-pointer group ${isCollapsed ? 'flex-col' : ''}`}
+          >
+            {isCollapsed ? (
+              <img src="/assets/voyageurs-icon.png" alt="Voyageurs" className="w-10 h-10 object-contain drop-shadow-md" />
+            ) : (
+              <img src="/assets/voyageurs-logo.png" alt="Voyageurs" className="h-10 w-auto object-contain dark:brightness-90 animate-in fade-in slide-in-from-left-2 duration-700" />
+            )}
           </div>
-          {!isCollapsed && (
-            <div className="animate-in fade-in slide-in-from-left-2 duration-700">
-              <h2 className="font-serif text-2xl text-med-blue dark:text-white leading-none tracking-tight">The Hub</h2>
-              <p className="text-[9px] text-med-terracotta uppercase tracking-[0.3em] font-bold mt-1.5">Bryan's 40th</p>
-            </div>
-          )}
-        </div>
       </div>
 
       <nav className="flex-1 px-4 space-y-6 overflow-y-auto scrollbar-hide py-4">

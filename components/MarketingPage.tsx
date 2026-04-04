@@ -62,10 +62,12 @@ const Styles = () => (
   `}</style>
 );
 
-const Logo = ({ className = "w-10 h-10", dark = false }) => (
-  <div className={`relative flex items-center justify-center rounded-full bg-med-blue border-2 border-med-terracotta shadow-lg ${className}`}>
-    <Sailboat className="text-white w-[60%] h-[60%]" strokeWidth={1.5} />
-  </div>
+const Logo = ({ className = "w-10 h-10" }) => (
+  <img
+    src="/assets/voyageurs-icon.png"
+    alt="Voyageurs"
+    className={`object-contain drop-shadow-md ${className}`}
+  />
 );
 
 // --- Sub-components ---
@@ -283,8 +285,11 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
             <nav className="fixed w-full z-50 top-0 left-0 transition-all duration-500 px-4 py-6">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <Logo />
-                        <span className="font-heading text-2xl font-bold italic text-med-blue dark:text-white leading-none">Voyageurs</span>
+                        <img
+                          src="/assets/voyageurs-logo.png"
+                          alt="Voyageurs"
+                          className="h-10 w-auto object-contain dark:brightness-90"
+                        />
                     </div>
                     
                     <div className="hidden md:flex items-center gap-8 px-8 py-3 rounded-full border transition-all duration-500 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-med-blue/10 dark:border-white/10 shadow-sm">
@@ -332,7 +337,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                                     <CheckCircle className="w-6 h-6" strokeWidth={1.5} />
                                 </div>
                                 <div>
-                                    <p className="font-heading text-2xl text-med-blue dark:text-white leading-none">Montpellier</p>
+                                    <p className="font-heading text-2xl text-med-blue dark:text-white leading-none"></p>
                                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-med-terracotta dark:text-[#C25E3E] mt-1">Sept 18 - 20 • RSVP</p>
                                 </div>
                             </div>
@@ -766,8 +771,11 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                     <div className="grid md:grid-cols-5 gap-12 mb-16">
                         <div className="col-span-1 md:col-span-2">
                             <div className="flex items-center gap-3 mb-6">
-                                <Logo className="w-10 h-10" />
-                                <span className="font-heading text-xl font-bold italic text-med-blue dark:text-white">Voyageurs</span>
+                                <img
+                                  src="/assets/voyageurs-logo.png"
+                                  alt="Voyageurs"
+                                  className="h-9 w-auto object-contain dark:brightness-90"
+                                />
                             </div>
                             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-sm mb-8">
                                 Shared discovery, perfected. We trade the chaos of coordination for pure travel elegance.

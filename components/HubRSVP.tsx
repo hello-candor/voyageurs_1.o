@@ -152,7 +152,7 @@ export const HubRSVP: React.FC<HubRSVPProps> = ({ onComplete }) => {
             <div className="text-center space-y-2">
                 <span className="text-med-terracotta font-bold uppercase tracking-[0.2em] text-[10px]">The Celebration</span>
                 <h2 className="font-serif text-3xl md:text-4xl text-med-blue dark:text-white">Will you be there?</h2>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">Montpellier, France • Sept 18—20, 2026</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">, France • Sept 18—20, 2026</p>
             </div>
 
             {/* Countdown Banner */}

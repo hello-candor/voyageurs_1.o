@@ -40,7 +40,7 @@ const FAQ_DATA: FAQItem[] = [
         id: 'trans-1',
         category: 'Logistics',
         icon: Compass,
-        q: "How do I get around Montpellier?",
+        q: "How do I get around ?",
         a: "The historic center is strictly pedestrian and highly walkable. For longer distances, use the tramway network—look for the colorful cars designed by Christian Lacroix. Uber and Bolt are available for late-night returns to your hotel.",
         tags: ['Transport', 'Tram', 'Walking']
     },
@@ -81,7 +81,7 @@ const FAQ_DATA: FAQItem[] = [
         category: 'Financials',
         icon: Wallet,
         q: "Do I need to carry cash?",
-        a: "Montpellier is very card-friendly, and contactless payment (Apple Pay/Google Pay) is accepted almost everywhere. It's helpful to have 20-50 Euros in small bills for market stalls or small tips, but a card is usually sufficient.",
+        a: " is very card-friendly, and contactless payment (Apple Pay/Google Pay) is accepted almost everywhere. It's helpful to have 20-50 Euros in small bills for market stalls or small tips, but a card is usually sufficient.",
         tags: ['Money', 'Payment', 'Euros']
     }
 ];

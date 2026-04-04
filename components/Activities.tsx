@@ -48,7 +48,7 @@ export const NIGHTLIFE_DATA: ActivityItem[] = [
         tags: ['Cocktails', 'Speakeasy'],
         baseCost: 20,
         pricingType: 'perPerson',
-        locationQuery: 'Gaspard Cocktail Bar Montpellier',
+        locationQuery: 'Gaspard Cocktail Bar ',
         priceLevel: 2,
         lat: 43.6085,
         lng: 3.8780
@@ -71,7 +71,7 @@ export const BEACH_DATA: ActivityItem[] = [
         lat: 43.5600,
         lng: 4.0250,
         isLGBTFriendly: true,
-        fullDescription: "One of the most accessible and natural beaches near Montpellier. It offers wide stretches of sand backed by preserved dunes, perfect for a relaxing day by the sea away from urban concrete.",
+        fullDescription: "One of the most accessible and natural beaches near . It offers wide stretches of sand backed by preserved dunes, perfect for a relaxing day by the sea away from urban concrete.",
         transportDetail: "Accessible via Bus 106 from Tram 1 (Place de France) or a 20 min drive. Plenty of parking available along the road."
     },
     // ... (Rest of Beach Data)
@@ -255,7 +255,7 @@ export const Activities: React.FC<ActivitiesProps> = ({ initialItemId }) => {
             const fetchData = async () => {
                 setLoadingRealTime(true);
                 setRealTimeDetails(null);
-                const details = await getPlaceDetails(selectedItem.locationQuery, "Montpellier, France");
+                const details = await getPlaceDetails(selectedItem.locationQuery, ", France");
                 setRealTimeDetails(details);
                 setLoadingRealTime(false);
             };

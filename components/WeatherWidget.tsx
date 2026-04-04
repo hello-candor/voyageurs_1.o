@@ -21,7 +21,7 @@ export const WeatherWidget: React.FC = () => {
     useEffect(() => {
         const fetchWeather = async () => {
             try {
-                const response = await fetch('/api/weather?city=Montpellier');
+                const response = await fetch('/api/weather?city=');
                 if (!response.ok) {
                     throw new Error('Weather data not available');
                 }

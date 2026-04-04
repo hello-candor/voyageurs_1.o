@@ -73,7 +73,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
                 <div className="flex flex-col items-center mb-10 text-center">
                     <h2 className="font-serif text-3xl md:text-4xl text-slate-800 dark:text-white mb-4">Ask Céleste</h2>
                     <p className="text-slate-600 dark:text-white/60 text-sm max-w-md">
-                        Your AI concierge knows the entire itinerary, local secrets of Montpellier, and your personal travel plans.
+                        Your AI concierge knows the entire itinerary, local secrets of , and your personal travel plans.
                     </p>
                 </div>
 

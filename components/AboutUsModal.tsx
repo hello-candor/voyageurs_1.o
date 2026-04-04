@@ -67,7 +67,7 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ isOpen, onClose }) =
               <section>
                 <h3 className="text-lg font-bold text-med-blue dark:text-white mb-2">The Experience</h3>
                 <p>
-                  From our AI concierge, Céleste, to our seamless collaborative ledgers, every feature is designed to foster harmony. Whether you are planning a 40th birthday in Montpellier, a corporate retreat in Tuscany, or a family reunion in the States, we are honored to be the invisible thread connecting your journey.
+                  From our AI concierge, Céleste, to our seamless collaborative ledgers, every feature is designed to foster harmony. Whether you are planning a 40th birthday in , a corporate retreat in Tuscany, or a family reunion in the States, we are honored to be the invisible thread connecting your journey.
                 </p>
               </section>
 

@@ -17,7 +17,7 @@ const LOCATIONS: LocationData[] = [
   {
     id: 'mpl',
     icon: Plane,
-    name: "Montpellier–Méditerranée (MPL)",
+    name: "–Méditerranée (MPL)",
     detail: "15 min drive to center",
     color: "text-med-terracotta",
     bg: "bg-med-terracotta/10 dark:bg-med-terracotta/20",
@@ -87,7 +87,7 @@ export const LocationMap: React.FC = () => {
                     <div className="relative w-full h-full rounded-[1.5rem] overflow-hidden bg-gray-100 dark:bg-gray-700">
                         {/* Static Map Image Fallback */}
                         <div 
-                            className="w-full h-full bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Montpellier_OpenStreetMap.png/1200px-Montpellier_OpenStreetMap.png')] bg-cover bg-center filter grayscale-[0%] contrast-[1] dark:grayscale-[20%] dark:invert-[.05] dark:brightness-[0.9] transition-all duration-1000"
+                            className="w-full h-full bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/_OpenStreetMap.png/1200px-_OpenStreetMap.png')] bg-cover bg-center filter grayscale-[0%] contrast-[1] dark:grayscale-[20%] dark:invert-[.05] dark:brightness-[0.9] transition-all duration-1000"
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/5 dark:bg-black/20 pointer-events-none">
                             <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md px-6 py-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 max-w-xs text-center border border-white/50 dark:border-gray-700">
@@ -131,7 +131,7 @@ export const LocationMap: React.FC = () => {
 
                     <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700">
                         <p className="text-xs text-gray-400 dark:text-gray-500 italic font-sans leading-relaxed text-center">
-                            "Montpellier is a 15-minute city. Everything you need is often just a short walk or tram ride away."
+                            " is a 15-minute city. Everything you need is often just a short walk or tram ride away."
                         </p>
                     </div>
                 </div>

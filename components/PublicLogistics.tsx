@@ -28,7 +28,7 @@ export const PublicLogistics: React.FC = () => {
                     <span className="italic text-med-terracotta">Journey</span>
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed font-medium mb-8">
-                    "Montpellier is the gateway to the French South. We have curated specific travel hubs and official accommodations to ensure your arrival is seamless."
+                    " is the gateway to the French South. We have curated specific travel hubs and official accommodations to ensure your arrival is seamless."
                 </p>
                 <div className="hidden lg:block">
                     <button 
@@ -56,7 +56,7 @@ export const PublicLogistics: React.FC = () => {
                         <h4 className="font-serif text-lg text-med-blue dark:text-white mb-1">Paris (CDG)</h4>
                         <p className="text-[10px] uppercase tracking-widest text-med-terracotta font-bold mb-3">The Primary Hub</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                            Fly to CDG, then take the direct high-speed TGV from the airport station (3h 50m) to Montpellier St-Roch.
+                            Fly to CDG, then take the direct high-speed TGV from the airport station (3h 50m) to  St-Roch.
                         </p>
                     </div>
                     <div className="bg-white dark:bg-gray-800 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
@@ -72,7 +72,7 @@ export const PublicLogistics: React.FC = () => {
                         <h4 className="font-serif text-lg text-med-blue dark:text-white mb-1">Direct (MPL)</h4>
                         <p className="text-[10px] uppercase tracking-widest text-med-terracotta font-bold mb-3">Fastest</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                            Connect via London, Amsterdam or Paris Orly to land directly at Montpellier-Méditerranée.
+                            Connect via London, Amsterdam or Paris Orly to land directly at -Méditerranée.
                         </p>
                     </div>
                 </div>

@@ -20,7 +20,7 @@ const FLIGHT_OPTIONS: TravelOption[] = [
     type: 'flight',
     title: 'Via Paris (CDG)',
     subtitle: 'The Seamless Route',
-    description: 'Fly into Charles de Gaulle (CDG) Terminal 2. The TGV station is located directly beneath the terminal, offering a seamless high-speed rail connection to Montpellier.',
+    description: 'Fly into Charles de Gaulle (CDG) Terminal 2. The TGV station is located directly beneath the terminal, offering a seamless high-speed rail connection to .',
     cost: 950,
     image: 'https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?q=80&w=800&auto=format&fit=crop',
     badge: 'Recommended'
@@ -30,7 +30,7 @@ const FLIGHT_OPTIONS: TravelOption[] = [
     type: 'flight',
     title: 'Via Barcelona (BCN)',
     subtitle: 'The Scenic Route',
-    description: 'Fly into Barcelona, enjoy tapas for lunch, then take the scenic coastal high-speed train north to Montpellier.',
+    description: 'Fly into Barcelona, enjoy tapas for lunch, then take the scenic coastal high-speed train north to .',
     cost: 850,
     image: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?q=80&w=800&auto=format&fit=crop'
   },
@@ -39,7 +39,7 @@ const FLIGHT_OPTIONS: TravelOption[] = [
     type: 'flight',
     title: 'Direct Arrival (MPL)',
     subtitle: 'Fastest Access',
-    description: 'Connect through a European hub to land directly at Montpellier-Méditerranée. 15 minutes from the city center.',
+    description: 'Connect through a European hub to land directly at -Méditerranée. 15 minutes from the city center.',
     cost: 1100,
     image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop'
   }

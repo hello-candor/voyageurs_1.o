@@ -86,8 +86,8 @@ export const DashboardDrawer: React.FC<DashboardDrawerProps> = ({ isOpen, onClos
                             <Sparkles size={24} />
                         </div>
                         <div>
-                            <h2 className="font-serif text-2xl text-med-blue dark:text-white leading-none">Bryan's 40th</h2>
-                            <p className="text-[10px] text-med-terracotta uppercase tracking-[0.3em] font-bold mt-1">Montpellier</p>
+                            <h2 className="font-serif text-2xl text-med-blue dark:text-white leading-none">September 18-20</h2>
+                            <p className="text-[10px] text-med-terracotta uppercase tracking-[0.3em] font-bold mt-1"></p>
                         </div>
                     </div>
 
@@ -195,7 +195,7 @@ export const DashboardDrawer: React.FC<DashboardDrawerProps> = ({ isOpen, onClos
                     <div className="w-10 h-10 bg-med-blue text-white rounded-xl flex items-center justify-center rotate-3">
                         <Sparkles size={18} />
                     </div>
-                    <h2 className="font-serif text-xl text-med-blue dark:text-white">{isUnlocked ? "Bryan's 40th" : 'Setup'}</h2>
+                    <h2 className="font-serif text-xl text-med-blue dark:text-white">{isUnlocked ? "September 18-20" : 'Setup'}</h2>
                 </div>
                 <button onClick={onClose} className="p-2 text-gray-400"><X size={24} /></button>
             </header>

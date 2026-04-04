@@ -35,7 +35,7 @@ export const WelcomeTour: React.FC<WelcomeTourProps> = ({ isOpen, onClose, type 
         {
             targetId: null,
             title: `Bienvenue, ${firstName}`,
-            content: "Welcome to Voyageurs. A fluid, spatial workspace designed for your weekend in Montpellier.",
+            content: "Welcome to Voyageurs. A fluid, spatial workspace designed for your weekend in .",
             icon: Sparkles,
             position: 'center',
             color: 'text-med-terracotta',
@@ -266,7 +266,7 @@ export const WelcomeTour: React.FC<WelcomeTourProps> = ({ isOpen, onClose, type 
           <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl p-1 rounded-[2.5rem] shadow-2xl border border-white/20 dark:border-white/10 overflow-hidden relative mx-auto max-h-[min(80vh,500px)] flex flex-col">
               
               {/* Content Container */}
-              <div className="bg-white/50 dark:bg-black/20 rounded-[2rem] p-8 relative overflow-y-auto flex-1 scrollbar-hide">
+              <div className="bg-white/50 dark:bg-black/20 rounded-[2rem] p-8 sm:p-10 relative overflow-y-auto flex-1 scrollbar-hide">
                   
                   {/* Header Row */}
                   <div className="flex justify-between items-start mb-6">
@@ -292,10 +292,13 @@ export const WelcomeTour: React.FC<WelcomeTourProps> = ({ isOpen, onClose, type 
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.3 }}
                         >
-                            <h3 className="font-serif text-2xl text-med-blue dark:text-white leading-tight mb-2">
+                            <h3 
+                              className="font-serif text-med-blue dark:text-white leading-[1.1] mb-3 tracking-tight"
+                              style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)' }}
+                            >
                                 {currentStepData.title}
                             </h3>
-                            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed font-medium">
+                            <p className="text-gray-600 dark:text-gray-300 text-[clamp(0.875rem,2vw,1.1rem)] leading-relaxed font-medium">
                                 {currentStepData.content}
                             </p>
                         </motion.div>

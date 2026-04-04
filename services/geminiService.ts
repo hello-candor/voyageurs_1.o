@@ -91,7 +91,7 @@ ${[...DEFAULT_EXPLORATION_DATA, ...DEFAULT_ACTIVITY_DATA].map(a => `- ${a.name} 
 `;
 
 const SYSTEM_INSTRUCTION = `
-You are "Céleste", the intelligent concierge for Bryan's 40th Birthday in Montpellier (Sept 2026).
+You are "Céleste", the intelligent concierge for September 18-20 Birthday in  (Sept 2026).
 Your goal is to assist guests with both the *event logistics* and the *destination experience*.
 
 RULES OF ENGAGEMENT:
@@ -203,7 +203,7 @@ export const askConcierge = async (
     return result;
   } catch (error) {
     console.error("Concierge Error:", error);
-    return { text: "I'm currently unable to reach my contacts in Montpellier. Please ensure the API Key is set.", sources: [] };
+    return { text: "I'm currently unable to reach my contacts in . Please ensure the API Key is set.", sources: [] };
   }
 };
 
@@ -237,7 +237,7 @@ export const askHostAssistant = async (
     }
 };
 
-export const coordinateGroupPlan = async (groupMembers: string[], interest: string, locationContext: string = "Montpellier"): Promise<string> => {
+export const coordinateGroupPlan = async (groupMembers: string[], interest: string, locationContext: string = ""): Promise<string> => {
   try {
     const prompt = `Coordinate a joint plan for ${groupMembers.join(', ')} who are all interested in "${interest}" during the birthday weekend in ${locationContext}. 
     Suggest a specific meeting time, logistics (e.g. tram or carpool), and a small unique detail to make it special.
@@ -292,7 +292,7 @@ export interface PlaceDetails {
   sources?: ChatSource[];
 }
 
-export const getPlaceDetails = async (placeName: string, locationContext: string = "Montpellier, France"): Promise<PlaceDetails | null> => {
+export const getPlaceDetails = async (placeName: string, locationContext: string = ", France"): Promise<PlaceDetails | null> => {
   const cacheKey = `place:${placeName}:${locationContext}`;
   const cached = getFromCache(cacheKey);
   if (cached) return cached;
@@ -342,7 +342,7 @@ export const getPlaceDetails = async (placeName: string, locationContext: string
 
 export const discoverMorePlaces = async (category: string, currentNames: string[]): Promise<string[]> => {
   try {
-    const prompt = `Suggest 2 unique, highly photogenic locations or activities in or near Montpellier, France that fit the category "${category}".
+    const prompt = `Suggest 2 unique, highly photogenic locations or activities in or near , France that fit the category "${category}".
     Do NOT suggest these places: ${currentNames.join(', ')}.
     Return ONLY a JSON array of strings with the names.`;
     
@@ -387,12 +387,12 @@ export const getTripCostEstimate = async (originCity: string, destination: strin
   try {
     const response = await retryOperation<GenerateContentResponse>(() => generateContent({
       model: 'gemini-3-flash-preview', 
-      contents: `Estimate travel options for 1 person from "${originCity}" to Montpellier, France (${startDate} to ${endDate}).
+      contents: `Estimate travel options for 1 person from "${originCity}" to , France (${startDate} to ${endDate}).
       Focus strictly on primary Flight Hubs as the primary method of reaching Europe.
       Provide 4 distinct options:
       1. Paris (CDG) Hub: Flight to Paris, then the seamless TGV train connection. Flag as "Recommended".
       2. Barcelona (BCN) Hub: Flight to Barcelona, followed by the Mediterranean coastal train. Flag as "Scenic".
-      3. Direct/Connecting Flight (MPL Hub): Flight directly to Montpellier Méditerranée (MPL). Flag as "Fastest".
+      3. Direct/Connecting Flight (MPL Hub): Flight directly to  Méditerranée (MPL). Flag as "Fastest".
       4. Regional Hub (The Wildcard): Lowest price option to Marseille or Nîmes. Flag as "Cheapest".
 
       Return ONLY JSON:
@@ -507,7 +507,7 @@ export const generateDraftItem = async (category: 'restaurant' | 'hotel' | 'acti
 
 export const generateEmailDraft = async (topic: string, audience: string, senderName: string): Promise<{ subject: string; body: string }> => {
     try {
-        const prompt = `You are helping ${senderName} draft an email to guests attending a 40th birthday in Montpellier.
+        const prompt = `You are helping ${senderName} draft an email to guests attending a 40th birthday in .
         Audience: ${audience}.
         Topic: "${topic}".
         Tone: Professional but warm, exciting, clear.
@@ -531,7 +531,7 @@ export const generateEmailDraft = async (topic: string, audience: string, sender
         return JSON.parse(response.text || '{ "subject": "", "body": "" }');
     } catch (e) {
         console.error("Generate Email Error", e);
-        return { subject: "Update regarding Montpellier", body: "Could not generate draft." };
+        return { subject: "Update regarding ", body: "Could not generate draft." };
     }
 };
 

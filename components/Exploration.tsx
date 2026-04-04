@@ -34,7 +34,7 @@ export const DAY_TRIPS: ExplorationItem[] = [
     fullDescription: "Sète is a fascinating island-city caught between the Mediterranean Sea and the Thau Lagoon. It is a gritty, authentic working fishing port.",
     highlights: ["Panoramic view from Mont Saint-Clair", "Eating 'Tielle Sétoise'", "Boat tours of the oyster beds"],
     bestFor: "Seafood lovers & Photographers",
-    transportDetail: "Trains run every 20-30 minutes from Montpellier Saint-Roch.",
+    transportDetail: "Trains run every 20-30 minutes from  Saint-Roch.",
     entryCost: 20,
     lat: 43.4025,
     lng: 3.6961
@@ -82,7 +82,7 @@ export const DAY_TRIPS: ExplorationItem[] = [
     fullDescription: "Nîmes was a major city of the Roman Empire. The Arena of Nîmes is arguably better preserved than the Colosseum.",
     highlights: ["The Arena (Amphitheatre)", "Maison Carrée", "Jardins de la Fontaine"],
     bestFor: "Roman History enthusiasts",
-    transportDetail: "Frequent TER or TGV trains from Montpellier Saint-Roch.",
+    transportDetail: "Frequent TER or TGV trains from  Saint-Roch.",
     entryCost: 25,
     lat: 43.8367,
     lng: 4.3601
@@ -130,7 +130,7 @@ export const VINEYARD_DATA: ExplorationItem[] = [
     // Image: French Chateau Exterior
     image: 'https://images.unsplash.com/photo-1572418343759-4f7f631df671?q=80&w=800&auto=format&fit=crop', 
     distance: "15 min tram/taxi",
-    fullDescription: "An architectural gem and a working vineyard located uniquely within Montpellier itself. Flaugergues is one of the 'Folies'—grand summer houses built by wealthy merchants in the 18th century. It has been in the same family (Colbert) for generations. The gardens are classified as 'Remarkable', and the wines are a sophisticated expression of the Grés de Montpellier terroir.",
+    fullDescription: "An architectural gem and a working vineyard located uniquely within  itself. Flaugergues is one of the 'Folies'—grand summer houses built by wealthy merchants in the 18th century. It has been in the same family (Colbert) for generations. The gardens are classified as 'Remarkable', and the wines are a sophisticated expression of the Grés de  terroir.",
     highlights: ["18th-Century Architecture", "Classified French Gardens", "Within City Limits", "Excellent Restaurant (Folgues)"],
     bestFor: "History lovers & Lunch",
     transportDetail: "Accessible via Tram Line 1 (stop 'Place de France') then a short walk, or a 15-min Uber from the center.",
@@ -186,7 +186,7 @@ export const VINEYARD_DATA: ExplorationItem[] = [
     fullDescription: "Puech-Haut is the heavyweight champion of modern Languedoc luxury. The estate is immaculate, famous for its 'Bib'Art' (painted barrels) and its omnipresent premium Rosé, Argali.",
     highlights: ["Painted Barrel Collection", "Premium Rosé", "Olive Oil Production"],
     bestFor: "Rosé Lovers & Art Fans",
-    transportDetail: "Car required. East of Montpellier.",
+    transportDetail: "Car required. East of .",
     signatureWine: "Argali Rosé",
     varietals: ["Grenache", "Cinsault"],
     entryCost: 20,
@@ -339,7 +339,7 @@ export const LANDMARK_DATA: ExplorationItem[] = [
     // Image: Stone Architecture / Underground
     image: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=800&auto=format&fit=crop",
     distance: "Historic Center",
-    fullDescription: "A testament to the importance of Montpellier's medieval Jewish community. This ritual bath is one of the best preserved in Europe.",
+    fullDescription: "A testament to the importance of 's medieval Jewish community. This ritual bath is one of the best preserved in Europe.",
     highlights: ["Medieval History", "Jewish Heritage", "Underground Architecture"],
     bestFor: "History Tours",
     transportDetail: "Access via Tourist Office guided tours only.",
@@ -400,7 +400,7 @@ export const LANDMARK_DATA: ExplorationItem[] = [
     category: 'landmark',
     name: "Porte du Peyrou",
     description: "Doric style triumphal arch honoring King Louis XIV.",
-    // Image: Arc de Triomphe Montpellier
+    // Image: Arc de Triomphe 
     image: "https://images.unsplash.com/photo-1560624052-449f5ddf0c31?q=80&w=800&auto=format&fit=crop",
     distance: "Peyrou Entrance",
     fullDescription: "Built in 1693, this arch anchors the entrance to the Royal Place du Peyrou. You can climb to the top for a view.",
@@ -451,7 +451,7 @@ export const Exploration: React.FC = () => {
         setRealTimeDetails(null);
         const context = selectedItem.id === 'sete' ? 'Sète, France' 
                       : selectedItem.category === 'vineyard' ? 'Hérault, France'
-                      : 'Montpellier, France';
+                      : ', France';
         const details = await getPlaceDetails(selectedItem.name, context);
         setRealTimeDetails(details);
         setLoadingRealTime(false);
@@ -521,7 +521,7 @@ export const Exploration: React.FC = () => {
                         <span className="italic text-med-terracotta">Expeditions</span>
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed font-medium italic mb-8">
-                        "The soul of Montpellier lies in its surroundings. From the wild marshes of Camargue to the Roman temples of Nîmes."
+                        "The soul of  lies in its surroundings. From the wild marshes of Camargue to the Roman temples of Nîmes."
                     </p>
                 </div>
 

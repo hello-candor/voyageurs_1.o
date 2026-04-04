@@ -23,8 +23,8 @@ const TRANSIT_OPTIONS = [
         title: 'Tramway',
         subtitle: 'The Colorful Network',
         icon: Train,
-        desc: "Montpellier's tram system is designed by Christian Lacroix. It's the most efficient way to get around the metro area. Lines 1 (Blue) and 4 (Gold) circle the historic center.",
-        tip: "Download 'TaM Montpellier' for tickets.",
+        desc: "'s tram system is designed by Christian Lacroix. It's the most efficient way to get around the metro area. Lines 1 (Blue) and 4 (Gold) circle the historic center.",
+        tip: "Download 'TaM ' for tickets.",
         color: 'bg-blue-500'
     },
     {
@@ -90,7 +90,7 @@ const PACKING_LIST = [
 const BLOG_POSTS = [
     {
         id: 'drone-tour',
-        title: "Cinematic Montpellier",
+        title: "Cinematic ",
         category: "Visuals",
         excerpt: "Soar above the aqueducts and the coastline in this stunning 4K aerial film.",
         image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800&auto=format&fit=crop",
@@ -101,13 +101,13 @@ const BLOG_POSTS = [
             <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg mb-8 bg-black">
                 <iframe 
                     src="https://www.youtube.com/embed/wZiCI3R1Bdg" 
-                    title="Montpellier Cinematic" 
+                    title=" Cinematic" 
                     class="absolute top-0 left-0 w-full h-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                     allowfullscreen
                 ></iframe>
             </div>
-            <p>See Montpellier from a perspective few get to witness. This cinematic journey takes you over the St. Clement Aqueduct, the Place de la Comédie, and out to the shimmering Mediterranean coast.</p>
+            <p>See  from a perspective few get to witness. This cinematic journey takes you over the St. Clement Aqueduct, the Place de la Comédie, and out to the shimmering Mediterranean coast.</p>
             <h4>Key Sights</h4>
             <ul>
                 <li>The Arceaux Aqueduct at sunset</li>
@@ -128,13 +128,13 @@ const BLOG_POSTS = [
             <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg mb-8 bg-black">
                 <iframe 
                     src="https://www.youtube.com/embed/6b5XziA5TD4" 
-                    title="Montpellier Travel Guide" 
+                    title=" Travel Guide" 
                     class="absolute top-0 left-0 w-full h-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                     allowfullscreen
                 ></iframe>
             </div>
-            <p>A comprehensive guide to visiting Montpellier. From the historic Place de la Comédie to the Arc de Triomphe, explore the city's rich history and vibrant culture.</p>
+            <p>A comprehensive guide to visiting . From the historic Place de la Comédie to the Arc de Triomphe, explore the city's rich history and vibrant culture.</p>
             <h4>Highlights</h4>
             <ul>
                 <li>Place de la Comédie & The Three Graces</li>
@@ -152,7 +152,7 @@ const BLOG_POSTS = [
         readTime: "3 min read",
         author: "Bryan",
         content: `
-            <p>France hasn't historically been known for its specialty coffee scene (sorry, <em>café richard</em>), but Montpellier is leading a quiet revolution. Here are the spots where you can get a proper V60 or Flat White.</p>
+            <p>France hasn't historically been known for its specialty coffee scene (sorry, <em>café richard</em>), but  is leading a quiet revolution. Here are the spots where you can get a proper V60 or Flat White.</p>
             <h4>1. Coldrip</h4>
             <p>Located in the heart of the Écusson, this is arguably the best coffee in town. Australian style, perfect extraction.</p>
             <h4>2. Café Bun</h4>
@@ -170,7 +170,7 @@ const BLOG_POSTS = [
         readTime: "5 min read",
         author: "Céleste",
         content: `
-            <p>Montpellier's true beauty is hidden. The medieval center is packed with <em>Hôtels Particuliers</em>—private mansions from the 17th and 18th centuries—concealed behind unassuming heavy doors.</p>
+            <p>'s true beauty is hidden. The medieval center is packed with <em>Hôtels Particuliers</em>—private mansions from the 17th and 18th centuries—concealed behind unassuming heavy doors.</p>
             <h4>How to Spot Them</h4>
             <p>Look for doors that seem slightly ajar during the day. If you see a courtyard, peek inside (respectfully). You'll find grand staircases and stone vaults.</p>
             <h4>Hôtel de Varennes</h4>
@@ -188,8 +188,8 @@ const BLOG_POSTS = [
         content: `
             <p>Forget Bordeaux. The Languedoc is where the innovation is happening. Once known for bulk wine, it's now the land of exciting, terroir-driven reds and crisp whites.</p>
             <h4>Pic Saint-Loup</h4>
-            <p>The "King of the North" of Montpellier. These wines are Syrah-dominant, spicy, and elegant. Look for <em>Domaine de l'Hortus</em>.</p>
-            <h4>Grés de Montpellier</h4>
+            <p>The "King of the North" of . These wines are Syrah-dominant, spicy, and elegant. Look for <em>Domaine de l'Hortus</em>.</p>
+            <h4>Grés de </h4>
             <p>Grown right around the city. These are powerful, sun-drenched wines with notes of garrigue (wild herbs). <em>Château de Flaugergues</em> is a prime example.</p>
         `
     }
@@ -219,7 +219,7 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
         const printContent = `
           <html>
             <head>
-              <title>Montpellier Packing List</title>
+              <title> Packing List</title>
               <style>
                 body { font-family: sans-serif; padding: 40px; color: #1E4472; max-width: 800px; margin: 0 auto; }
                 h1 { font-family: serif; font-size: 32px; border-bottom: 2px solid #D67252; padding-bottom: 10px; margin-bottom: 30px; }
@@ -233,7 +233,7 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
               </style>
             </head>
             <body>
-              <h1>Montpellier 2026 — Packing List</h1>
+              <h1> 2026 — Packing List</h1>
               
               ${PACKING_LIST.map(group => `
                 <div class="category">
@@ -245,10 +245,10 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
               `).join('')}
 
               <div class="note">
-                <strong>Weather Note:</strong> September in Montpellier sees highs of 77°F (25°C) and lows of 59°F (15°C). It is generally sunny, but a light layer for evenings is recommended.
+                <strong>Weather Note:</strong> September in  sees highs of 77°F (25°C) and lows of 59°F (15°C). It is generally sunny, but a light layer for evenings is recommended.
               </div>
 
-              <div class="footer">Bryan's 40th Celebration • Voyageurs App</div>
+              <div class="footer">September 18-20 Celebration • Voyageurs App</div>
               <script>
                 window.onload = function() { window.print(); window.close(); }
               </script>
@@ -341,7 +341,7 @@ export const EssentialsToolkit: React.FC<EssentialsToolkitProps> = ({ onNavigate
                                         <h3 className="font-serif text-4xl mb-6 leading-none">Travel<br /><span className="italic text-white/50">Ready</span></h3>
 
                                         <p className="text-blue-100/80 text-sm leading-relaxed mb-8 font-medium">
-                                            Montpellier in September is warm but breezy. Pack for sunny days and cooler evenings. Don't forget the power adapter.
+                                             in September is warm but breezy. Pack for sunny days and cooler evenings. Don't forget the power adapter.
                                         </p>
 
                                         <div className="space-y-4">

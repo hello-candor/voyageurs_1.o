@@ -29,7 +29,7 @@ const REC_FLIGHTS = [
     type: 'flight' as const,
     title: 'Via Paris (CDG)',
     subtitle: 'The Seamless Hub',
-    description: 'Fly into Charles de Gaulle (CDG). The high-speed TGV station is located directly beneath Terminal 2, offering a fast rail connection directly to Montpellier center.',
+    description: 'Fly into Charles de Gaulle (CDG). The high-speed TGV station is located directly beneath Terminal 2, offering a fast rail connection directly to  center.',
     cost: 950,
     image: 'https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?q=80&w=800&auto=format&fit=crop',
     badge: 'Primary Hub'
@@ -49,7 +49,7 @@ const REC_FLIGHTS = [
     type: 'flight' as const,
     title: 'Direct to MPL',
     subtitle: 'Maximum Convenience',
-    description: 'Connect through a major European hub (like AMS, LGW, or FRA) to land directly at Montpellier-Méditerranée, just 15 minutes from the city center.',
+    description: 'Connect through a major European hub (like AMS, LGW, or FRA) to land directly at -Méditerranée, just 15 minutes from the city center.',
     cost: 1100,
     image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop',
     badge: 'Fastest'
@@ -185,10 +185,10 @@ export const TripPlanner: React.FC<TripPlannerProps> = ({ initialTab, embedded =
     if (option.type === 'mixed') {
         if (option.id === 'via-paris') {
             bookingUrl = flightQuery(origin, 'CDG');
-            secondaryBookingUrl = trainQuery('Paris Charles de Gaulle Airport', 'Montpellier Saint-Roch');
+            secondaryBookingUrl = trainQuery('Paris Charles de Gaulle Airport', ' Saint-Roch');
         } else if (option.id === 'via-bcn') {
             bookingUrl = flightQuery(origin, 'BCN');
-            secondaryBookingUrl = trainQuery('Barcelona Sants', 'Montpellier Saint-Roch');
+            secondaryBookingUrl = trainQuery('Barcelona Sants', ' Saint-Roch');
         }
     } else {
         // Fallback for direct flight or regional hubs
@@ -285,7 +285,7 @@ export const TripPlanner: React.FC<TripPlannerProps> = ({ initialTab, embedded =
                                         <span className="italic text-med-terracotta">Gateway</span>
                                     </h2>
                                     <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed font-medium italic mb-8">
-                                        "Montpellier is perfectly connected via major European flight hubs. Choose your gateway to the Mediterranean."
+                                        " is perfectly connected via major European flight hubs. Choose your gateway to the Mediterranean."
                                     </p>
                                 </div>
 

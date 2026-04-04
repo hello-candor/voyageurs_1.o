@@ -7,7 +7,7 @@ import { useAppConfig } from '../context/AppConfigContext';
 import { SearchOverlay } from './SearchOverlay';
 
 const publicLinks = [
-  { name: 'Destination', href: '#montpellier-info', subtitle: 'La Douée' },
+  { name: 'Destination', href: '#-info', subtitle: 'La Douée' },
   { name: 'Travel', href: '#logistics', subtitle: 'Logistics' },
   { name: 'Occasion', href: '#celebration', subtitle: 'Itinerary' },
   { name: 'Atmosphere', href: '#gallery', subtitle: 'Gallery' },
@@ -62,7 +62,7 @@ export const Navigation: React.FC = () => {
       }
     };
     const observer = new IntersectionObserver(observerCallback, observerOptions);
-    const sectionsToObserve = ['montpellier-info', 'logistics', 'celebration', 'gallery', 'home'];
+    const sectionsToObserve = ['-info', 'logistics', 'celebration', 'gallery', 'home'];
     sectionsToObserve.forEach(id => {
        const element = document.getElementById(id);
        if (element) observer.observe(element);

@@ -17,7 +17,7 @@ const styles = {
 
 export const templates: Record<TemplateId, (data: any) => EmailContent> = {
   WELCOME: (data: { name: string; url: string }) => ({
-    subject: `Bienvenue to Montpellier, ${data.name}`,
+    subject: `Bienvenue to , ${data.name}`,
     text: `Bonjour ${data.name}, Welcome to the Voyageurs App. We are thrilled to have you join the celebration. Access your itinerary here: ${data.url}`,
     html: `
       <div style="${styles.container}">
@@ -26,7 +26,7 @@ export const templates: Record<TemplateId, (data: any) => EmailContent> = {
         </div>
         <div style="${styles.body}">
           <h2 style="color: #D67252;">Bonjour ${data.name},</h2>
-          <p>Welcome to the official companion app for Bryan's 40th Birthday celebration in Montpellier.</p>
+          <p>Welcome to the official companion app for September 18-20 Birthday celebration in .</p>
           <p>Your profile is now active. You can use the Hub to:</p>
           <ul>
             <li>Manage your RSVP & Logistics</li>
@@ -38,15 +38,15 @@ export const templates: Record<TemplateId, (data: any) => EmailContent> = {
           </div>
         </div>
         <div style="${styles.footer}">
-          Montpellier 2026 • L'Art de Vivre
+           2026 • L'Art de Vivre
         </div>
       </div>
     `
   }),
 
   INVITATION: (data: { inviteeName: string; senderName: string; code: string; url: string }) => ({
-    subject: `${data.senderName} invited you to Montpellier 2026`,
-    text: `${data.inviteeName}, you have been invited by ${data.senderName} to join the travel party for Bryan's 40th. Use code: ${data.code} to join.`,
+    subject: `${data.senderName} invited you to  2026`,
+    text: `${data.inviteeName}, you have been invited by ${data.senderName} to join the travel party for September 18-20. Use code: ${data.code} to join.`,
     html: `
       <div style="${styles.container}">
         <div style="${styles.header}">
@@ -64,7 +64,7 @@ export const templates: Record<TemplateId, (data: any) => EmailContent> = {
           </div>
         </div>
         <div style="${styles.footer}">
-          Voyageurs App • Montpellier
+          Voyageurs App • 
         </div>
       </div>
     `

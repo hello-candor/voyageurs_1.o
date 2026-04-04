@@ -69,7 +69,7 @@ export const Attractions: React.FC<AttractionsProps> = ({ trips }) => {
                 <span className="text-med-terracotta font-bold uppercase tracking-[0.2em] text-xs block mb-3">Exploration</span>
                 <h2 className="font-serif text-4xl text-med-blue dark:text-blue-100 mb-8">Beyond the City</h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                   Montpellier is the gateway to Occitanie. Within an hour, you can be in a Roman arena, a wild marshland, or a medieval mountain village.
+                    is the gateway to Occitanie. Within an hour, you can be in a Roman arena, a wild marshland, or a medieval mountain village.
                 </p>
             </div>
           </div>

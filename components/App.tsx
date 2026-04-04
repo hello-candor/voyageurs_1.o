@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { Hero } from './components/Hero';
-import { MontpellierInfo } from './components/MontpellierInfo';
+import { Info } from './components/Info';
 import { PublicLogistics } from './components/PublicLogistics';
 import { Navigation } from './components/Navigation';
 import { TheCelebration } from './components/TheCelebration';
@@ -118,7 +118,7 @@ const App = () => {
 
         <main id="main-content" className="flex-1 w-full pb-24 lg:pb-0">
           <Hero />
-          <MontpellierInfo />
+          <Info />
           <PublicLogistics />
           <TheCelebration />
           <Gallery />

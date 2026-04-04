@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo, useEffect, Suspense, useCallback, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useUser, Guest } from '../context/UserContext';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
@@ -330,8 +331,13 @@ const DashboardApp = ({ allGuests, onLaunch, config }: any) => {
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h2 className="text-4xl md:text-5xl font-serif text-white mb-2 drop-shadow-md">Command Center</h2>
-                    <p className="text-blue-200/80 font-light">Event Overview</p>
+                    <h2 
+                      className="font-serif text-white leading-[1.1] mb-2 drop-shadow-md tracking-tight"
+                      style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)' }}
+                    >
+                      Command Center
+                    </h2>
+                    <p className="text-blue-200/80 font-light text-lg tracking-wide">Event Overview</p>
                 </div>
                 <div className="px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/10 text-white rounded-full text-xs font-bold uppercase tracking-widest shadow-lg">
                     Host Console

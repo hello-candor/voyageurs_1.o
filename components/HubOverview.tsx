@@ -183,7 +183,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                         Bonjour, <span className="italic text-med-terracotta">{user.name.split(' ')[0]}</span>
                     </h1>
                     <p className={`text-lg md:text-xl font-light drop-shadow-md ${theme === 'light' ? 'text-med-blue/80' : 'text-blue-100/80'}`}>
-                        {timeLeft ? `${timeLeft.d} days until Montpellier.` : "Welcome to the Celebration."}
+                        {timeLeft ? `${timeLeft.d} days until .` : "Welcome to the Celebration."}
                     </p>
                 </div>
 
@@ -267,7 +267,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                                     )}
                                 </h3>
                                 <p className={`text-sm max-w-md leading-relaxed ${theme === 'light' ? 'text-gray-600' : 'text-blue-100/70'}`}>
-                                    {showAllSetView ? "Your itinerary is crafted and your spot is saved. See you in Montpellier." : (!previewStepId && activeGuidance ? activeGuidance.message : displayedStepFinal.desc)}
+                                    {showAllSetView ? "Your itinerary is crafted and your spot is saved. See you in ." : (!previewStepId && activeGuidance ? activeGuidance.message : displayedStepFinal.desc)}
                                 </p>
                             </div>
                             <Button 
@@ -334,7 +334,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                             </div>
                             <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/40' : 'text-white/40'} group-hover:text-primary transition-colors`} />
                         </div>
-                        <h3 className="font-serif text-2xl leading-tight text-primary mb-2">Montpellier</h3>
+                        <h3 className="font-serif text-2xl leading-tight text-primary mb-2"></h3>
                         <p className={`text-xs leading-relaxed line-clamp-2 ${theme === 'light' ? 'text-gray-600' : 'text-white/70'}`}>
                             Discover the medieval streets, hidden courtyards, and why they call it "The Gifted One".
                         </p>

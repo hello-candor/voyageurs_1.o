@@ -26,7 +26,7 @@ export const VINEYARD_DATA: Vineyard[] = [
     description: "A magnificent 'Folie Montpelliéraine' located right within the city limits. Historic architecture meets exceptional wine.",
     image: "https://images.unsplash.com/photo-1572418343759-4f7f631df671?q=80&w=800&auto=format&fit=crop", 
     distance: "15 min tram/taxi",
-    fullDescription: "An architectural gem and a working vineyard located uniquely within Montpellier itself. Flaugergues is one of the 'Folies'—grand summer houses built by wealthy merchants in the 18th century. It has been in the same family (Colbert) for generations. The gardens are classified as 'Remarkable', and the wines are a sophisticated expression of the Grés de Montpellier terroir.",
+    fullDescription: "An architectural gem and a working vineyard located uniquely within  itself. Flaugergues is one of the 'Folies'—grand summer houses built by wealthy merchants in the 18th century. It has been in the same family (Colbert) for generations. The gardens are classified as 'Remarkable', and the wines are a sophisticated expression of the Grés de  terroir.",
     highlights: ["18th-Century Architecture", "Classified French Gardens", "Within City Limits", "Excellent Restaurant (Folgues)"],
     bestFor: "History lovers & Lunch",
     transportDetail: "Accessible via Tram Line 1 (stop 'Place de France') then a short walk, or a 15-min Uber from the center.",
@@ -71,7 +71,7 @@ export const VINEYARD_DATA: Vineyard[] = [
     fullDescription: "Puech-Haut is the heavyweight champion of modern Languedoc luxury. The estate is immaculate, famous for its 'Bib'Art' (painted barrels by famous artists) and its omnipresent premium Rosé, Argali. The vibe is Provençal chic meets Languedoc generosity.",
     highlights: ["Painted Barrel Collection", "Premium Rosé", "Olive Oil Production", "Luxurious Grounds"],
     bestFor: "Rosé Lovers & Art Fans",
-    transportDetail: "Car required. Located east of Montpellier.",
+    transportDetail: "Car required. Located east of .",
     signatureWine: "Argali Rosé",
     varietals: ["Grenache", "Cinsault"],
     tastingNotes: "Pale, refreshing, and crisp. Aromas of citrus, white peach, and exotic fruits. Served in their iconic glass-stopper bottle."
@@ -138,7 +138,7 @@ export const Vineyards: React.FC = () => {
                 <span className="text-med-terracotta font-bold uppercase tracking-[0.2em] text-xs block mb-3">Terroir</span>
                 <h2 className="font-serif text-4xl text-med-blue dark:text-blue-100 mb-8">The Languedoc Renaissance</h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                   Once known for bulk table wine, the region surrounding Montpellier is now the most exciting wine frontier in France, offering complex Syrahs and mineral-rich whites.
+                   Once known for bulk table wine, the region surrounding  is now the most exciting wine frontier in France, offering complex Syrahs and mineral-rich whites.
                 </p>
             </div>
           </div>
