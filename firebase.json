@@ -1,0 +1,33 @@
+{
+  "hosting": {
+    "site": "voyageurs-834eb",
+    "public": "dist",
+    "cleanUrls": true,
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "/53b1c36ee26475f31d545227da913650.html",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/html"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/53b1c36ee26475f31d545227da913650.html",
+        "destination": "/53b1c36ee26475f31d545227da913650.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

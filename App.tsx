@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { InstallPrompt } from './components/InstallPrompt';
+import { RSVPPrompt } from './components/RSVPPrompt';
 import { ArrowUp, Lock, Loader2, EyeOff } from 'lucide-react';
 import { useUser } from './context/UserContext';
 import { useAuth } from './context/AuthContext';
@@ -18,6 +19,7 @@ const TermsModal = React.lazy(() => import('./components/TermsModal').then(m => 
 const HostAdmin = React.lazy(() => import('./components/HostAdmin').then(m => ({ default: m.HostAdmin })));
 const MarketingPage = React.lazy(() => import('./components/MarketingPage').then(m => ({ default: m.MarketingPage })));
 const HostOnboarding = React.lazy(() => import('./components/HostOnboarding').then(m => ({ default: m.HostOnboarding })));
+const LoginPage = React.lazy(() => import('./components/LoginPage').then(m => ({ default: m.LoginPage })));
 
 const LoadingScreen = () => (
   <div className="fixed inset-0 bg-background flex items-center justify-center z-[9999]">
@@ -36,6 +38,7 @@ const App = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [isSettingUp, setIsSettingUp] = useState(false);
   const [isGuestPreview, setIsGuestPreview] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   // Determine if this is the initial host setup
   useEffect(() => {
@@ -74,6 +77,7 @@ const App = () => {
           <Suspense fallback={<LoadingScreen />}>
             <OSContainer initialMode={'guest'} />
           </Suspense>
+          <RSVPPrompt />
           <InstallPrompt />
           <Suspense fallback={null}>
             <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
@@ -87,6 +91,7 @@ const App = () => {
         <Suspense fallback={<LoadingScreen />}>
           <HostAdmin isOpen={true} onSwitchToGuest={() => setIsGuestPreview(true)} />
         </Suspense>
+        <RSVPPrompt />
         <InstallPrompt />
       </div>
     );
@@ -99,6 +104,7 @@ const App = () => {
         <Suspense fallback={<LoadingScreen />}>
           <OSContainer initialMode={'guest'} />
         </Suspense>
+        <RSVPPrompt />
         <InstallPrompt />
         <Suspense fallback={null}>
           <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
@@ -121,7 +127,11 @@ const App = () => {
         ) : (
           // Standard public marketing page content
           <Suspense fallback={<LoadingScreen />}>
-            <MarketingPage />
+            {showLogin ? (
+              <LoginPage onClose={() => setShowLogin(false)} />
+            ) : (
+              <MarketingPage onShowLogin={() => setShowLogin(true)} />
+            )}
           </Suspense>
         )}
       </main>
@@ -142,6 +152,7 @@ const App = () => {
         <PrivacyPolicyModal isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />
         <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
       </Suspense>
+      <RSVPPrompt />
       <InstallPrompt />
     </div>
   );

@@ -9,9 +9,10 @@ export const InstallPrompt: React.FC = () => {
     const [isIOS, setIsIOS] = useState(false);
 
     useEffect(() => {
-        // Check if previously dismissed
+        // Check if previously dismissed or RSVP not confirmed
         const isDismissed = safeStorage.getItem('install_prompt_dismissed');
-        if (isDismissed) return;
+        const isRsvpConfirmed = safeStorage.getItem('rsvp_confirmed');
+        if (isDismissed || !isRsvpConfirmed) return;
 
         // 1. Check for iOS
         const isIosDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
@@ -38,8 +39,18 @@ export const InstallPrompt: React.FC = () => {
 
         window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
+        // Listen for RSVP confirmation to show prompt
+        const handleRsvpChange = () => {
+             // If RSVP just confirmed, wait for 3s to show prompt
+             if (safeStorage.getItem('rsvp_confirmed') && !safeStorage.getItem('install_prompt_dismissed')) {
+                 setTimeout(() => setShowPrompt(true), 3000);
+             }
+        };
+        window.addEventListener('rsvp_changed', handleRsvpChange);
+
         return () => {
             window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+            window.removeEventListener('rsvp_changed', handleRsvpChange);
         };
     }, []);
 
@@ -62,7 +73,7 @@ export const InstallPrompt: React.FC = () => {
 
     return (
         <div className="fixed bottom-6 left-4 right-4 md:left-auto md:right-8 md:bottom-24 z-[300] max-w-xs animate-in slide-in-from-bottom-10 fade-in duration-700 ease-out">
-            <div className="relative overflow-hidden bg-med-blue dark:bg-slate-800 text-white rounded-3xl shadow-2xl border border-white/10 dark:border-gray-700 p-5 group">
+            <div className="relative overflow-hidden bg-med-blue dark:bg-slate-800 text-white rounded-3xl shadow-2xl border border-white/10 dark:border-gray-700 p-5 min-h-[210px] min-w-[210px] flex flex-col justify-center group">
                 <button
                     onClick={handleDismiss}
                     className="absolute top-2 right-2 p-2 text-white/40 hover:text-white rounded-full transition-all"

@@ -57,6 +57,7 @@ export interface UserProfile {
         accommodation: string;
         hub?: string;
     };
+    phone?: string;
     isAdmin?: boolean;
 }
 
@@ -84,7 +85,8 @@ const DEFAULT_PRIVACY: PrivacySettings = {
     shareSocial: true,
     sharePhone: true,
     shareInterests: true,
-    publicRegistry: true
+    publicRegistry: true,
+    smsConsent: true
 };
 
 const HOST_EMAILS = ['bryan@montpellier2026.com', 'admin@voyageurs.app', 'host@example.com'];
@@ -106,7 +108,7 @@ interface UserContextType {
     coordinatedGroups: CoordinatedGroup[];
     galleryPosts: GalleryPost[];
     setVerified: (val: boolean) => void;
-    login: (name: string, email: string, guestsCount: number, status?: Guest['status'], dietary?: string, note?: string, social?: SocialLinks, privacy?: PrivacySettings) => void;
+    login: (name: string, email: string, guestsCount: number, status?: Guest['status'], dietary?: string, note?: string, social?: SocialLinks, privacy?: PrivacySettings, phone?: string) => void;
     loginWithGoogle: (credential: string) => Promise<void>;
     loginWithCode: (code: string) => Promise<boolean>;
     logout: () => void;
@@ -283,7 +285,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [coordinatedGroups]);
 
     // Actions
-    const login = useCallback(async (name: string, email: string, guestsCount: number, status: Guest['status'] = 'Pending', dietary: string = '', note: string = '', social?: SocialLinks, privacy?: PrivacySettings) => {
+    const login = useCallback(async (name: string, email: string, guestsCount: number, status: Guest['status'] = 'Pending', dietary: string = '', note: string = '', social?: SocialLinks, privacy?: PrivacySettings, phone?: string) => {
         const normalizedEmail = email.toLowerCase().trim();
         const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=D67252&color=fff`;
         const isAdmin = HOST_EMAILS.includes(normalizedEmail);
@@ -302,6 +304,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             interests: [],
             social: social || {},
             privacy: privacy || DEFAULT_PRIVACY,
+            phone: phone || '',
             isAdmin,
             partyMembers: [{
                 id: 'primary',

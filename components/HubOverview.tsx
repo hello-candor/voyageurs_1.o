@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { HubView } from './HubLayout';
 import { Button } from './Button';
+import { useGuidance } from '../hooks/useGuidance';
 
 interface HubOverviewProps {
   onTabChange: (tab: HubView) => void;
@@ -25,6 +26,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
   const { config } = useAppConfig();
   const { items } = useTripPlanner();
   const { theme } = useTheme();
+  const activeGuidance = useGuidance();
   const [timeLeft, setTimeLeft] = useState<{d: number, h: number} | null>(null);
   const [previewStepId, setPreviewStepId] = useState<number | null>(null);
 
@@ -128,22 +130,28 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
       : undefined;
       
   const isAllComplete = activeStepIndex === -1 && steps.length > 0;
-
-  const displayedStep = previewStepId 
+  const showAllSetView = isAllComplete && !previewStepId && !activeGuidance;
+  
+  const currentBaseStep = previewStepId 
       ? steps.find(s => s.id === previewStepId) || actualCurrentStep
       : actualCurrentStep;
 
-  const showAllSetView = isAllComplete && !previewStepId;
+  const displayedStepFinal = !showAllSetView && activeGuidance && !previewStepId
+      ? steps.find(s => s.target === activeGuidance.targetView) || currentBaseStep
+      : currentBaseStep;
 
   // Badge Logic
   let badgeLabel = "Current Step";
   let badgeStyle = "bg-med-terracotta/20 text-med-terracotta border-med-terracotta/20";
-  
-  if (displayedStep) {
-      if (displayedStep.isComplete) {
+
+  if (displayedStepFinal) {
+      if (displayedStepFinal.isComplete) {
           badgeLabel = "Completed";
           badgeStyle = "bg-med-olive/20 text-med-olive border-med-olive/20";
-      } else if (actualCurrentStep && displayedStep.id > actualCurrentStep.id) {
+      } else if (activeGuidance && displayedStepFinal.target === activeGuidance.targetView) {
+          badgeLabel = "Priority";
+          badgeStyle = "bg-med-terracotta/20 text-med-terracotta border-med-terracotta/20";
+      } else if (actualCurrentStep && displayedStepFinal.id > actualCurrentStep.id) {
           badgeLabel = "Upcoming";
           badgeStyle = theme === 'dark' ? "bg-blue-500/20 text-blue-300 border-blue-500/20" : "bg-blue-100 text-blue-600 border-blue-200";
       }
@@ -160,7 +168,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
       }
   };
 
-  if (!user || !displayedStep) return null;
+  if (!user || !displayedStepFinal) return null;
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center p-6 md:p-12 text-primary overflow-y-auto scrollbar-hide">
@@ -197,8 +205,10 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                             ></div>
 
                             {steps.map((step, idx) => {
-                                const isActualActive = actualCurrentStep && step.id === actualCurrentStep.id && !isAllComplete;
-                                const isSelected = displayedStep.id === step.id && !showAllSetView;
+                                const isActualActive = activeGuidance 
+                                    ? step.target === activeGuidance.targetView
+                                    : (actualCurrentStep && step.id === actualCurrentStep.id && !isAllComplete);
+                                const isSelected = displayedStepFinal.id === step.id && !showAllSetView;
                                 const isPast = step.isComplete;
                                 
                                 return (
@@ -220,7 +230,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                                             `}
                                         >
                                             {isPast ? <Check size={16} strokeWidth={4} /> : <step.icon size={16} />}
-                                            {isActualActive && <div className="absolute inset-0 rounded-full border-2 border-med-terracotta animate-ping opacity-30"></div>}
+                                            {isActualActive && !isPast && <div className="absolute inset-0 rounded-full border-2 border-med-terracotta animate-ping opacity-30"></div>}
                                         </div>
                                         <span 
                                             className={`
@@ -243,9 +253,9 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
 
                         {/* Active Step Details */}
                         <div className={`flex flex-col md:flex-row gap-6 items-start md:items-center justify-between border-t pt-6 ${theme === 'light' ? 'border-med-blue/10' : 'border-white/10'}`}>
-                            <div>
+                            <div className="flex-1">
                                 <h3 className="text-2xl font-serif font-bold mb-1 flex flex-wrap items-center gap-3 text-primary">
-                                    {showAllSetView ? "You're All Set!" : displayedStep.longLabel}
+                                    {showAllSetView ? "You're All Set!" : (!previewStepId && activeGuidance ? activeGuidance.title : displayedStepFinal.longLabel)}
                                     {showAllSetView ? (
                                         <span className="px-2 py-0.5 bg-med-olive/20 text-med-olive rounded text-[9px] font-sans font-bold uppercase tracking-widest border border-med-olive/20 flex items-center gap-1">
                                             <Sparkles size={10} /> Journey Ready
@@ -257,16 +267,20 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                                     )}
                                 </h3>
                                 <p className={`text-sm max-w-md leading-relaxed ${theme === 'light' ? 'text-gray-600' : 'text-blue-100/70'}`}>
-                                    {showAllSetView ? "Your itinerary is crafted and your spot is saved. See you in Montpellier." : displayedStep.desc}
+                                    {showAllSetView ? "Your itinerary is crafted and your spot is saved. See you in Montpellier." : (!previewStepId && activeGuidance ? activeGuidance.message : displayedStepFinal.desc)}
                                 </p>
                             </div>
                             <Button 
-                                onClick={(e) => { e.stopPropagation(); onTabChange(showAllSetView ? 'logistics' : displayedStep.target); }}
-                                variant={showAllSetView || displayedStep.isComplete ? "primary" : "action"}
+                                onClick={(e) => { 
+                                    e.stopPropagation(); 
+                                    const target = showAllSetView ? 'logistics' : (!previewStepId && activeGuidance ? activeGuidance.targetView : displayedStepFinal.target);
+                                    onTabChange(target as HubView); 
+                                }}
+                                variant={showAllSetView || displayedStepFinal.isComplete ? "primary" : "action"}
                                 size="md"
                                 className="shrink-0 shadow-xl"
                             >
-                                {showAllSetView ? "Planner" : getAppName(displayedStep.target)} <ArrowRight size={14} className="ml-2"/>
+                                {showAllSetView ? "Planner" : getAppName(!previewStepId && activeGuidance ? activeGuidance.targetView : displayedStepFinal.target)} <ArrowRight size={14} className="ml-2"/>
                             </Button>
                         </div>
                     </div>

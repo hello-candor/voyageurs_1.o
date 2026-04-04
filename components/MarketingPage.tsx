@@ -243,14 +243,13 @@ const AuthModal = ({ isOpen, onClose, onGuestLoginSuccess, onHostLoginSuccess }:
     );
 };
 
-export const MarketingPage = ({ onHostLoginSuccess }: any) => {
+export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
     const { theme, toggleTheme } = useTheme();
     const [isAnnual, setIsAnnual] = useState(false);
     const [showPrivacy, setShowPrivacy] = useState(false);
     const [showTerms, setShowTerms] = useState(false);
     const [showAbout, setShowAbout] = useState(false);
     const [showFeatures, setShowFeatures] = useState(false);
-    const [showAuthModal, setShowAuthModal] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(false);
 
     const [celesteIndex, setCelesteIndex] = useState(0);
@@ -298,9 +297,9 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
                         <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-full bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border border-med-blue/10 dark:border-white/10 shadow-sm text-slate-500 dark:text-slate-400 hover:text-med-blue dark:hover:text-white transition-colors">
                             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
                         </button>
-                        <button onClick={() => setShowAuthModal(true)} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] shadow-xl hover:shadow-2xl shadow-[#E2923D]/20 px-6 py-2.5 text-[10px] sm:px-8 sm:py-3.5 sm:text-xs">
-                            Access
-                        </button>
+                        <a href="/rsvp" className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] shadow-xl hover:shadow-2xl shadow-[#E2923D]/20 px-6 py-2.5 text-[10px] sm:px-8 sm:py-3.5 sm:text-xs">
+                            RSVP
+                        </a>
                     </div>
                 </div>
             </nav>
@@ -311,7 +310,7 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
                         <div className="lg:w-1/2 text-center lg:text-left animate-in slide-in-from-bottom-8 duration-700">
                             <div className="flex items-center justify-center lg:justify-start gap-4 mb-6">
                                 <div className="h-px w-8 bg-med-terracotta dark:bg-[#C25E3E]"></div>
-                                <span className="text-med-terracotta dark:text-[#C25E3E] font-bold uppercase tracking-[0.2em] text-[10px]">Upgraded Group Travel</span>
+                                <span className="text-med-terracotta dark:text-[#C25E3E] font-bold uppercase tracking-[0.2em] text-[10px]">You're Invited</span>
                             </div>
                             <h1 className="text-6xl md:text-8xl font-heading font-light text-med-blue dark:text-blue-100 mb-8 leading-[0.9]">
                                 Less planning, <br/>
@@ -321,9 +320,9 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
                                 Orchestrate your next group trip without the spreadsheet fatigue. Voyageurs unifies collaborative itinerary planning, shared expense tracking, and local discovery into one fluid experience.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <button onClick={() => setShowAuthModal(true)} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] px-8 py-3.5 text-xs shadow-xl">
-                                    Access <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-                                </button>
+                                <a href="/rsvp" className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] px-8 py-3.5 text-xs shadow-xl">
+                                    RSVP NOW <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                                </a>
                             </div>
                         </div>
 
@@ -690,7 +689,7 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-slate-400 mt-0.5" /> 1 Active Trip</li>
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-slate-400 mt-0.5" /> Mobile App Access</li>
                             </ul>
-                            <button onClick={() => setShowAuthModal(true)} className="w-full py-4 bg-white dark:bg-gray-800 text-med-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 shadow-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Access</button>
+                            <button onClick={onShowLogin} className="w-full py-4 bg-white dark:bg-gray-800 text-med-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 shadow-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Access</button>
                         </div>
 
                         <div className="relative p-8 rounded-[2.5rem] border border-med-blue bg-med-blue text-white shadow-2xl scale-105 z-10 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_25px_50px_-12px_rgba(30,68,114,0.25)]">
@@ -709,7 +708,7 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-med-terracotta mt-0.5" /> AI Concierge (Céleste)</li>
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-med-terracotta mt-0.5" /> Expense Ledger</li>
                             </ul>
-                            <button onClick={() => setShowAuthModal(true)} className="w-full py-4 bg-med-terracotta text-white hover:bg-[#c56143] shadow-xl hover:shadow-2xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Access</button>
+                            <button onClick={onShowLogin} className="w-full py-4 bg-med-terracotta text-white hover:bg-[#c56143] shadow-xl hover:shadow-2xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Access</button>
                         </div>
 
                         <div className="relative p-8 rounded-[2.5rem] border border-slate-100 dark:border-gray-800 bg-med-sand dark:bg-gray-900 text-slate-800 dark:text-slate-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
@@ -726,7 +725,7 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-slate-400 mt-0.5" /> White-Label Portal</li>
                                 <li className="flex items-start gap-3 text-sm"><CheckCircle size={16} className="text-slate-400 mt-0.5" /> Priority Support</li>
                             </ul>
-                            <button onClick={() => setShowAuthModal(true)} className="w-full py-4 bg-white dark:bg-gray-800 text-med-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 shadow-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Access</button>
+                            <button onClick={onShowLogin} className="w-full py-4 bg-white dark:bg-gray-800 text-med-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 shadow-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] active:scale-95 transition-all">Access</button>
                         </div>
                     </div>
                     
@@ -756,7 +755,7 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
                     <p className="text-blue-100/80 text-lg font-light leading-relaxed max-w-2xl mx-auto mb-10">
                         Orchestrate your next group trip with elegance. Access your event or sign up to create a new one.
                     </p>
-                    <button onClick={() => setShowAuthModal(true)} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] px-8 py-3.5 text-xs shadow-xl">
+                    <button onClick={onShowLogin} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-[#E2923D] text-white hover:bg-[#d17e2b] px-8 py-3.5 text-xs shadow-xl">
                         Access Your Event <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </button>
                 </div>
@@ -797,7 +796,7 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
                         <div>
                             <h4 className="font-bold text-med-blue dark:text-white uppercase tracking-[0.2em] text-[10px] mb-6">Access</h4>
                             <ul className="space-y-4 text-sm text-slate-500 dark:text-slate-400">
-                                <li><button onClick={() => setShowAuthModal(true)} className="hover:text-med-terracotta transition-colors">Login</button></li>
+                                <li><button onClick={onShowLogin} className="hover:text-med-terracotta transition-colors">Login</button></li>
                             </ul>
                         </div>
                     </div>
@@ -817,16 +816,6 @@ export const MarketingPage = ({ onHostLoginSuccess }: any) => {
             <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
             <AboutUsModal isOpen={showAbout} onClose={() => setShowAbout(false)} />
             <FeatureBreakdownModal isOpen={showFeatures} onClose={() => setShowFeatures(false)} />
-            
-            <AuthModal 
-                isOpen={showAuthModal} 
-                onClose={() => setShowAuthModal(false)} 
-                onGuestLoginSuccess={() => {
-                    setShowAuthModal(false);
-                    setShowOnboarding(true);
-                }}
-                onHostLoginSuccess={onHostLoginSuccess}
-            />
         </div>
     );
 };

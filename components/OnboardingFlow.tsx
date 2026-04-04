@@ -5,14 +5,21 @@ import { useTripPlanner } from '../context/TripPlannerContext';
 import { useNotification } from '../context/NotificationContext';
 import { useAuth } from '../context/AuthContext';
 import { safeStorage } from '../utils/storage';
-import { User, Mail, Users, ShieldCheck, Globe, Loader2, MapPin, Calendar, ArrowRight, Plane, Sparkles, Check, Crosshair } from 'lucide-react';
+import { User, Mail, Users, ShieldCheck, Globe, Loader2, MapPin, Calendar, ArrowRight, Plane, Sparkles, Check, Crosshair, Phone } from 'lucide-react';
 import { isValidEmail, isValidName } from '../utils/validation';
 import { Button } from './Button';
 import { debounce } from 'lodash';
 
+import { twilioService } from '../services/twilioService';
+import { emailService } from '../services/emailService';
+import { zapierService } from '../services/zapierService';
+import { stripeService } from '../services/stripeService';
+import { bigQueryService } from '../services/bigQueryService';
+import { abacusService } from '../services/abacusService';
+
 const GOOGLE_CLIENT_ID = "436751288359-kg1n1timqtrdr1damc19fertgocs8paf.apps.googleusercontent.com";
 
-type Step = 'welcome' | 'preferences' | 'identity';
+type Step = 'welcome' | 'rsvp' | 'preferences' | 'identity';
 
 interface Suggestion {
     airport_name: string;
@@ -39,13 +46,16 @@ export const OnboardingFlow: React.FC = () => {
         arrivalDate: '2026-09-15',
         departureDate: '2026-09-22',
         guests: 1,
-        destination: 'Montpellier, France'
+        destination: 'Montpellier, France',
+        rsvpStatus: 'Pending' as 'Confirmed' | 'Declined' | 'Pending'
     });
 
     const [identity, setIdentity] = useState({
         name: user?.name || '',
         email: user?.email || '',
-        publicRegistry: user?.privacy?.publicRegistry ?? true
+        phone: user?.phone || '',
+        publicRegistry: user?.privacy?.publicRegistry ?? true,
+        smsConsent: user?.privacy?.smsConsent ?? true
     });
 
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -166,7 +176,7 @@ export const OnboardingFlow: React.FC = () => {
         }
     };
 
-    const handleFinish = () => {
+    const handleFinish = async () => {
         if (!validateIdentity()) return;
         setIsFinishing(true);
 
@@ -174,17 +184,63 @@ export const OnboardingFlow: React.FC = () => {
             shareSocial: true,
             sharePhone: true,
             shareInterests: true,
-            publicRegistry: identity.publicRegistry
+            publicRegistry: identity.publicRegistry,
+            smsConsent: identity.smsConsent
         };
+
+        if (privacy.smsConsent && identity.phone) {
+            twilioService.sendWelcomeSMS(identity.name, identity.phone).catch(e => console.warn('Welcome SMS failed:', e));
+        }
+
+        // Sync to Zapier for external tracking (Google Sheets, etc.)
+        zapierService.syncNewRegistration({
+            name: identity.name,
+            email: identity.email,
+            phone: identity.phone,
+            status: preferences.rsvpStatus,
+            guests: preferences.guests
+        }).catch(e => console.warn('Zapier Sync failed:', e));
+
+        // Sync to Stripe for customer management/billing
+        stripeService.handleNewRegistration({
+            name: identity.name,
+            email: identity.email,
+            phone: identity.phone,
+            guests: preferences.guests
+        }).catch(e => console.warn('Stripe Sync failed:', e));
+
+        // Append Analytical Data to BigQuery
+        bigQueryService.trackRegistration({
+            name: identity.name,
+            email: identity.email,
+            phone: identity.phone,
+            status: preferences.rsvpStatus,
+            guests: preferences.guests
+        }).catch(e => console.warn('BigQuery Append failed:', e));
+
+        // Notify Abacus Console for central orchestration
+        abacusService.notifyRegistration({
+            name: identity.name,
+            email: identity.email,
+            phone: identity.phone,
+            guests: preferences.guests
+        }).catch(e => console.warn('Abacus Sync failed:', e));
+
+        // Send Welcome Email via SendGrid
+        emailService.sendTemplateEmail(identity.email, 'WELCOME', { 
+            name: identity.name, 
+            url: window.location.origin 
+        }).catch(e => console.warn('Welcome Email failed:', e));
 
         if (user) {
             submitRSVP({
-                status: 'Pending',
+                status: preferences.rsvpStatus as 'Confirmed' | 'Declined' | 'Pending',
                 guestsCount: preferences.guests,
-                privacy
+                privacy,
+                phone: identity.phone
             });
         } else {
-            login(identity.name, identity.email, preferences.guests, 'Pending', '', '', {}, privacy);
+            login(identity.name, identity.email, preferences.guests, preferences.rsvpStatus as any, '', '', {}, privacy, identity.phone);
         }
 
         setTimeout(() => {
@@ -209,7 +265,7 @@ export const OnboardingFlow: React.FC = () => {
 
     const ProgressBar = ({ step }: { step: number }) => (
         <div className="flex gap-2 mb-8">
-            {[1, 2, 3].map(i => (
+            {[1, 2, 3, 4].map(i => (
                 <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-500 ${step >= i ? 'bg-med-terracotta' : 'bg-gray-100 dark:bg-gray-800'}`} />
             ))}
         </div>
@@ -234,7 +290,7 @@ export const OnboardingFlow: React.FC = () => {
                         Let's set up your profile to sync your logistics, connect with guests, and build your itinerary.
                     </p>
                     <div className="pt-8">
-                        <Button onClick={() => setCurrentStep('preferences')} size="lg" fullWidth>
+                        <Button onClick={() => setCurrentStep('rsvp')} size="lg" fullWidth>
                             Start Journey <ArrowRight size={16} className="ml-2" />
                         </Button>
                         <button 
@@ -243,6 +299,56 @@ export const OnboardingFlow: React.FC = () => {
                         >
                             Cancel and Return to Home
                         </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (currentStep === 'rsvp') {
+        return (
+            <div className="max-w-md mx-auto w-full py-8 px-6 flex flex-col justify-center min-h-[500px] animate-in fade-in slide-in-from-right-8 duration-500">
+                <ProgressBar step={1} />
+                <div className="mb-8 text-center">
+                    <h2 className="font-serif text-3xl text-med-blue dark:text-white mb-2">Can you make it?</h2>
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-widest leading-relaxed">Bryan's 40th Birthday | Montpellier, France</p>
+                </div>
+
+                <div className="space-y-4">
+                    <button
+                        onClick={() => {
+                            setPreferences({ ...preferences, rsvpStatus: 'Confirmed' });
+                            setCurrentStep('preferences');
+                        }}
+                        className={`w-full p-6 rounded-2xl border-2 transition-all flex items-center justify-between group ${preferences.rsvpStatus === 'Confirmed' ? 'border-med-terracotta bg-med-terracotta/5' : 'border-gray-100 dark:border-gray-800 hover:border-med-terracotta/30'}`}
+                    >
+                        <div className="text-left">
+                            <p className="font-serif text-xl text-med-blue dark:text-white group-hover:text-med-terracotta transition-colors">I'll be there!</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Ready for the adventure</p>
+                        </div>
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${preferences.rsvpStatus === 'Confirmed' ? 'bg-med-terracotta text-white' : 'bg-gray-50 dark:bg-gray-800 text-gray-300'}`}>
+                            <Check size={20} />
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            setPreferences({ ...preferences, rsvpStatus: 'Declined' });
+                            setCurrentStep('identity');
+                        }}
+                        className={`w-full p-6 rounded-2xl border-2 transition-all flex items-center justify-between group ${preferences.rsvpStatus === 'Declined' ? 'border-red-400 bg-red-400/5' : 'border-gray-100 dark:border-gray-800 hover:border-red-400/30'}`}
+                    >
+                        <div className="text-left">
+                            <p className="font-serif text-xl text-med-blue dark:text-white group-hover:text-red-400 transition-colors">Regretfully decline</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Can't make it this time</p>
+                        </div>
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${preferences.rsvpStatus === 'Declined' ? 'bg-red-400 text-white' : 'bg-gray-50 dark:bg-gray-800 text-gray-300'}`}>
+                            <ShieldCheck size={20} />
+                        </div>
+                    </button>
+
+                    <div className="pt-8">
+                        <Button onClick={() => setCurrentStep('welcome')} variant="ghost" fullWidth>Back</Button>
                     </div>
                 </div>
             </div>
@@ -342,7 +448,7 @@ export const OnboardingFlow: React.FC = () => {
                     </div>
 
                     <div className="pt-4 flex gap-3">
-                        <Button onClick={() => setCurrentStep('welcome')} variant="ghost" className="flex-1">Back</Button>
+                        <Button onClick={() => setCurrentStep('rsvp')} variant="ghost" className="flex-1">Back</Button>
                         <Button onClick={() => setCurrentStep('identity')} variant="primary" className="flex-[2]">Next Step</Button>
                     </div>
                 </div>
@@ -352,7 +458,7 @@ export const OnboardingFlow: React.FC = () => {
 
     return (
         <div className="max-w-md mx-auto w-full py-8 px-6 flex flex-col justify-center min-h-[500px] animate-in fade-in slide-in-from-right-8 duration-500">
-            <ProgressBar step={3} />
+            <ProgressBar step={preferences.rsvpStatus === 'Declined' ? 2 : 3} />
             <div className="mb-8">
                 <h2 className="font-serif text-3xl text-med-blue dark:text-white mb-2">Create Profile</h2>
                 <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Your Digital Passport</p>
@@ -406,34 +512,64 @@ export const OnboardingFlow: React.FC = () => {
                         {errors.email && <p className="text-red-500 text-[9px] font-bold uppercase tracking-wider pl-1">{errors.email}</p>}
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-[9px] font-bold uppercase text-gray-400 tracking-widest ml-1">Privacy</label>
-                        <button
-                            onClick={() => setIdentity({ ...identity, publicRegistry: !identity.publicRegistry })}
-                            className={`w-full py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-between transition-all border ${identity.publicRegistry ? 'bg-med-blue/5 border-med-blue/20 text-med-blue dark:text-blue-200' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-transparent'}`}
-                        >
-                            <span className="flex items-center gap-2">{identity.publicRegistry ? <Globe size={14} /> : <ShieldCheck size={14} />} {identity.publicRegistry ? 'Public Registry' : 'Private Profile'}</span>
-                            <div className={`w-8 h-4 rounded-full relative transition-colors ${identity.publicRegistry ? 'bg-med-blue' : 'bg-gray-300'}`}>
-                                <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-transform ${identity.publicRegistry ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                            </div>
-                        </button>
-                        <p className="text-[9px] text-gray-400 px-1">
-                            {identity.publicRegistry ? "Other guests can see you're attending." : "You will be hidden from the guest list."}
-                        </p>
+                    <div className="space-y-4">
+                        <div className="space-y-2 group">
+                            <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400 flex items-center gap-2 group-focus-within:text-med-blue transition-colors">
+                                <Phone size={12} /> Phone Number
+                            </label>
+                            <input
+                                type="tel"
+                                value={identity.phone}
+                                onChange={(e) => setIdentity({ ...identity, phone: e.target.value })}
+                                className="w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-med-terracotta/20 transition-all dark:text-white text-lg font-sans border border-transparent"
+                                placeholder="+1 (555) 000-0000"
+                            />
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-[9px] font-bold uppercase text-gray-400 tracking-widest ml-1">Settings & Privacy</label>
+                            
+                            <button
+                                onClick={() => setIdentity({ ...identity, publicRegistry: !identity.publicRegistry })}
+                                className={`w-full py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-between transition-all border ${identity.publicRegistry ? 'bg-med-blue/5 border-med-blue/20 text-med-blue dark:text-blue-200' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-transparent'}`}
+                            >
+                                <span className="flex items-center gap-2">{identity.publicRegistry ? <Globe size={14} /> : <ShieldCheck size={14} />} {identity.publicRegistry ? 'Public Registry' : 'Private Profile'}</span>
+                                <div className={`w-8 h-4 rounded-full relative transition-colors ${identity.publicRegistry ? 'bg-med-blue' : 'bg-gray-300'}`}>
+                                    <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-transform ${identity.publicRegistry ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                                </div>
+                            </button>
+
+                            <button
+                                onClick={() => setIdentity({ ...identity, smsConsent: !identity.smsConsent })}
+                                className={`w-full py-4 px-4 rounded-xl transition-all border text-left flex gap-3 ${identity.smsConsent ? 'bg-med-olive/5 border-med-olive/20' : 'bg-gray-50 dark:bg-gray-800 border-transparent'}`}
+                            >
+                                <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${identity.smsConsent ? 'bg-med-olive border-med-olive text-white' : 'border-gray-300 dark:border-gray-600'}`}>
+                                    {identity.smsConsent && <Check size={14} />}
+                                </div>
+                                <div className="flex-1">
+                                    <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${identity.smsConsent ? 'text-med-olive' : 'text-gray-500'}`}>
+                                        Enable SMS Updates
+                                    </p>
+                                    <p className="text-[10px] text-gray-400 leading-normal">
+                                        I consent to receive automated text messages for celebration reminders and logistics updates. Msg & data rates may apply. Reply STOP to opt out.
+                                    </p>
+                                </div>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <div className="pt-4 flex gap-3">
-                    <Button onClick={() => setCurrentStep('preferences')} variant="ghost" className="flex-1">Back</Button>
+                    <Button onClick={() => setCurrentStep(preferences.rsvpStatus === 'Declined' ? 'rsvp' : 'preferences')} variant="ghost" className="flex-1">Back</Button>
                     <Button
                         onClick={handleFinish}
-                        variant="action"
+                        variant={preferences.rsvpStatus === 'Declined' ? 'destructive' : 'action'}
                         size="lg"
                         className="flex-[2]"
                         isLoading={isFinishing}
-                        loadingText="Creating..."
+                        loadingText={preferences.rsvpStatus === 'Declined' ? 'Processing...' : 'Creating...'}
                     >
-                        Enter The Hub
+                        {preferences.rsvpStatus === 'Declined' ? 'Decline RSVP' : 'Enter The Hub'}
                     </Button>
                 </div>
             </div>

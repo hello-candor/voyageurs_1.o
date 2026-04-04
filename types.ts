@@ -249,6 +249,7 @@ export interface PrivacySettings {
   sharePhone: boolean;
   shareInterests: boolean;
   publicRegistry: boolean;
+  smsConsent: boolean;
 }
 
 export interface SocialLinks {

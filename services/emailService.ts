@@ -1,8 +1,11 @@
+/// <reference types="vite/client" />
 
 import { templates, TemplateId } from './emailTemplates';
 import { notificationService } from './notificationService';
 
 class EmailService {
+  private apiUrl: string = import.meta.env.VITE_SENDGRID_FUNCTION_URL || '/api/send-email';
+
   /**
    * Sends a templated email.
    * In a real environment, this would call a backend API (e.g. /api/send-email).
@@ -17,25 +20,38 @@ class EmailService {
 
     const { subject, html, text } = generator(data);
 
-    // --- MOCK BACKEND TRANSMISSION ---
-    console.group(`%c 📧 EMAIL SENT TO: ${to}`, 'color: #D67252; font-weight: bold; font-size: 14px;');
-    console.log(`%cSubject: ${subject}`, 'font-weight: bold;');
-    console.log(`%cTemplate: ${templateId}`, 'color: #888;');
-    console.log(text); // Log text version for readability
-    console.log('%c[HTML Body Hidden - See Network Tab in Prod]', 'color: #aaa; font-style: italic;');
-    console.groupEnd();
+    // --- MOCK OR REAL BACKEND TRANSMISSION ---
+    try {
+      if (import.meta.env.VITE_SENDGRID_FUNCTION_URL) {
+        const response = await fetch(this.apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to, subject, html, text })
+        });
 
-    // Simulate Network Latency
-    await new Promise(resolve => setTimeout(resolve, 600));
+        if (!response.ok) {
+          throw new Error(`SendGrid API failed with status ${response.status}`);
+        }
+      } else {
+        console.group(`%c 📧 EMAIL SENT (SIMULATED): ${to}`, 'color: #D67252; font-weight: bold; font-size: 14px;');
+        console.log(`%cSubject: ${subject}`, 'font-weight: bold;');
+        console.log(`%cTemplate: ${templateId}`, 'color: #888;');
+        console.log(text);
+        console.groupEnd();
+        await new Promise(resolve => setTimeout(resolve, 600));
+      }
 
-    // Trigger a simulated Push Notification to give visual feedback to the user testing the app
-    await notificationService.sendPush(
-      `📧 Email Sent: ${subject}`,
-      `To: ${to}`,
-      data.url || '/'
-    );
-
-    return true;
+      await notificationService.sendPush(
+        `📧 Email Sent: ${subject}`,
+        `To: ${to}`,
+        data.url || '/'
+      );
+      
+      return true;
+    } catch (error) {
+      console.error('EmailService Error:', error);
+      return false;
+    }
   }
 }
 
