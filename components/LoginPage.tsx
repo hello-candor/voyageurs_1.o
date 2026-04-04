@@ -42,7 +42,11 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
     
     try {
         const success = await loginWithCode(inputValue.toUpperCase());
-        if (!success) setError("Invalid invite code. Check your invitation.");
+        if (success) {
+          onClose?.();
+        } else {
+          setError("Invalid invite code. Check your invitation.");
+        }
     } catch (err) {
       setError("Connection error. Please try again.");
     } finally {

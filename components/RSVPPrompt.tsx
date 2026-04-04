@@ -1,11 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, X, CalendarCheck } from 'lucide-react';
 import { safeStorage } from '../utils/storage';
-import { useUser } from '../context/UserContext';
 
 export const RSVPPrompt: React.FC = () => {
-    const { setVerified } = useUser();
     const [showPrompt, setShowPrompt] = useState(false);
 
     useEffect(() => {
@@ -27,9 +24,7 @@ export const RSVPPrompt: React.FC = () => {
 
     const handleRSVP = () => {
         setShowPrompt(false);
-        // setVerified(true) triggers showGuestOnboarding in App.tsx,
-        // which renders TravelHub → GuestProfile → invite code entry
-        setVerified(true);
+        window.dispatchEvent(new Event('open_login'));
     };
 
     if (!showPrompt) return null;

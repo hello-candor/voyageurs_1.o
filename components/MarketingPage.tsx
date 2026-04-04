@@ -297,9 +297,9 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                         <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-full bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border border-med-blue/10 dark:border-white/10 shadow-sm text-slate-500 dark:text-slate-400 hover:text-med-blue dark:hover:text-white transition-colors">
                             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
                         </button>
-                        <a href="/rsvp" className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] shadow-xl hover:shadow-2xl px-6 py-2.5 text-[10px] sm:px-8 sm:py-3.5 sm:text-xs">
+                        <button onClick={onShowLogin} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] shadow-xl hover:shadow-2xl px-6 py-2.5 text-[10px] sm:px-8 sm:py-3.5 sm:text-xs">
                             RSVP
-                        </a>
+                        </button>
                     </div>
                 </div>
             </nav>
@@ -320,9 +320,9 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                                 Orchestrate your next group trip without the spreadsheet fatigue. Voyageurs unifies collaborative itinerary planning, shared expense tracking, and local discovery into one fluid experience.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <a href="/rsvp" className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] px-8 py-3.5 text-xs shadow-xl">
+                                <button onClick={onShowLogin} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] px-8 py-3.5 text-xs shadow-xl">
                                     RSVP NOW <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-                                </a>
+                                </button>
                             </div>
                         </div>
 

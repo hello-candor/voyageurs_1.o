@@ -20,6 +20,7 @@ const HostAdmin = React.lazy(() => import('./components/HostAdmin').then(m => ({
 const MarketingPage = React.lazy(() => import('./components/MarketingPage').then(m => ({ default: m.MarketingPage })));
 const HostOnboarding = React.lazy(() => import('./components/HostOnboarding').then(m => ({ default: m.HostOnboarding })));
 const LoginPage = React.lazy(() => import('./components/LoginPage').then(m => ({ default: m.LoginPage })));
+const OnboardingFlow = React.lazy(() => import('./components/OnboardingFlow').then(m => ({ default: m.OnboardingFlow })));
 
 const LoadingScreen = () => (
   <div className="fixed inset-0 bg-background flex items-center justify-center z-[9999]">
@@ -52,7 +53,15 @@ const App = () => {
     notificationService.requestPermission().catch(console.warn);
     const handleScroll = () => setShowScrollTop(window.scrollY > 400);
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    // Listen for in-app RSVP navigation
+    const handleOpenLogin = () => setShowLogin(true);
+    window.addEventListener('open_login', handleOpenLogin);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('open_login', handleOpenLogin);
+    };
   }, []);
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -116,6 +125,15 @@ const App = () => {
   // SCENARIO 3: PUBLIC/MARKETING VIEW OR GUEST ONBOARDING
   const showGuestOnboarding = isVerified || (user && user.status !== 'Declined');
 
+  // Guest verified but hasn't finished onboarding yet — launch the flow
+  if (isVerified && !user?.hasCompletedOnboarding) {
+    return (
+      <Suspense fallback={<LoadingScreen />}>
+        <OnboardingFlow />
+      </Suspense>
+    );
+  }
+
   return (
     <div className="min-h-screen font-sans selection:bg-med-terracotta/30 bg-background transition-colors duration-300 flex flex-col overflow-x-hidden">
       <main id="main-content" className="flex-1 w-full">
@@ -125,16 +143,19 @@ const App = () => {
             <TravelHub isOpen={true} onClose={toggleProfile} />
           </Suspense>
         ) : (
-          // Standard public marketing page content
+          // Standard public marketing page
           <Suspense fallback={<LoadingScreen />}>
-            {showLogin ? (
-              <LoginPage onClose={() => setShowLogin(false)} />
-            ) : (
-              <MarketingPage onShowLogin={() => setShowLogin(true)} />
-            )}
+            <MarketingPage onShowLogin={() => setShowLogin(true)} />
           </Suspense>
         )}
       </main>
+
+      {/* LoginPage renders as a fixed overlay on top of everything */}
+      {showLogin && (
+        <Suspense fallback={null}>
+          <LoginPage onClose={() => setShowLogin(false)} />
+        </Suspense>
+      )}
 
 
       {/* Scroll-to-top button */}
