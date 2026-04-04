@@ -299,6 +299,39 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
         return activeStack.cards[activeStack.cards.length - 1].view;
     }, [stacks, activeStackId]);
 
+    useEffect(() => {
+        const baseTitle = "Voyageurs RSVP";
+        document.title = (currentActiveView === 'overview' && stacks.length === 0) 
+            ? baseTitle 
+            : `${getAppTitle(currentActiveView)} | ${baseTitle}`;
+            
+        const metaDescriptions: Partial<Record<HubView, string>> = {
+            overview: "Your main journal and dashboard for the trip.",
+            rsvp: "Manage your RSVP status and travel preferences.",
+            messages: "Chat with other attendees and the host.",
+            logistics: "Plan your travel options and accommodations.",
+            activities: "Explore and vote on activities in Montpellier.",
+            expenses: "Manage and split your trip expenses.",
+            registry: "View the guest list and attendee profiles.",
+            guide: "Essential toolkit and guides for your trip to France.",
+            profile: "Manage your personal profile and privacy settings.",
+            calendar: "View the day-by-day itinerary and event schedule.",
+            map: "Explore interactive locations and venues.",
+            detail: "View full details for items and events.",
+            faq: "Find answers to frequently asked questions."
+        };
+
+        const desc = metaDescriptions[currentActiveView] || "The official companion app for Bryan's 40th Birthday celebration.";
+        
+        let metaDescriptionTag = document.querySelector('meta[name="description"]');
+        if (!metaDescriptionTag) {
+            metaDescriptionTag = document.createElement('meta');
+            metaDescriptionTag.setAttribute('name', 'description');
+            document.head.appendChild(metaDescriptionTag);
+        }
+        metaDescriptionTag.setAttribute('content', desc);
+    }, [currentActiveView, stacks.length]);
+
     const isDashboardVisible = stacks.length === 0 || isOverviewMode;
     const isFullScreenActive = !!fullScreenStackId && !isOverviewMode;
 
@@ -389,6 +422,23 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                             />
                         )}
                     </div>
+
+                    {user && user.status && (
+                        <button 
+                            onClick={() => launchApp('rsvp')}
+                            className={`items-center gap-1.5 px-3 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest backdrop-blur-md transition-all hidden md:flex hover:opacity-80 active:scale-95
+                            ${user.status === 'Confirmed' ? (theme === 'light' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20') : ''}
+                            ${user.status === 'Declined' ? (theme === 'light' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-red-500/10 text-red-400 border-red-500/20') : ''}
+                            ${user.status === 'Pending' ? (theme === 'light' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-amber-500/10 text-amber-400 border-amber-500/20') : ''}
+                        `}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${user.status === 'Pending' ? 'animate-pulse' : ''}
+                                ${user.status === 'Confirmed' ? (theme === 'light' ? 'bg-emerald-500' : 'bg-emerald-400') : ''}
+                                ${user.status === 'Declined' ? (theme === 'light' ? 'bg-red-500' : 'bg-red-400') : ''}
+                                ${user.status === 'Pending' ? (theme === 'light' ? 'bg-amber-500' : 'bg-amber-400') : ''}
+                            `} />
+                            {user.status}
+                        </button>
+                    )}
 
                     <div className="relative" ref={userMenuRef}>
                         <button

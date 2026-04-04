@@ -86,7 +86,6 @@ const App = () => {
           <Suspense fallback={<LoadingScreen />}>
             <OSContainer initialMode={'guest'} />
           </Suspense>
-          <RSVPPrompt />
           <InstallPrompt />
           <Suspense fallback={null}>
             <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
@@ -100,7 +99,6 @@ const App = () => {
         <Suspense fallback={<LoadingScreen />}>
           <HostAdmin isOpen={true} onSwitchToGuest={() => setIsGuestPreview(true)} />
         </Suspense>
-        <RSVPPrompt />
         <InstallPrompt />
       </div>
     );
@@ -113,7 +111,6 @@ const App = () => {
         <Suspense fallback={<LoadingScreen />}>
           <OSContainer initialMode={'guest'} />
         </Suspense>
-        <RSVPPrompt />
         <InstallPrompt />
         <Suspense fallback={null}>
           <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
@@ -173,7 +170,7 @@ const App = () => {
         <PrivacyPolicyModal isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />
         <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
       </Suspense>
-      <RSVPPrompt />
+      {!showGuestOnboarding && <RSVPPrompt />}
       <InstallPrompt />
     </div>
   );

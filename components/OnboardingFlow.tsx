@@ -153,7 +153,7 @@ const PillButton = ({
 
 // ─── Shell — wraps each step in the same card as the RSVP modal ──────────────
 const Shell = ({ children, step }: { children: React.ReactNode; step: number }) => (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-med-sand dark:bg-[#111827] transition-colors duration-500 overflow-hidden">
+    <div className="fixed inset-0 z-[1000] overflow-y-auto bg-med-sand dark:bg-[#111827] transition-colors duration-500">
         <style>{`
             @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
             .font-heading { font-family: 'Cormorant Garamond', serif; }
@@ -162,13 +162,13 @@ const Shell = ({ children, step }: { children: React.ReactNode; step: number }) 
 
         <Blobs />
 
-        <div className="relative w-full max-w-2xl px-5 sm:px-8 py-8 h-full flex items-center">
+        <div className="relative w-full max-w-2xl px-5 sm:px-8 py-8 min-h-screen flex items-center justify-center mx-auto">
             <motion.div
                 key={step}
                 initial={{ opacity: 0, scale: 0.97, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[3.5rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] dark:shadow-[0_32px_128px_-32px_rgba(0,0,0,0.5)] border border-white dark:border-gray-700 px-8 py-12 sm:px-14 sm:py-16 md:px-20 md:py-20 relative flex flex-col justify-center min-h-[88vh] sm:min-h-0"
+                className="w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[3.5rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] dark:shadow-[0_32px_128px_-32px_rgba(0,0,0,0.5)] border border-white dark:border-gray-700 px-8 py-12 sm:px-14 sm:py-16 md:px-20 md:py-20 relative flex flex-col justify-center min-h-[88vh] sm:min-h-0 my-auto"
             >
                 {/* Inner accent glow */}
                 <div className="absolute top-0 right-0 w-72 h-72 bg-med-terracotta/10 dark:bg-med-terracotta/20 rounded-full blur-[120px] opacity-60 dark:opacity-80 pointer-events-none" />
@@ -288,7 +288,8 @@ export const OnboardingFlow: React.FC = () => {
         if (!validateIdentity()) return;
         setIsFinishing(true);
 
-        const privacy = { shareSocial: true, sharePhone: true, shareInterests: true, publicRegistry: identity.publicRegistry, smsConsent: identity.smsConsent };
+        const isDeclined = preferences.rsvpStatus === 'Declined';
+        const privacy = { shareSocial: true, sharePhone: true, shareInterests: true, publicRegistry: isDeclined ? false : identity.publicRegistry, smsConsent: identity.smsConsent };
 
         if (privacy.smsConsent && identity.phone) twilioService.sendWelcomeSMS(identity.name, identity.phone).catch(() => {});
         zapierService.syncNewRegistration({ name: identity.name, email: identity.email, phone: identity.phone, status: preferences.rsvpStatus, guests: preferences.guests }).catch(() => {});
@@ -582,18 +583,20 @@ export const OnboardingFlow: React.FC = () => {
                 <div className="space-y-4 pt-2">
                     <p className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta">Settings & Privacy</p>
 
-                    <button
-                        onClick={() => setIdentity({ ...identity, publicRegistry: !identity.publicRegistry })}
-                        className={`w-full py-5 px-6 rounded-[2rem] border-2 flex items-center justify-between transition-all duration-300 ${identity.publicRegistry ? 'border-med-blue/20 bg-med-blue/5 dark:border-med-blue/30 dark:bg-med-blue/20' : 'border-slate-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/40'}`}
-                    >
-                        <span className={`flex items-center gap-2 text-[11px] font-body font-bold uppercase tracking-[0.25em] ${identity.publicRegistry ? 'text-med-blue dark:text-blue-300' : 'text-slate-400 dark:text-gray-400'}`}>
-                            {identity.publicRegistry ? <Globe size={13} /> : <ShieldCheck size={13} />}
-                            {identity.publicRegistry ? 'Public Registry' : 'Private Profile'}
-                        </span>
-                        <div className={`w-11 h-6 rounded-full relative transition-colors shrink-0 ${identity.publicRegistry ? 'bg-med-blue dark:bg-blue-500' : 'bg-slate-200 dark:bg-gray-700'}`}>
-                            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${identity.publicRegistry ? 'translate-x-6' : 'translate-x-1'}`} />
-                        </div>
-                    </button>
+                    {preferences.rsvpStatus !== 'Declined' && (
+                        <button
+                            onClick={() => setIdentity({ ...identity, publicRegistry: !identity.publicRegistry })}
+                            className={`w-full py-5 px-6 rounded-[2rem] border-2 flex items-center justify-between transition-all duration-300 ${identity.publicRegistry ? 'border-med-blue/20 bg-med-blue/5 dark:border-med-blue/30 dark:bg-med-blue/20' : 'border-slate-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/40'}`}
+                        >
+                            <span className={`flex items-center gap-2 text-[11px] font-body font-bold uppercase tracking-[0.25em] ${identity.publicRegistry ? 'text-med-blue dark:text-blue-300' : 'text-slate-400 dark:text-gray-400'}`}>
+                                {identity.publicRegistry ? <Globe size={13} /> : <ShieldCheck size={13} />}
+                                {identity.publicRegistry ? 'Public Registry' : 'Private Profile'}
+                            </span>
+                            <div className={`w-11 h-6 rounded-full relative transition-colors shrink-0 ${identity.publicRegistry ? 'bg-med-blue dark:bg-blue-500' : 'bg-slate-200 dark:bg-gray-700'}`}>
+                                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${identity.publicRegistry ? 'translate-x-6' : 'translate-x-1'}`} />
+                            </div>
+                        </button>
+                    )}
 
                     <button
                         onClick={() => setIdentity({ ...identity, smsConsent: !identity.smsConsent })}
