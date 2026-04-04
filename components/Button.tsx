@@ -27,11 +27,11 @@ export const Button: React.FC<ButtonProps> = ({
   const baseStyles = "font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
-    // Primary: Saffron - stays dark enough for white text usually.
-    primary: "bg-[#E2923D] text-white hover:bg-[#d17e2b] shadow-lg hover:shadow-xl shadow-[#E2923D]/20 border border-transparent",
+    // Primary: Saffron - darker shade in dark mode.
+    primary: "bg-[#E2923D] dark:bg-[#c07030] text-white hover:bg-[#d17e2b] dark:hover:bg-[#a86028] shadow-lg hover:shadow-xl shadow-[#E2923D]/20 border border-transparent",
     
-    // Action: Terracotta. 
-    action: "bg-med-terracotta text-white hover:bg-[#c56143] shadow-lg hover:shadow-xl shadow-med-terracotta/20 border border-transparent",
+    // Action: Terracotta - darker shade in dark mode. 
+    action: "bg-med-terracotta dark:bg-[#b85a3a] text-white hover:bg-[#c56143] dark:hover:bg-[#9e4c30] shadow-lg hover:shadow-xl shadow-med-terracotta/20 border border-transparent",
     
     // Secondary: High contrast in dark mode (Slate 800 bg with white text).
     secondary: "bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-gray-200 dark:border-slate-600 hover:border-med-blue dark:hover:border-slate-400 shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-slate-700",

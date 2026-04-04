@@ -1,9 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { Mail, ArrowRight, X, CalendarCheck } from 'lucide-react';
+import { ArrowRight, X, CalendarCheck } from 'lucide-react';
 import { safeStorage } from '../utils/storage';
+import { useUser } from '../context/UserContext';
 
 export const RSVPPrompt: React.FC = () => {
+    const { setVerified } = useUser();
     const [showPrompt, setShowPrompt] = useState(false);
 
     useEffect(() => {
@@ -18,15 +20,16 @@ export const RSVPPrompt: React.FC = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    const handleConfirm = () => {
-        safeStorage.setItem('rsvp_confirmed', 'true');
-        setShowPrompt(false);
-        window.dispatchEvent(new Event('rsvp_changed'));
-    };
-
     const handleDismiss = () => {
         setShowPrompt(false);
         safeStorage.setItem('rsvp_prompt_dismissed', 'true');
+    };
+
+    const handleRSVP = () => {
+        setShowPrompt(false);
+        // setVerified(true) triggers showGuestOnboarding in App.tsx,
+        // which renders TravelHub → GuestProfile → invite code entry
+        setVerified(true);
     };
 
     if (!showPrompt) return null;
@@ -52,13 +55,12 @@ export const RSVPPrompt: React.FC = () => {
                     </div>
 
                     <div className="flex flex-col w-full gap-2 pt-2 pb-2">
-                        <a 
-                            href="/rsvp"
-                            onClick={handleConfirm}
+                        <button 
+                            onClick={handleRSVP}
                             className="w-full bg-white text-med-blue dark:text-slate-900 hover:bg-med-terracotta hover:text-white py-3 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
                         >
                             RSVP Now <ArrowRight size={14} />
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
