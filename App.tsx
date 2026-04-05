@@ -54,6 +54,16 @@ const App = () => {
     const handleScroll = () => setShowScrollTop(window.scrollY > 400);
     window.addEventListener('scroll', handleScroll);
 
+    if (window.location.hostname === 'bryans40th.voyageurs.app') {
+      window.location.replace('https://voyageurs.app/rsvp' + window.location.search);
+      return;
+    }
+
+    if (window.location.pathname === '/rsvp') {
+      setShowLogin(true);
+      window.history.replaceState({}, '', '/');
+    }
+
     // Listen for in-app RSVP navigation
     const handleOpenLogin = () => setShowLogin(true);
     window.addEventListener('open_login', handleOpenLogin);

@@ -25,7 +25,7 @@ export const DEFAULT_HOTEL_DATA: HotelCategory[] = [
         description: "Art Nouveau charm directly on the Place de la Comédie.",
         link: "https://www.grandhoteldumidi.com/",
         categoryId: 'romantic',
-        fullDescription: "A historic institution in , this Haussmann-style hotel sits proudly on the Place de la Comédie. Recently renovated with a 'Les Trois Graces' theme.",
+        fullDescription: "A historic institution in Montpellier, this Haussmann-style hotel sits proudly on the Place de la Comédie. Recently renovated with a 'Les Trois Graces' theme.",
         highlights: ["Directly on Place de la Comédie", "Art Nouveau architecture", "Next to the Opera House"],
         transportDetail: "2 min walk from Tram lines 1 & 2 (Comédie stop).",
         averageRate: "$175 - $240",
@@ -152,8 +152,8 @@ export const DEFAULT_DINING_DATA: DiningCategory[] = [
         priceLevel: 1,
         cuisine: "Specialty Coffee",
         description: "The go-to spot for Australian-style flat whites.",
-        googleQuery: "Coldrip Food Coffee ",
-        fullDescription: "'s specialty coffee scene is growing, and Coldrip leads the pack.",
+        googleQuery: "Coldrip Food Coffee Montpellier",
+        fullDescription: "Montpellier's specialty coffee scene is growing, and Coldrip leads the pack.",
         highlights: ["Specialty Coffee", "Avocado Toast", "English Spoken"],
         signature: "Flat White & Banana Bread.",
         website: "https://www.instagram.com/coldrip_/",
@@ -176,8 +176,8 @@ export const DEFAULT_DINING_DATA: DiningCategory[] = [
         priceLevel: 2,
         cuisine: "Brunch & Coffee",
         description: "The undisputed king of  brunch.",
-        googleQuery: "Bonobo ",
-        fullDescription: "You will wait in line, and it will be worth it. Bonobo brought the serious brunch game to .",
+        googleQuery: "Bonobo Montpellier",
+        fullDescription: "You will wait in line, and it will be worth it. Bonobo brought the serious brunch game to Montpellier.",
         highlights: ["Best Brunch", "Hip Crowd", "Great Coffee"],
         signature: "Salted Caramel Pancakes.",
         website: "https://bonobo.fr/",
@@ -199,8 +199,8 @@ export const DEFAULT_DINING_DATA: DiningCategory[] = [
         priceLevel: 4,
         cuisine: "1 Star • Haute Cuisine",
         description: "The Pourcel brothers' legendary return in a 17th-century setting.",
-        googleQuery: "Le Jardin des Sens ",
-        fullDescription: "Located within the sumptuous Hôtel Richer de Belleval, the Pourcel brothers have reclaimed their stars. This is 's most prestigious dining experience, blending history with avant-garde gastronomy.",
+        googleQuery: "Le Jardin des Sens Montpellier",
+        fullDescription: "Located within the sumptuous Hôtel Richer de Belleval, the Pourcel brothers have reclaimed their stars. This is Montpellier's most prestigious dining experience, blending history with avant-garde gastronomy.",
         highlights: ["Michelin Star", "Pourcel Brothers", "Historic Setting"],
         signature: "Pressed lobster with crystalized lemon.",
         website: "https://www.hotel-richerdebelleval.com/en/restaurant-jardin-des-sens",
@@ -215,7 +215,7 @@ export const DEFAULT_DINING_DATA: DiningCategory[] = [
         priceLevel: 4,
         cuisine: "Gastronomic Bistro",
         description: "Daniel Lutrand's celebrated creative cuisine.",
-        googleQuery: "Pastis Restaurant ",
+        googleQuery: "Pastis Restaurant Montpellier",
         fullDescription: "Not to be confused with the casual 'Le Pastis', this is a serious gastronomic destination. Chef Daniel Lutrand serves inventive, visually stunning plates.",
         highlights: ["Michelin Guide", "Creative Plating", "Intimate"],
         signature: "Pigeon with seasonal garnish.",
@@ -305,7 +305,7 @@ export const DEFAULT_EXPLORATION_DATA: ExplorationItem[] = [
     fullDescription: "Sète is a fascinating island-city caught between the Mediterranean Sea and the Thau Lagoon.",
     highlights: ["Panoramic view from Mont Saint-Clair", "Eating 'Tielle Sétoise'", "Boat tours of the oyster beds"],
     bestFor: "Seafood lovers & Photographers",
-    transportDetail: "Trains run every 20-30 minutes from  Saint-Roch.",
+    transportDetail: "Trains run every 20-30 minutes from Montpellier Saint-Roch.",
     entryCost: 20,
     lat: 43.4025,
     lng: 3.6961
@@ -322,7 +322,7 @@ export const DEFAULT_ACTIVITY_DATA: ActivityItem[] = [
         tags: ['Cocktails', 'Speakeasy'],
         baseCost: 20,
         pricingType: 'perPerson',
-        locationQuery: 'Gaspard Cocktail Bar ',
+        locationQuery: 'Gaspard Cocktail Bar Montpellier',
         priceLevel: 2,
         lat: 43.6085,
         lng: 3.8780
@@ -341,7 +341,7 @@ export const DEFAULT_LANDING_CONTENT: LandingContent = {
         tabIcon: 'Landmark',
         tabDesc: 'City Roots',
         title: 'A City of Contrasts',
-        description: " is a rare treasure born of the Middle Ages, rising from commerce and intellect rather than conquest.",
+        description: "Montpellier is a rare treasure born of the Middle Ages, rising from commerce and intellect rather than conquest.",
         stats: [
             { label: "Founded", value: "985 AD" },
             { label: "Sunshine", value: "300 Days" }
@@ -379,7 +379,7 @@ export const DEFAULT_LANDING_CONTENT: LandingContent = {
         tabIcon: 'Sparkles',
         tabDesc: 'Vibrant Soul',
         title: 'What to Expect',
-        description: " buzzes with student energy while maintaining a slow, deliberate Mediterranean pace of life.",
+        description: "Montpellier buzzes with student energy while maintaining a slow, deliberate Mediterranean pace of life.",
         stats: [
             { label: "Metro Pop", value: "570k" },
             { label: "Under 30", value: "50%" }
@@ -465,8 +465,8 @@ export const DEFAULT_CELEBRATION_DATA: CelebrationContent = {
             subtitle: 'Personal',
             iconName: 'Heart',
             title: 'The Joy of Life',
-            quote: " makes you realize just how great life can be—think golden skies, a vibrant buzz, and that feeling that you don't have to rush anywhere!",
-            text: "For my 40th, I want to gather all my favorite people in a city that has always captured my imagination, in a country that stole my heart. They call  La Douée—The Gifted One—and it truly is. I really hope you’ll join me to celebrate great times, reconnect with one another, and enjoy the simple pleasures of life, the French way.",
+            quote: "Montpellier makes you realize just how great life can be—think golden skies, a vibrant buzz, and that feeling that you don't have to rush anywhere!",
+            text: "For my 40th, I want to gather all my favorite people in a city that has always captured my imagination, in a country that stole my heart. They call Montpellier La Douée—The Gifted One—and it truly is. I really hope you’ll join me to celebrate great times, reconnect with one another, and enjoy the simple pleasures of life, the French way.",
             image: "https://images.unsplash.com/photo-1560624052-449f5ddf0c31?q=80&w=800&auto=format&fit=crop"
         },
         {
@@ -500,14 +500,14 @@ export const DEFAULT_GALLERY_CONTENT: GalleryContent = {
                     alt: "Narrow Streets",
                     caption: "Getting Lost",
                     description: "The best plan is no plan. We'll spend hours just wandering these medieval streets finding hidden bars.",
-                    link: "https://www.-france.com/discover/the-essential/l-ecusson-historic-centre/"
+                    link: "https://www.montpellier-france.com/discover/the-essential/l-ecusson-historic-centre/"
                 },
                 {
                     url: "https://images.unsplash.com/photo-1512403913063-e380f68288ce?q=80&w=1200&auto=format&fit=crop",
                     alt: "Promenade",
                     caption: "Sunset Views",
                     description: "The Peyrou is where we'll watch the sun go down. It feels like you can see the entire world from here.",
-                    link: "https://www.-france.com/discover/the-essential/promenade-du-peyrou/"
+                    link: "https://www.montpellier-france.com/discover/the-essential/promenade-du-peyrou/"
                 }
             ]
         },
@@ -553,7 +553,7 @@ export const DEFAULT_GALLERY_CONTENT: GalleryContent = {
                     alt: "Market",
                     caption: "Morning Ritual",
                     description: "Les Halles. We are going to eat so many oysters here. It's loud, chaotic, and delicious.",
-                    link: "https://www..fr/structure/1897/24-halles-castellane-structures.htm"
+                    link: "https://www.montpellier.fr/structure/1897/24-halles-castellane-structures.htm"
                 },
                 {
                     url: "https://images.unsplash.com/photo-1629196914375-f7e48f477b6d?q=80&w=1200&auto=format&fit=crop",
@@ -572,7 +572,7 @@ export const DEFAULT_GALLERY_DATA = DEFAULT_GALLERY_CONTENT.collections; // Back
 export const DEFAULT_CONFIG = {
   id: 'default',
   appName: "September 18-20",
-  destination: "",
+  destination: "Montpellier, France",
   occasion: "The 40th Birthday",
   heroImage: "https://images.unsplash.com/photo-1512403913063-e380f68288ce?q=80&w=1920&auto=format&fit=crop", // Arc de Triomphe Background
   videoUrl: "https://www.youtube.com/embed/bRbUJZTIcUw?autoplay=1&mute=1&controls=0&loop=1&playlist=bRbUJZTIcUw&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&modestbranding=1&playsinline=1",

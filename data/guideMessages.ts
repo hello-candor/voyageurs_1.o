@@ -39,7 +39,7 @@ export const GUIDE_MESSAGES: Record<string, GuideMessage> = {
     priority: 90,
     icon: Plane,
     title: "The Arrival",
-    message: "To coordinate your welcome shuttle, please provide your flight or train arrival details for .",
+    message: "To coordinate your welcome shuttle, please provide your flight or train arrival details for {DESTINATION}.",
     actionLabel: "Add Logistics",
     targetView: 'profile', // Opens profile where logistics are edited
     color: "bg-indigo-500"

@@ -18,7 +18,7 @@ import { useNotification } from '../context/NotificationContext';
 import { X, Search, Map, Bell, GripHorizontal, Sun, Moon, UserCircle, LogOut, ChevronLeft, ChevronRight, HelpCircle, Lock } from 'lucide-react';
 import { PlanningTab } from './TripPlanner';
 import { useGuidance } from '../hooks/useGuidance';
-import { WeatherWidget } from './WeatherWidget';
+
 import { WebOSCard } from './WebOSCard';
 import { Loader2 } from 'lucide-react';
 
@@ -368,28 +368,30 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} onNavigate={(v) => launchApp(v)} />
 
             <div className={`fixed top-0 left-0 right-0 h-12 flex items-center justify-between px-4 md:px-6 z-[110] transition-all duration-700 pointer-events-none ${isFullScreenActive ? 'opacity-0 -translate-y-full' : 'opacity-100'}`}>
-                <div className="flex items-center gap-4 text-white/90 pointer-events-auto">
-                    <div className="flex flex-col">
-                        <span className={`font-serif italic text-xl md:text-2xl leading-none block drop-shadow-md ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{config.appName}</span>
-                        <span className={`text-[9px] uppercase tracking-[0.2em] opacity-70 font-sans hidden md:block ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{config.destination}</span>
+                <div className="flex items-center gap-3 text-white/90 pointer-events-auto h-full py-1">
+                    <span className={`flex items-center h-full font-serif text-xl md:text-2xl italic tracking-tight whitespace-nowrap transition-colors duration-500 drop-shadow-md ${theme === 'light' ? 'text-med-terracotta' : 'text-white'}`}>Bryan's 40th</span>
+                    <div className={`h-full w-px transition-colors duration-500 ${theme === 'light' ? 'bg-med-blue/20' : 'bg-white/20'}`}></div>
+                    <div className="flex flex-col justify-center leading-tight h-full">
+                        <span className={`font-serif font-bold text-sm md:text-base tracking-tight whitespace-nowrap transition-colors duration-500 drop-shadow-md ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{config.appName}</span>
+                        <span className={`text-[8px] uppercase tracking-[0.2em] opacity-70 font-sans hidden md:block ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{config.destination}</span>
                     </div>
                 </div>
 
-                <div className="absolute left-1/2 -translate-x-1/2 flex items-center pointer-events-auto">
+                <div className="absolute left-1/2 -translate-x-1/2 flex items-center pt-2 pb-2 pointer-events-auto h-full">
                     {config.enableAI && (
-                        <button id="hub-search-btn" onClick={() => setIsSearchOpen(true)} className={`flex items-center gap-3 transition-all px-4 md:px-6 py-1.5 rounded-full border backdrop-blur-2xl shadow-2xl active:scale-95 group ${theme === 'light' ? 'bg-white/80 text-med-blue border-med-blue/20' : 'bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:border-white/30'}`}>
+                        <button id="hub-search-btn" onClick={() => setIsSearchOpen(true)} className={`flex items-center justify-center gap-3 transition-all px-4 md:px-6 h-full rounded-full border backdrop-blur-2xl shadow-2xl active:scale-95 group ${theme === 'light' ? 'bg-white/80 text-med-blue border-med-blue/20' : 'bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:border-white/30'}`}>
                             <Search size={16} className="group-hover:scale-110 transition-transform text-med-terracotta" />
                             <span className="text-[10px] font-bold uppercase tracking-[0.3em] hidden md:block">Ask Céleste</span>
                         </button>
                     )}
                 </div>
 
-                <div className="flex items-center gap-1 md:gap-2 pointer-events-auto">
+                <div className="flex items-center gap-1 md:gap-2 pointer-events-auto h-full py-2">
 
                     {isHost && (
                         <button
                             onClick={onSwitchToHost}
-                            className="flex items-center justify-center p-2 md:px-3 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 backdrop-blur-md transition-all group"
+                            className="flex items-center justify-center h-full px-2 md:px-3 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 backdrop-blur-md transition-all group"
                             title="Return to Host Console"
                         >
                             <Lock size={14} className="md:mr-2" />
@@ -397,13 +399,29 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                         </button>
                     )}
 
-                    <WeatherWidget />
+                    {user && user.status && (
+                        <button 
+                            onClick={() => launchApp('rsvp')}
+                            className={`flex items-center justify-center h-full gap-1.5 px-3 rounded-full border text-[9px] font-bold uppercase tracking-widest backdrop-blur-md transition-all hidden md:flex hover:opacity-80 active:scale-95
+                            ${user.status === 'Confirmed' ? (theme === 'light' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20') : ''}
+                            ${user.status === 'Declined' ? (theme === 'light' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-red-500/10 text-red-400 border-red-500/20') : ''}
+                            ${user.status === 'Pending' ? (theme === 'light' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-amber-500/10 text-amber-400 border-amber-500/20') : ''}
+                        `}>
+                            {user.status !== 'Confirmed' && (
+                                <span className={`w-1.5 h-1.5 rounded-full ${user.status === 'Pending' ? 'animate-pulse' : ''}
+                                    ${user.status === 'Declined' ? (theme === 'light' ? 'bg-red-500' : 'bg-red-400') : ''}
+                                    ${user.status === 'Pending' ? (theme === 'light' ? 'bg-amber-500' : 'bg-amber-400') : ''}
+                                `} />
+                            )}
+                            {user.status}
+                        </button>
+                    )}
 
-                    <div className="relative" ref={notificationRef}>
+                    <div className="relative h-full flex items-center" ref={notificationRef}>
                         <button
                             onClick={() => setIsNotificationCenterOpen(!isNotificationCenterOpen)}
                             className={`
-                    p-2 rounded-full transition-all duration-300 relative
+                    h-full aspect-square flex items-center justify-center rounded-full transition-all duration-300 relative
                     ${isNotificationCenterOpen ? 'bg-white/10 text-white' : (theme === 'light' ? 'text-med-blue/60 hover:text-med-blue hover:bg-med-blue/5' : 'text-white/60 hover:text-white hover:bg-white/5')}
                 `}
                             title="Notifications"
@@ -423,29 +441,12 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                         )}
                     </div>
 
-                    {user && user.status && (
-                        <button 
-                            onClick={() => launchApp('rsvp')}
-                            className={`items-center gap-1.5 px-3 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest backdrop-blur-md transition-all hidden md:flex hover:opacity-80 active:scale-95
-                            ${user.status === 'Confirmed' ? (theme === 'light' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20') : ''}
-                            ${user.status === 'Declined' ? (theme === 'light' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-red-500/10 text-red-400 border-red-500/20') : ''}
-                            ${user.status === 'Pending' ? (theme === 'light' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-amber-500/10 text-amber-400 border-amber-500/20') : ''}
-                        `}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${user.status === 'Pending' ? 'animate-pulse' : ''}
-                                ${user.status === 'Confirmed' ? (theme === 'light' ? 'bg-emerald-500' : 'bg-emerald-400') : ''}
-                                ${user.status === 'Declined' ? (theme === 'light' ? 'bg-red-500' : 'bg-red-400') : ''}
-                                ${user.status === 'Pending' ? (theme === 'light' ? 'bg-amber-500' : 'bg-amber-400') : ''}
-                            `} />
-                            {user.status}
-                        </button>
-                    )}
-
-                    <div className="relative" ref={userMenuRef}>
+                    <div className="relative h-full flex items-center" ref={userMenuRef}>
                         <button
                             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                            className={`flex items-center gap-2 p-1 rounded-full transition-all border ${isUserMenuOpen ? 'bg-white/10 border-white/20' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
+                            className={`flex items-center justify-center h-full aspect-square rounded-full transition-all border ${isUserMenuOpen ? 'bg-white/10 border-white/20' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
                         >
-                            <img src={user?.avatar} alt="" className="w-7 h-7 rounded-md border border-white/10 object-cover" />
+                            <img src={user?.avatar} alt="" className="w-full h-full rounded-full object-cover" />
                         </button>
 
                         {isUserMenuOpen && (

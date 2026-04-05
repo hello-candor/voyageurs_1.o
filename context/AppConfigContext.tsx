@@ -122,7 +122,7 @@ export const AppConfigProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Persist active trip ID locally
   useEffect(() => {
     safeStorage.setItem('voyageur_active_trip', activeTripId);
-    document.title = `${activeConfig.appName} - ${activeConfig.destination}`;
+    document.title = "Bryan's 40th - Sept 18-20";
   }, [activeTripId, activeConfig]);
 
   const updateTripsLocally = (updater: (prev: AppConfig[]) => AppConfig[]) => {

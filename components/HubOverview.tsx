@@ -180,10 +180,10 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
             <div className="col-span-1 lg:col-span-2 space-y-8">
                 <div>
                     <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl mb-2 drop-shadow-lg text-primary">
-                        Bonjour, <span className="italic text-med-terracotta">{user.name.split(' ')[0]}</span>
+                        Bonjour, <span className="italic text-med-terracotta">{user.name.split(' ')[0]}.</span>
                     </h1>
-                    <p className={`text-lg md:text-xl font-light drop-shadow-md ${theme === 'light' ? 'text-med-blue/80' : 'text-blue-100/80'}`}>
-                        {timeLeft ? `${timeLeft.d} days until .` : "Welcome to the Celebration."}
+                    <p className={`text-lg md:text-xl font-light italic drop-shadow-md ${theme === 'light' ? 'text-med-blue/80' : 'text-blue-100/80'}`}>
+                        {timeLeft ? `${timeLeft.d} days until ${config.destination.split(',')[0]}.` : "Welcome to the Celebration."}
                     </p>
                 </div>
 
@@ -334,7 +334,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                             </div>
                             <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/40' : 'text-white/40'} group-hover:text-primary transition-colors`} />
                         </div>
-                        <h3 className="font-serif text-2xl leading-tight text-primary mb-2"></h3>
+                        <h3 className="font-serif text-2xl leading-tight text-primary mb-2">{config.destination.split(',')[0]}</h3>
                         <p className={`text-xs leading-relaxed line-clamp-2 ${theme === 'light' ? 'text-gray-600' : 'text-white/70'}`}>
                             Discover the medieval streets, hidden courtyards, and why they call it "The Gifted One".
                         </p>

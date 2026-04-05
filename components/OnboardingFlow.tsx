@@ -367,7 +367,7 @@ export const OnboardingFlow: React.FC = () => {
                     {/* Confirmed */}
                     <button
                         onClick={() => { setPreferences({ ...preferences, rsvpStatus: 'Confirmed' }); setCurrentStep('preferences'); }}
-                        className="w-full p-5 sm:p-6 rounded-[2rem] border-2 border-slate-100 dark:border-gray-700 hover:border-med-terracotta/40 dark:hover:border-med-terracotta/60 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm flex items-center justify-between group transition-all duration-300 shadow-sm hover:shadow-md"
+                        className="w-full p-5 sm:p-6 rounded-[2rem] border-2 border-slate-100 dark:border-gray-700 hover:border-med-terracotta/40 dark:hover:border-med-terracotta/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm flex items-center justify-between group transition-all duration-300 shadow-sm hover:shadow-md"
                     >
                         <div className="text-left">
                             <p className="font-heading text-3xl sm:text-4xl font-medium text-med-blue dark:text-white group-hover:text-med-terracotta transition-colors">I'll be there</p>
@@ -381,13 +381,13 @@ export const OnboardingFlow: React.FC = () => {
                     {/* Pending */}
                     <button
                         onClick={() => { setPreferences({ ...preferences, rsvpStatus: 'Pending' }); setCurrentStep('preferences'); }}
-                        className="w-full p-5 sm:p-6 rounded-[2rem] border-2 border-slate-100 dark:border-gray-700 hover:border-slate-300 dark:hover:border-gray-500 bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm flex items-center justify-between group transition-all duration-300 shadow-sm hover:shadow-md"
+                        className="w-full p-5 sm:p-6 rounded-[2rem] border-2 border-slate-100 dark:border-gray-700 hover:border-med-terracotta/40 dark:hover:border-med-terracotta/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm flex items-center justify-between group transition-all duration-300 shadow-sm hover:shadow-md"
                     >
                         <div className="text-left">
-                            <p className="font-heading text-3xl sm:text-4xl text-med-blue dark:text-gray-200 group-hover:text-slate-800 dark:group-hover:text-white transition-colors">I'm still exploring</p>
+                            <p className="font-heading text-3xl sm:text-4xl font-medium text-med-blue dark:text-white group-hover:text-med-terracotta transition-colors">I'm still exploring</p>
                             <p className="text-[10px] sm:text-xs font-body font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-gray-400 mt-2">Grant access to guests hub</p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-gray-800/80 flex items-center justify-center text-slate-300 dark:text-gray-400 group-hover:text-slate-800 dark:group-hover:text-white transition-all shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-gray-800/80 flex items-center justify-center group-hover:bg-med-terracotta group-hover:text-white transition-all text-slate-300 dark:text-gray-400 shrink-0">
                             <Globe size={18} className="group-hover:rotate-12 transition-transform" />
                         </div>
                     </button>
@@ -395,14 +395,14 @@ export const OnboardingFlow: React.FC = () => {
                     {/* Declined */}
                     <button
                         onClick={() => { setPreferences({ ...preferences, rsvpStatus: 'Declined' }); setCurrentStep('identity'); }}
-                        className="w-full p-5 sm:p-6 rounded-[2rem] border-2 border-slate-100 dark:border-gray-700/50 hover:border-slate-200 dark:hover:border-gray-600 bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm flex items-center justify-between group transition-all duration-300 shadow-sm"
+                        className="w-full p-5 sm:p-6 rounded-[2rem] border-2 border-slate-100 dark:border-gray-700 hover:border-med-terracotta/40 dark:hover:border-med-terracotta/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm flex items-center justify-between group transition-all duration-300 shadow-sm hover:shadow-md"
                     >
                         <div className="text-left">
-                            <p className="font-heading text-2xl sm:text-3xl text-slate-400 dark:text-gray-400 group-hover:text-slate-500 dark:group-hover:text-gray-300 transition-colors">I can't make it</p>
-                            <p className="text-[10px] sm:text-xs font-body font-bold uppercase tracking-[0.2em] text-slate-300 dark:text-gray-500 mt-2">Regretfully decline</p>
+                            <p className="font-heading text-3xl sm:text-4xl font-medium text-med-blue dark:text-white group-hover:text-med-terracotta transition-colors">I can't make it</p>
+                            <p className="text-[10px] sm:text-xs font-body font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-gray-400 mt-2">Regretfully decline</p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-gray-800/50 flex items-center justify-center text-slate-300 dark:text-gray-500 transition-all shrink-0">
-                            <ArrowRight size={18} />
+                        <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-gray-800/80 flex items-center justify-center group-hover:bg-med-terracotta group-hover:text-white transition-all text-slate-300 dark:text-gray-400 shrink-0">
+                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </div>
                     </button>
 
@@ -586,7 +586,7 @@ export const OnboardingFlow: React.FC = () => {
                     {preferences.rsvpStatus !== 'Declined' && (
                         <button
                             onClick={() => setIdentity({ ...identity, publicRegistry: !identity.publicRegistry })}
-                            className={`w-full py-5 px-6 rounded-[2rem] border-2 flex items-center justify-between transition-all duration-300 ${identity.publicRegistry ? 'border-med-blue/20 bg-med-blue/5 dark:border-med-blue/30 dark:bg-med-blue/20' : 'border-slate-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/40'}`}
+                            className={`w-full py-5 px-6 rounded-[2rem] border-2 flex items-center justify-between transition-all duration-300 ${identity.publicRegistry ? 'border-med-blue/20 bg-med-blue/5 dark:border-med-blue/30 dark:bg-med-blue/20' : 'border-slate-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50'}`}
                         >
                             <span className={`flex items-center gap-2 text-[11px] font-body font-bold uppercase tracking-[0.25em] ${identity.publicRegistry ? 'text-med-blue dark:text-blue-300' : 'text-slate-400 dark:text-gray-400'}`}>
                                 {identity.publicRegistry ? <Globe size={13} /> : <ShieldCheck size={13} />}
@@ -600,7 +600,7 @@ export const OnboardingFlow: React.FC = () => {
 
                     <button
                         onClick={() => setIdentity({ ...identity, smsConsent: !identity.smsConsent })}
-                        className={`w-full py-5 px-6 rounded-[2rem] border-2 flex gap-4 text-left transition-all duration-300 ${identity.smsConsent ? 'border-med-terracotta/20 bg-med-terracotta/5 dark:border-med-terracotta/30 dark:bg-med-terracotta/20' : 'border-slate-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/40'}`}
+                        className={`w-full py-5 px-6 rounded-[2rem] border-2 flex gap-4 text-left transition-all duration-300 ${identity.smsConsent ? 'border-med-terracotta/20 bg-med-terracotta/5 dark:border-med-terracotta/30 dark:bg-med-terracotta/20' : 'border-slate-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50'}`}
                     >
                         <div className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${identity.smsConsent ? 'bg-med-terracotta border-med-terracotta text-white' : 'border-slate-300 dark:border-gray-600'}`}>
                             {identity.smsConsent && <Check size={12} />}
