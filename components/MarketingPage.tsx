@@ -337,7 +337,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                                     <CheckCircle className="w-6 h-6" strokeWidth={1.5} />
                                 </div>
                                 <div>
-                                    <p className="font-heading text-2xl text-med-blue dark:text-white leading-none"></p>
+                                    <p className="font-heading text-2xl text-med-blue dark:text-white leading-none">Montpellier</p>
                                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-med-terracotta dark:text-[#C25E3E] mt-1">Sept 18 - 20 • RSVP</p>
                                 </div>
                             </div>
@@ -650,7 +650,14 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                 </div>
             </section>
 
-            <section id="pricing" className="py-24 bg-white dark:bg-[#1e293b]">
+            <section id="pricing" className="py-24 bg-white dark:bg-[#1e293b] relative overflow-hidden">
+                <div className="absolute inset-0 z-50 bg-white/40 dark:bg-[#1e293b]/60 backdrop-blur-sm flex items-center justify-center">
+                    <div className="px-10 py-6 rounded-[2rem] bg-white/80 dark:bg-gray-900/80 shadow-2xl border border-white/50 dark:border-gray-700/50 backdrop-blur-md transform hover:scale-105 transition-transform duration-500">
+                        <h3 className="text-4xl md:text-6xl font-heading font-light text-med-blue dark:text-white">
+                            Coming <span className="italic text-med-terracotta dark:text-[#C25E3E]">Soon</span>
+                        </h3>
+                    </div>
+                </div>
                 <div className="container mx-auto px-4 max-w-7xl">
                     <div className="text-center mb-16">
                         <div className="flex items-center justify-center gap-4 mb-6">
