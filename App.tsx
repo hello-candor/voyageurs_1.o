@@ -22,6 +22,7 @@ const MarketingPage = React.lazy(() => import('./components/MarketingPage').then
 const HostOnboarding = React.lazy(() => import('./components/HostOnboarding').then(m => ({ default: m.HostOnboarding })));
 const LoginPage = React.lazy(() => import('./components/LoginPage').then(m => ({ default: m.LoginPage })));
 const OnboardingFlow = React.lazy(() => import('./components/OnboardingFlow').then(m => ({ default: m.OnboardingFlow })));
+const EventLandingPage = React.lazy(() => import('./components/EventLandingPage').then(m => ({ default: m.EventLandingPage })));
 const JournalPage = React.lazy(() => import('./components/JournalPage').then(m => ({ default: m.JournalPage })));
 
 const LoadingScreen = () => (
@@ -116,8 +117,22 @@ const App = () => {
     );
   }
 
-  // SCENARIO 2: GUEST LOGGED IN (verified, has profile)
+  // ── Hub launch gate: set to true when ready to give guests full app access ──
+  const HUB_UNLOCKED = false;
+
+  // SCENARIO 2: GUEST LOGGED IN (verified, has completed onboarding)
   if (user && user.hasCompletedOnboarding && user.status !== 'Declined') {
+    // Hub is not yet open — show the event landing page so guests can
+    // book hotels & travel while we finish preparing the app experience.
+    if (!HUB_UNLOCKED) {
+      return (
+        <Suspense fallback={<LoadingScreen />}>
+          <EventLandingPage />
+        </Suspense>
+      );
+    }
+
+    // Hub is live — full guest app experience
     return (
       <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden transition-colors duration-300">
         <Suspense fallback={<LoadingScreen />}>

@@ -1,0 +1,4051 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bryan's 40th</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --navy: #0e1c2a;
+      --navy-mid: #122538;
+      --navy-soft: #1d3550;
+      --terra: #C07D5E;
+      --terra-dk: #a06448;
+      --cream: #F7F4EE;
+      --cream-dk: #EDE8DF;
+      --stone: #8a8070;
+      --white: #ffffff;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Jost', system-ui, sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 72px;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--cream);
+      color: var(--navy-mid);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─────────────────────────── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 900;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
+      transition: background .4s var(--ease-out), box-shadow .4s, transform .3s;
+    }
+
+    nav.scrolled {
+      background: rgba(14, 28, 42, .96);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, .05), 0 4px 30px rgba(0, 0, 0, .3);
+    }
+
+    nav.hide {
+      transform: translateY(-100%);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      text-decoration: none;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s var(--ease-out);
+    }
+
+    nav.scrolled .nav-brand {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .nav-monogram {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, .3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, border-color .2s;
+    }
+
+    .nav-monogram:hover {
+      background: var(--terra);
+      border-color: var(--terra);
+    }
+
+    .nav-monogram svg {
+      width: 16px;
+      height: 16px;
+      fill: white;
+    }
+
+    .nav-brand-text {
+      line-height: 1;
+    }
+
+    .nav-brand-text strong {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      color: white;
+      font-weight: 400;
+      display: block;
+    }
+
+    .nav-brand-text span {
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .5);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .7);
+      text-decoration: none;
+      transition: color .2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--terra);
+      transform: scaleX(0);
+      transition: transform .2s;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-rsvp {
+      font-family: var(--sans);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      background: var(--terra);
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: .6rem 1.4rem;
+      border-radius: 100px;
+      transition: background .2s, transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(192, 125, 94, .35);
+    }
+
+    .nav-rsvp:hover {
+      background: white;
+      color: var(--navy-mid);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+    }
+
+    .nav-btn-outline {
+      font-family: var(--sans);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      padding: .6rem 1.4rem;
+      border-radius: 100px;
+      transition: background .2s, color .2s;
+    }
+
+    .nav-btn-outline:hover {
+      background: white;
+      color: var(--navy-mid);
+    }
+
+    .nav-hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: .5rem;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: white;
+      margin: 5px 0;
+      transition: .3s;
+    }
+
+    /* ─────────────────────────── HERO ─── */
+    #hero {
+      min-height: 100svh;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 clamp(1.5rem, 6vw, 5rem) clamp(3rem, 8vh, 6rem);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: var(--navy);
+      overflow: hidden;
+    }
+
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .45;
+      transform: scale(1.04);
+      transition: transform 8s ease-out;
+    }
+
+    .hero-bg img.loaded {
+      transform: scale(1);
+    }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top,
+          rgba(14, 28, 42, 1) 0%,
+          rgba(14, 28, 42, .7) 40%,
+          rgba(14, 28, 42, .2) 75%,
+          transparent 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-eyebrow-line {
+      width: 32px;
+      height: 1px;
+      background: var(--terra);
+    }
+
+    .hero-eyebrow span {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--terra);
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-style: normal;
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 300;
+      line-height: .9;
+      color: white;
+      margin-bottom: 1.5rem;
+      letter-spacing: -.02em;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--terra);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .85);
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-bottom: 3rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      border: 1px solid rgba(255, 255, 255, .18);
+      background: rgba(255, 255, 255, .07);
+      backdrop-filter: blur(8px);
+      color: rgba(255, 255, 255, .85);
+      padding: .65rem 1.25rem;
+      border-radius: 100px;
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .pill i {
+      color: var(--terra);
+      font-size: .65rem;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: var(--terra);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 1rem 2rem;
+      border-radius: 100px;
+      box-shadow: 0 8px 32px rgba(192, 125, 94, .4);
+      transition: background .2s, transform .2s, box-shadow .2s;
+    }
+
+    .btn-primary:hover {
+      background: white;
+      color: var(--navy-mid);
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, .2);
+    }
+
+    .btn-dark-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: var(--navy-mid);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 1rem 2rem;
+      border-radius: 100px;
+      box-shadow: 0 8px 32px rgba(14, 28, 42, .2);
+      transition: all .2s var(--ease-out);
+    }
+
+    .btn-dark-primary:hover {
+      background: var(--navy-soft);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(14, 28, 42, .3);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: transparent;
+      color: rgba(255, 255, 255, .7);
+      border: 1px solid rgba(255, 255, 255, .25);
+      cursor: pointer;
+      text-decoration: none;
+      font-family: var(--sans);
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      padding: 1rem 2rem;
+      border-radius: 100px;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, .1);
+      border-color: rgba(255, 255, 255, .5);
+      color: white;
+    }
+
+    .btn-meta-label {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--navy-mid);
+      opacity: 0.7;
+      margin-right: 1.25rem;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 600px) {
+      .btn-meta-label {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 0.75rem;
+      }
+    }
+
+    /* Countdown */
+    .countdown {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .cd-unit {
+      text-align: center;
+    }
+
+    .cd-num {
+      font-family: var(--serif);
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: white;
+      line-height: 1;
+      display: block;
+    }
+
+    .cd-label {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .45);
+      display: block;
+      margin-top: .3rem;
+    }
+
+    .cd-sep {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      color: rgba(255, 255, 255, .2);
+      padding-bottom: 1rem;
+    }
+
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      color: rgba(255, 255, 255, .35);
+      font-size: .65rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      animation: scrollBounce 2s infinite;
+    }
+
+    @keyframes scrollBounce {
+
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0)
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(6px)
+      }
+    }
+
+    /* ─────────────────────────── SECTIONS ─── */
+    section {
+      padding: clamp(4rem, 10vh, 8rem) clamp(1.5rem, 6vw, 5rem);
+    }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    #events .section-inner,
+    #hotels .section-inner,
+    #excursions .section-inner {
+      max-width: 1080px;
+    }
+
+    .section-eyebrow {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-bottom: .75rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .section-eyebrow::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(192, 125, 94, .3);
+      max-width: 60px;
+    }
+
+    .section-eyebrow.centered::before {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(192, 125, 94, .3);
+      max-width: 60px;
+    }
+
+    h2.section-title {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 300;
+      line-height: 1.05;
+      font-style: normal;
+      color: var(--navy-mid);
+      margin-bottom: 1.25rem;
+    }
+
+    h2.section-title em {
+      font-style: italic;
+      color: var(--terra);
+    }
+
+    .section-body {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--stone);
+      max-width: 580px;
+    }
+
+    /* ─────────────────────────── INTRO ─── */
+    #intro {
+      background: url('https://d2vbr83hnyiux1.cloudfront.net/image/975050285728/image_28olt637jh2mva7hkv7le4d37l/-FWEBP-S2560') center/cover no-repeat;
+      background-attachment: fixed;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(6rem, 15vh, 10rem) clamp(1.5rem, 6vw, 5rem);
+    }
+
+    #intro::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(14, 28, 42, 0.4);
+      pointer-events: none;
+    }
+
+    .note-card {
+      background: rgba(14, 28, 42, 0.6);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      padding: clamp(3rem, 8vw, 6rem) clamp(2rem, 6vw, 5rem);
+      border-radius: 1rem;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      max-width: 880px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .intro-centered {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .intro-centered .section-eyebrow {
+      color: var(--terra);
+      opacity: 0.9;
+    }
+
+    .intro-centered .section-eyebrow::before,
+    .intro-centered .section-eyebrow::after {
+      background: rgba(192, 125, 94, 0.5);
+    }
+
+    .intro-title {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 8vw, 4.5rem);
+      font-weight: 300;
+      color: white;
+      line-height: 1.05;
+      margin: 0 0 3rem;
+      font-style: normal;
+      letter-spacing: -0.01em;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .intro-title em {
+      font-style: italic;
+      color: var(--terra);
+    }
+
+    .intro-letter {
+      font-family: var(--serif);
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 300;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.9);
+      font-style: italic;
+      margin-bottom: 2rem;
+      max-width: 720px;
+    }
+
+    .intro-body {
+      font-size: 1.15rem;
+      font-weight: 300;
+      line-height: 2;
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 4rem;
+      max-width: 640px;
+    }
+
+    .intro-sig {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-style: italic;
+      color: var(--terra);
+      font-weight: 300;
+    }
+
+    @media (max-width: 600px) {
+      .note-card {
+        padding: 3.5rem 1.75rem;
+      }
+
+      .intro-title {
+        margin-bottom: 2rem;
+      }
+    }
+
+    /* ─────────────────────────── EVENTS ─── */
+    #events {
+      background: var(--cream);
+    }
+
+    .events-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+      margin-top: 3.5rem;
+    }
+
+    .event-card {
+      display: flex;
+      flex-direction: row;
+      gap: 3rem;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(192, 125, 94, 0.1);
+      border-radius: 2rem;
+      padding: 2.5rem;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+      transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .event-card:hover {
+      background: white;
+      transform: translateY(-8px);
+      box-shadow: 0 40px 80px -20px rgba(14, 28, 42, 0.12), 0 20px 40px -20px rgba(0, 0, 0, 0.15);
+      border-color: var(--terra);
+    }
+
+    @media (max-width: 600px) {
+      .event-card {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+    }
+
+    .event-date-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 120px;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(192, 125, 94, .3);
+      padding-right: 2.5rem;
+      padding-bottom: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .event-date-stack {
+        border-right: none;
+        border-bottom: 1px solid rgba(192, 125, 94, .3);
+        padding-right: 0;
+        padding-bottom: 1rem;
+        width: 100%;
+        align-items: flex-start;
+      }
+    }
+
+    .event-body {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: flex-start;
+    }
+
+    .event-date-stack .day-num {
+      font-family: var(--serif);
+      font-size: 3.2rem;
+      font-weight: 300;
+      color: var(--navy-mid);
+      line-height: 1;
+    }
+
+    .event-date-stack .day-name {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-top: .6rem;
+    }
+
+    .event-title {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--navy-mid);
+      line-height: 1.1;
+      margin-bottom: .2rem;
+    }
+
+    .event-venue {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: .75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .event-venue-name {
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--navy-soft);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .venue-address {
+      color: var(--stone);
+      text-decoration: none;
+      font-weight: 400;
+      letter-spacing: .05em;
+      text-transform: none;
+      /* Keep address readable, not all-caps if preferred, but user said "to the right of their name" */
+      transition: color .2s, border-bottom .2s;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+    }
+
+    .venue-address:hover {
+      color: var(--terra);
+      border-bottom-color: var(--terra);
+    }
+
+    .venue-link {
+      color: inherit;
+      text-decoration: none;
+      transition: color .2s;
+    }
+
+    .venue-link:hover {
+      color: var(--terra);
+    }
+
+    .event-time {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--sans);
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-top: .8rem;
+      white-space: nowrap;
+    }
+
+    .venue-social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      color: var(--terra);
+      text-decoration: none;
+      opacity: .75;
+      transition: opacity .2s;
+    }
+
+    .venue-social-link:hover {
+      opacity: 1;
+    }
+
+    .venue-social-link i {
+      font-size: .7rem;
+    }
+
+    .event-desc {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--stone);
+      margin-bottom: 0;
+    }
+
+    /* ─────────────────────────── HOTELS ─── */
+    #hotels {
+      background: var(--cream-dk);
+    }
+
+    .hotels-intro,
+    .events-intro {
+      display: block;
+      margin-bottom: 3.5rem;
+    }
+
+    .hotels-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .hotel-card {
+      background: white;
+      border-radius: 1.75rem;
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, .06);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .03);
+      transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hotel-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 30px 60px -12px rgba(14, 28, 42, 0.15), 0 18px 36px -18px rgba(0, 0, 0, 0.2);
+      border-color: var(--terra);
+    }
+
+    .hotel-img {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .hotel-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .hotel-card:hover .hotel-img img {
+      transform: scale(1.1) rotate(1deg);
+    }
+
+    .hotel-tier {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: white;
+      color: var(--navy-mid);
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .35rem .8rem;
+      border-radius: 100px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+    }
+
+    .hotel-body {
+      padding: 1.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hotel-location {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      margin-bottom: .6rem;
+    }
+
+    .hotel-location i {
+      color: var(--terra);
+      font-size: .65rem;
+    }
+
+    .hotel-location span {
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+
+    .hotel-name {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--navy-mid);
+      margin-bottom: .75rem;
+      line-height: 1.1;
+    }
+
+    .hotel-desc {
+      font-size: .92rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--stone);
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+
+    .hotel-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hotel-stat label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--navy-mid);
+      display: block;
+      margin-bottom: .15rem;
+    }
+
+    .hotel-stat span {
+      font-size: .9rem;
+      font-weight: 300;
+      color: var(--stone);
+    }
+
+    .hotel-actions {
+      display: flex;
+      gap: .75rem;
+      margin-top: auto;
+    }
+
+    .hotel-btn-primary {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      background: var(--navy-mid);
+      color: white;
+      text-decoration: none;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      padding: .75rem 1rem;
+      border-radius: 100px;
+      transition: background .2s, transform .2s;
+    }
+
+    .hotel-btn-primary:hover {
+      background: var(--terra);
+      transform: translateY(-1px);
+    }
+
+    .hotel-btn-secondary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      background: transparent;
+      color: var(--stone);
+      border: 1px solid #ddd;
+      text-decoration: none;
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .75rem 1.1rem;
+      border-radius: 100px;
+      transition: background .2s, color .2s, border-color .2s;
+    }
+
+    .hotel-btn-secondary:hover {
+      background: var(--cream);
+      color: var(--navy-mid);
+      border-color: var(--navy-mid);
+    }
+
+    /* ─────────────────────────── TRAVEL ─── */
+    #travel {
+      background: var(--cream);
+    }
+
+    .travel-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      grid-auto-flow: column;
+      gap: 0 1.5rem;
+      margin-top: 3.5rem;
+      align-items: stretch;
+    }
+
+    .travel-column {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 2;
+      background: var(--navy-mid);
+      color: white;
+      border-radius: 1.75rem;
+      border: 1px solid rgba(255, 255, 255, .1);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, .15);
+      transition: transform .3s var(--ease-out), box-shadow .3s;
+      overflow: hidden;
+      height: 100%;
+      position: relative;
+    }
+
+    .travel-column::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.45;
+      filter: saturate(1.2) brightness(0.7);
+      z-index: 0;
+      transition: all .6s var(--ease-out);
+    }
+
+    .travel-column:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, .2);
+    }
+
+    .travel-column:hover::before {
+      transform: scale(1.05);
+      filter: saturate(1.2) brightness(0.6) blur(4px);
+    }
+
+    .travel-column-cdg::before {
+      background-image: url('https://www.historyhit.com/app/uploads/bis-images/5150542/The-Eiffel-Tower-1576x1074.jpg');
+    }
+
+    .travel-column-bcn::before {
+      background-image: url('https://www.barcelo.com/guia-turismo/wp-content/uploads/que-visitar-en-barcelona-1.jpg');
+    }
+
+    .travel-column-mpl::before {
+      background-image: url('https://thumbs.dreamstime.com/b/montpellier-france-august-terminal-building-airport-mpl-182359143.jpg');
+    }
+
+    .travel-column>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .travel-card {
+      padding: 3rem 2.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .travel-actions {
+      padding: 0 2.25rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .travel-badge {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-bottom: .75rem;
+      display: block;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .travel-title {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-style: italic;
+      font-weight: 300;
+      color: white;
+      margin-bottom: .75rem;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .travel-desc {
+      font-size: .95rem;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.95);
+      margin-bottom: 0;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .travel-action-secondary {
+      margin-bottom: 0;
+    }
+
+    .travel-detail {
+      padding-top: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .travel-detail-label {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: .35rem;
+    }
+
+    .travel-detail-text {
+      font-size: .88rem;
+      font-weight: 300;
+      color: white;
+      line-height: 1.6;
+    }
+
+    .travel-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      text-decoration: none;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .75rem 1.4rem;
+      border-radius: 100px;
+      transition: all .3s var(--ease-out);
+      align-self: flex-start;
+      width: fit-content;
+    }
+
+    .travel-btn:hover {
+      background: white;
+      color: var(--navy-mid);
+      border-color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .travel-tip {
+      background: var(--navy-mid);
+      color: white;
+      border-radius: 1.75rem;
+      padding: 2.5rem;
+      grid-column: 1 / span 3;
+      grid-row: 3;
+      margin-top: 2rem;
+    }
+
+    .travel-tip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .travel-tip h3 {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-style: italic;
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+
+    .tip-item strong {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--terra);
+      display: inline;
+      margin-right: 0.5rem;
+    }
+
+    .tip-item p {
+      display: inline;
+      font-size: .9rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(255, 255, 255, .6);
+    }
+
+    /* ─────────────────────────── GUIDE CTA ─── */
+    #guide {
+      background: var(--cream-dk);
+    }
+
+    .guide-card {
+      background: var(--navy-mid);
+      border-radius: 2rem;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 400px;
+    }
+
+    .guide-body {
+      padding: 3.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .guide-body .section-eyebrow {
+      color: var(--terra);
+    }
+
+    .guide-body .section-eyebrow::after {
+      background: rgba(192, 125, 94, .3);
+    }
+
+    .guide-title {
+      font-family: var(--serif);
+      font-size: 2.8rem;
+      font-style: normal;
+      font-weight: 300;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .guide-title em {
+      font-style: italic;
+      color: var(--terra);
+    }
+
+    .guide-desc {
+      font-size: 1.0rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: rgba(255, 255, 255, .55);
+      margin-bottom: 2rem;
+    }
+
+    .guide-chapters {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      margin-bottom: 2rem;
+    }
+
+    .guide-chapter {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .85rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, .55);
+    }
+
+    .guide-chapter i {
+      color: var(--terra);
+      font-size: .6rem;
+    }
+
+    .guide-img {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .guide-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: .7;
+    }
+
+    .guide-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--navy-mid) 0%, transparent 40%);
+    }
+
+    /* ─────────────────────────── RSVP ─── */
+    .rsvp-modal-content .rsvp-left .section-title {
+      color: var(--navy-mid);
+    }
+
+    .rsvp-modal-content .rsvp-left .section-body {
+      color: var(--stone);
+    }
+
+    .rsvp-deadline {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-top: 2rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid rgba(192, 125, 94, .3);
+      border-radius: .75rem;
+      background: rgba(192, 125, 94, .06);
+    }
+
+    .rsvp-deadline i {
+      color: var(--terra);
+    }
+
+    .rsvp-deadline span {
+      font-size: .82rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, .6);
+      line-height: 1.5;
+    }
+
+    .rsvp-deadline strong {
+      color: var(--terra);
+    }
+
+    .rsvp-events {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .rsvp-event {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .rsvp-event-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--terra);
+      flex-shrink: 0;
+    }
+
+    .rsvp-event-text strong {
+      display: block;
+      font-size: .95rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .9);
+    }
+
+    /* Form */
+    .rsvp-form-wrap {
+      background: white;
+      border-radius: 2rem;
+      padding: 2.75rem;
+    }
+
+    .rsvp-form-wrap h3 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--navy-mid);
+      margin-bottom: .25rem;
+    }
+
+    .rsvp-form-wrap p {
+      font-size: .88rem;
+      font-weight: 300;
+      color: var(--stone);
+      margin-bottom: 2rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--navy-mid);
+      display: block;
+      margin-bottom: .5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: .85rem 1.1rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: .85rem;
+      font-family: var(--sans);
+      font-size: .85rem;
+      font-weight: 300;
+      color: var(--navy-mid);
+      background: #fafaf9;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--terra);
+      box-shadow: 0 0 0 3px rgba(192, 125, 94, .12);
+      background: white;
+    }
+
+    .form-input::placeholder {
+      color: #b0b8c4;
+    }
+
+    textarea.form-input {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .attend-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .75rem;
+    }
+
+    .attend-opt input {
+      display: none;
+    }
+
+    .attend-opt label {
+      display: block;
+      text-align: center;
+      padding: .85rem .5rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: .85rem;
+      cursor: pointer;
+      font-size: .78rem;
+      font-weight: 500;
+      color: #8a8070;
+      transition: all .2s;
+    }
+
+    .attend-opt label i {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: .35rem;
+    }
+
+    .attend-opt input:checked+label {
+      border-color: var(--terra);
+      background: rgba(192, 125, 94, .07);
+      color: var(--terra);
+    }
+
+    .attend-opt:nth-child(2) input:checked+label {
+      border-color: #d4a017;
+      background: rgba(212, 160, 23, .07);
+      color: #d4a017;
+    }
+
+    .attend-opt:nth-child(3) input:checked+label {
+      border-color: #94a3b8;
+      background: rgba(148, 163, 184, .07);
+      color: #64748b;
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 1.1rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      background: var(--navy-mid);
+      color: white;
+      font-family: var(--sans);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      transition: background .2s, transform .2s, box-shadow .2s;
+      box-shadow: 0 6px 20px rgba(14, 28, 42, .2);
+      margin-top: 1.5rem;
+    }
+
+    .form-submit:hover {
+      background: var(--terra);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 30px rgba(192, 125, 94, .35);
+    }
+
+    .form-submit:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .extra-fields {
+      display: none;
+    }
+
+    .extra-fields.show {
+      display: block;
+    }
+
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem 0;
+    }
+
+    .form-success.show {
+      display: block;
+    }
+
+    .form-success-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(192, 125, 94, .12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+
+    .form-success-icon i {
+      font-size: 1.4rem;
+      color: var(--terra);
+    }
+
+    .form-success h4 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--navy-mid);
+      margin-bottom: .5rem;
+    }
+
+    .form-success p {
+      font-size: .92rem;
+      font-weight: 300;
+      color: var(--stone);
+    }
+
+    /* ─────────────────────────── FOOTER ─── */
+    .footer-voyageurs {
+      background: var(--navy);
+      padding: 2.5rem 0;
+      font-family: var(--sans);
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .footer-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .footer-powered {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-powered:hover {
+      color: var(--terra);
+    }
+
+    .footer-copy {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.25);
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-legal button {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.35);
+      text-decoration: none;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: var(--sans);
+      transition: color 0.2s;
+    }
+
+    .footer-legal button:hover {
+      color: var(--terra);
+    }
+
+    /* ─────────────────────────── LEGAL MODALS ─── */
+    .legal-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.5s var(--ease-out);
+      padding: 1.5rem;
+    }
+
+    .legal-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .legal-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(14, 28, 42, 0.9);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
+
+    .legal-modal-content {
+      position: relative;
+      background: var(--white);
+      width: 100%;
+      max-width: 800px;
+      max-height: 80vh;
+      border-radius: 2rem;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+      transform: translateY(30px) scale(0.98);
+      transition: transform 0.6s var(--ease-out);
+      z-index: 2;
+      overflow-y: auto;
+      padding: clamp(2rem, 5vw, 4rem);
+      color: var(--navy-mid);
+    }
+
+    .legal-modal.show .legal-modal-content {
+      transform: translateY(0) scale(1);
+    }
+
+    .legal-modal-close {
+      position: sticky;
+      top: 0;
+      float: right;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--navy-mid);
+      cursor: pointer;
+      z-index: 10;
+      border: none;
+      transition: background 0.3s, transform 0.3s;
+      margin-top: -1rem;
+      margin-right: -1rem;
+    }
+
+    .legal-modal-close:hover {
+      background: var(--cream-dk);
+      transform: rotate(90deg);
+    }
+
+    .legal-rich-text {
+      font-family: var(--sans);
+      line-height: 1.7;
+      font-size: 0.95rem;
+      font-weight: 300;
+    }
+
+    .legal-rich-text h2 {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-style: italic;
+      font-weight: 300;
+      margin: 2.5rem 0 1rem;
+      color: var(--navy-mid);
+      border-bottom: 1px solid var(--cream-dk);
+      padding-bottom: 0.5rem;
+    }
+
+    .legal-rich-text h2:first-of-type {
+      margin-top: 0;
+    }
+
+    .legal-rich-text h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 1.5rem 0 0.5rem;
+      color: var(--terra);
+    }
+
+    .legal-rich-text p {
+      margin-bottom: 1.25rem;
+    }
+
+    .legal-rich-text ul {
+      margin-bottom: 1.5rem;
+      padding-left: 1.25rem;
+    }
+
+    .legal-rich-text li {
+      margin-bottom: 0.5rem;
+    }
+
+    .legal-rich-text a {
+      color: var(--terra);
+      text-decoration: underline;
+    }
+
+    .footer-made-by {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .footer-made-by i {
+      color: #ff6b6b;
+      margin: 0 0.25rem;
+      opacity: 0.6;
+    }
+
+
+
+
+    /* ─────────────────────────── GALLERY MODAL ─── */
+    .gallery-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--cream);
+      z-index: 2000;
+      overflow-y: auto;
+      padding: clamp(4rem, 10vh, 8rem) 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s var(--ease-out), visibility 0.4s;
+    }
+
+    .gallery-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .gallery-modal-close {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--navy-mid);
+      cursor: pointer;
+      z-index: 2001;
+      border: none;
+      transition: background 0.3s;
+    }
+
+    .gallery-modal-close:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .gallery-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .gallery-grid {
+      column-count: 3;
+      column-gap: 1.5rem;
+      padding: 0 5vw;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 1000px) {
+      .gallery-grid {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .gallery-grid {
+        column-count: 1;
+      }
+    }
+
+    /* MASONRY HOVER DIMMING */
+    .gallery-grid:hover .gallery-item {
+      opacity: 0.6;
+      filter: grayscale(20%);
+    }
+
+    .gallery-grid .gallery-item:hover {
+      opacity: 1;
+      filter: grayscale(0%);
+    }
+
+    /* ─────────────────────────── RSVP MODAL ─── */
+    .rsvp-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.5s var(--ease-out);
+      padding: 1.5rem;
+    }
+
+    .rsvp-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .rsvp-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(14, 28, 42, 0.85);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
+
+    .rsvp-modal-content {
+      position: relative;
+      background: var(--cream);
+      width: 100%;
+      max-width: 800px;
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: 2.5rem;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      transform: translateY(30px) scale(0.98);
+      transition: transform 0.6s var(--ease-out);
+      z-index: 2;
+      padding: clamp(2rem, 6vw, 4rem);
+    }
+
+    .rsvp-modal.show .rsvp-modal-content {
+      transform: translateY(0) scale(1);
+    }
+
+    .rsvp-modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--navy-mid);
+      cursor: pointer;
+      z-index: 10;
+      border: none;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .rsvp-modal-close:hover {
+      background: rgba(0, 0, 0, 0.1);
+      transform: rotate(90deg);
+    }
+
+    .rsvp-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      align-items: center;
+      text-align: left;
+    }
+
+    .rsvp-left {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .rsvp-left .section-title {
+      margin-bottom: 1.5rem;
+    }
+
+    .rsvp-left .section-body {
+      margin-bottom: 0;
+    }
+
+    .rsvp-form-wrap {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .rsvp-left .rsvp-event-text strong {
+      color: var(--navy-mid);
+    }
+
+    .rsvp-left .rsvp-event-text {
+      opacity: 0.8;
+    }
+
+    .rsvp-modal-close:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .rsvp-hidden {
+      display: none !important;
+    }
+
+    .gallery-item {
+      display: inline-block;
+      width: 100%;
+      position: relative;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      transition: opacity 0.5s var(--ease-out), filter 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+
+    .gallery-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(14, 28, 42, 0.75) 0%, rgba(14, 28, 42, 0) 40%);
+      opacity: 0;
+      transition: opacity 0.6s var(--ease-out);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .gallery-item:hover::after {
+      opacity: 1;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.8s var(--ease-out);
+      object-fit: cover;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.04);
+    }
+
+    .gallery-caption {
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+      right: 2rem;
+      color: white;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 500;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+      pointer-events: none;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .gallery-item:hover .gallery-caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Lightbox */
+    #gallery-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 28, 42, 0.95);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.4s var(--ease-out);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      cursor: pointer;
+    }
+
+    #gallery-lightbox.show {
+      opacity: 1;
+    }
+
+    #gallery-lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 1rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      transform: scale(0.95);
+      transition: transform 0.4s var(--ease-out);
+      object-fit: contain;
+    }
+
+    #gallery-lightbox.show img {
+      transform: scale(1);
+    }
+
+    #gallery-lightbox-caption {
+      color: white;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 2rem;
+      font-weight: 500;
+      opacity: 0.7;
+      transition: opacity 0.4s;
+    }
+
+    /* ─────────────────────────── MAP MODAL ─── */
+    .map-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 4000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.5s var(--ease-out);
+      padding: 1.5rem;
+    }
+
+    .map-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .map-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(14, 28, 42, 0.85);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
+
+    .map-modal-content {
+      position: relative;
+      background: white;
+      width: 100%;
+      max-width: 1000px;
+      height: 80vh;
+      border-radius: 2rem;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+      transform: translateY(30px) scale(0.98);
+      transition: transform 0.6s var(--ease-out);
+      z-index: 2;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .map-modal.show .map-modal-content {
+      transform: translateY(0) scale(1);
+    }
+
+    .map-modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--navy-mid);
+      cursor: pointer;
+      z-index: 10;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .map-modal-close:hover {
+      background: var(--cream);
+      transform: rotate(90deg);
+    }
+
+    .map-iframe-container {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    .map-iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* ─────────────────────────── MOBILE ─── */
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
+
+      .nav-hamburger {
+        display: block;
+      }
+
+      nav.menu-open .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+        position: fixed;
+        top: 72px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(14, 28, 42, .98);
+        padding: 2.5rem;
+      }
+
+      nav.menu-open .nav-links a {
+        font-size: .8rem;
+      }
+
+      .intro-grid,
+      .rsvp-grid,
+      .guide-card,
+      .hotels-intro,
+      .events-intro {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .hotels-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .events-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .event-img {
+        height: 220px;
+      }
+
+      .travel-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .travel-column {
+        display: block;
+        /* Disable subgrid on mobile for simple flow */
+        height: auto;
+      }
+
+      .travel-card {
+        padding-bottom: 1.5rem;
+      }
+
+      .travel-tip {
+        grid-column: span 1;
+      }
+
+      .travel-tip-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .guide-card {
+        grid-template-columns: 1fr;
+      }
+
+      .guide-img {
+        display: none;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+      }
+
+      footer .footer-links {
+        justify-content: center;
+      }
+
+    }
+
+    @media (max-width: 600px) {
+      .hero-title {
+        font-size: clamp(2.8rem, 10vw, 4.5rem);
+      }
+
+      .countdown .cd-num {
+        font-size: 1.8rem;
+      }
+
+      .attend-group {
+        grid-template-columns: 1fr;
+      }
+
+      .travel-tip-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ─────────────────────────── APPS ─── */
+    #apps {
+      background: var(--cream-dk);
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .app-card {
+      background: white;
+      border-radius: 2rem;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .app-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 40px 80px -20px rgba(14, 28, 42, 0.1), 0 20px 40px -20px rgba(0, 0, 0, 0.15);
+      border-color: var(--terra);
+    }
+
+    .app-icon {
+      width: 48px;
+      height: 48px;
+      background: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .app-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 8px;
+    }
+
+    .app-content h3 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--navy-mid);
+      margin-bottom: 0.5rem;
+    }
+
+    .app-content p {
+      font-size: 0.9rem;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--stone);
+    }
+
+    .app-link {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--terra);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: gap 0.2s;
+    }
+
+    .app-link:hover {
+      gap: 0.75rem;
+    }
+
+    .affiliate-disclosure {
+      font-size: 0.7rem;
+      color: var(--stone);
+      opacity: 0.6;
+      margin-bottom: 2rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      line-height: 1.5;
+    }
+
+    .affiliate-disclosure button {
+      background: none;
+      border: none;
+      padding: 0;
+      color: inherit;
+      text-decoration: underline;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: inherit;
+    }
+
+    .affiliate-disclosure button:hover {
+      color: var(--terra);
+    }
+
+    /* ─────────────────────────── ANIMATIONS ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-up:nth-child(2) {
+      transition-delay: .1s;
+    }
+
+    .fade-up:nth-child(3) {
+      transition-delay: .2s;
+    }
+
+    .fade-up:nth-child(4) {
+      transition-delay: .3s;
+    }
+
+    .hide-on-rsvp.rsvp-hidden {
+      display: none !important;
+    }
+  </style>
+  <!-- Tracking Script -->
+  <script data-noptimize="1" data-cfasync="false" data-wpfc-render="false">
+    (function () {
+      var script = document.createElement("script");
+      script.async = 1;
+      script.src = 'https://emrldtp.com/NTEwNjkz.js?t=510693';
+      document.head.appendChild(script);
+    })();
+  </script>
+
+  <!-- Stay22 LetMeAllez Script -->
+  <script>
+    (function (s, t, a, y, twenty, two) {
+      s.Stay22 = s.Stay22 || {};
+      s.Stay22.params = { lmaID: '69c12166b7b17be547e5b3f7' };
+      twenty = t.createElement(a);
+      two = t.getElementsByTagName(a)[0];
+      twenty.async = 1;
+      twenty.src = y;
+      two.parentNode.insertBefore(twenty, two);
+    })(window, document, 'script', 'https://scripts.stay22.com/letmeallez.js');
+  </script>
+
+  <!-- Firebase Auth Module -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      projectId: "voyageurs-834eb",
+      appId: "1:435975494588:web:2e12eb825a53477ebbe9b9",
+      apiKey: "AIzaSyAC5sjtZnu9ccHXLVeoiawnjq0w_dwNeq8",
+      authDomain: "voyageurs-834eb.firebaseapp.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.fbAuth = auth;
+    window.fbSignInWithEmailAndPassword = signInWithEmailAndPassword;
+    window.fbCreateUserWithEmailAndPassword = createUserWithEmailAndPassword;
+    window.fbSendPasswordResetEmail = sendPasswordResetEmail;
+    window.fbSignOut = signOut;
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        localStorage.setItem('passcode_verified', 'true');
+        const gate = document.getElementById('passcode-gate');
+        if (gate) gate.style.display = 'none';
+        window.scrollTo(0, 0);
+        document.body.style.overflow = '';
+        document.body.style.overflowX = 'hidden';
+      }
+    });
+  </script>
+</head>
+
+<body>
+
+  <!-- Passcode Gate Overlay -->
+  <div id="passcode-gate"
+    style="position:fixed;inset:0;background:var(--navy);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s var(--ease-out), visibility 0.6s;overflow:hidden;">
+
+    <!-- Login Button top right -->
+    <div id="top-right-login-btn"
+      style="position:absolute;top: clamp(1.5rem, 4vh, 2.5rem);right: clamp(1.5rem, 5vw, 4rem);z-index:10000;">
+      <button class="nav-btn-outline" onclick="toggleLoginCard(true)"
+        style="border-radius:100px; opacity:0.8;">Login</button>
+    </div>
+
+    <!-- Sophisticated Background -->
+    <div
+      style="position:absolute;inset:0;background:url('https://d2vbr83hnyiux1.cloudfront.net/image/975050285728/image_28olt637jh2mva7hkv7le4d37l/-FWEBP-S2560') center/cover no-repeat;opacity:0.4;filter:grayscale(30%);">
+    </div>
+    <div
+      style="position:absolute;inset:0;background:radial-gradient(circle at center, rgba(14,28,42,0.4) 0%, var(--navy) 100%);">
+    </div>
+
+    <!-- Passcode Input Card -->
+    <div id="passcode-card"
+      style="position:relative;z-index:2;text-align:center;padding:3rem 2.5rem 3.5rem;max-width:450px;width:90%;background:rgba(10,20,35,0.55);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;box-shadow:0 8px 48px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.07);">
+
+      <!-- Label -->
+      <div
+        style="font-family:var(--sans);font-size:0.75rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--terra);margin-bottom:1.5rem;font-weight:600;opacity:0.8;">
+        Access Your Event</div>
+
+      <!-- Heading -->
+      <h1
+        style="font-family:var(--serif);font-size:clamp(2.5rem, 8vw, 4rem);color:white;font-style:italic;margin-bottom:2rem;font-weight:300;line-height:1.1;">
+        Bryan's 40th</h1>
+
+      <div style="display:flex;gap:1.25rem;justify-content:center;flex-direction:column;align-items:center;">
+        <div class="passcode-field-wrapper" style="position:relative;width:100%;max-width:320px;">
+          <input type="text" id="passcode-input"
+            style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.15);border-radius:100px;padding:1.1rem 2.8rem;color:white;font-family:var(--sans);font-size:1rem;text-align:center;outline:none;width:100%;backdrop-filter:blur(12px);transition:border-color 0.3s;"
+            placeholder="Enter RSVP Code" aria-label="RSVP Code" autocomplete="off" spellcheck="false">
+
+          <div class="tooltip-trigger"
+            style="position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.3);cursor:help;transition:all 0.3s;font-size:0.9rem;z-index:3;">
+            <i class="fa-solid fa-circle-info"></i>
+            <!-- Premium Tooltip -->
+            <div class="custom-tooltip"
+              style="position:absolute;bottom:calc(100% + 15px);left:50%;transform:translateX(-50%) translateY(10px);background:rgba(15,25,45,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.15);padding:0.8rem 1.2rem;border-radius:12px;width:220px;color:white;font-family:var(--sans);font-size:0.75rem;line-height:1.4;text-align:center;pointer-events:none;opacity:0;visibility:hidden;transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);box-shadow:0 10px 30px rgba(0,0,0,0.5);z-index:10001;text-transform:none;letter-spacing:normal;">
+              Please find your unique access code on the invitation you received in the mail.
+              <div
+                style="position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(15,25,45,0.95);">
+              </div>
+            </div>
+          </div>
+
+          <div id="passcode-spinner"
+            style="position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);color:var(--terra);opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:4;background:var(--navy);border-radius:50%;">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+          </div>
+
+          <style>
+            .passcode-field-wrapper:hover .custom-tooltip {
+              opacity: 1 !important;
+              visibility: visible !important;
+              transform: translateX(-50%) translateY(0) !important;
+            }
+
+            .passcode-field-wrapper:hover .tooltip-trigger i {
+              color: rgba(255, 255, 255, 0.7);
+            }
+          </style>
+        </div>
+
+        <button id="passcode-submit"
+          style="background:var(--terra);color:white;border:none;border-radius:100px;padding:1rem 3rem;font-family:var(--sans);font-size:0.85rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:all 0.4s var(--ease-out);box-shadow:0 4px 20px rgba(192, 125, 94, 0.2);margin-top:0.5rem;">
+          Open RSVP
+        </button>
+      </div>
+
+      <div id="passcode-error"
+        style="position:absolute;bottom:0.75rem;left:0;right:0;color:#ff6b6b;font-family:var(--sans);font-size:0.8rem;opacity:0;transition:opacity 0.3s;letter-spacing:0.1em;text-transform:uppercase;line-height:1.4;">
+        Incorrect RSVP code<br><span
+          style="color:white;text-transform:none;letter-spacing:normal;font-size:0.75rem;">Need help? <a
+            href="mailto:support@voyageurs.app" style="color:white;text-decoration:underline;">Email Support</a></span>
+      </div>
+    </div>
+
+    <!-- Login Input Card (Initially Hidden) -->
+    <div id="login-card"
+      style="position:relative;z-index:2;text-align:center;padding:3rem 2.5rem 3.5rem;max-width:450px;width:90%;background:rgba(10,20,35,0.55);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;box-shadow:0 8px 48px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.07);display:none;">
+
+      <!-- Label -->
+      <div
+        style="font-family:var(--sans);font-size:0.75rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--terra);margin-bottom:1.5rem;font-weight:600;opacity:0.8;">
+        Guest Login</div>
+
+      <h1
+        style="font-family:var(--serif);font-size:clamp(2.5rem, 8vw, 4rem);color:white;font-style:italic;margin-bottom:2.5rem;font-weight:300;line-height:1.1;">
+        Welcome Back</h1>
+
+      <div style="display:flex;gap:1.25rem;justify-content:center;flex-direction:column;align-items:center;">
+        <input type="text" id="login-email"
+          style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.15);border-radius:100px;padding:1.1rem 2rem;color:white;font-family:var(--sans);font-size:1rem;text-align:center;outline:none;width:100%;backdrop-filter:blur(12px);transition:border-color 0.3s;"
+          placeholder="Email or Phone Number" aria-label="Email or Phone">
+
+        <input type="password" id="login-password"
+          style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.15);border-radius:100px;padding:1.1rem 2rem;color:white;font-family:var(--sans);font-size:1rem;text-align:center;outline:none;width:100%;backdrop-filter:blur(12px);transition:border-color 0.3s;"
+          placeholder="Password" aria-label="Password">
+
+        <button id="login-submit" onclick="handleLoginSubmit()"
+          style="background:var(--terra);color:white;border:none;border-radius:100px;padding:1rem 3rem;font-family:var(--sans);font-size:0.85rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:all 0.4s var(--ease-out);box-shadow:0 4px 20px rgba(192, 125, 94, 0.2);margin-top:0.5rem;width:100%;">
+          Sign In
+        </button>
+      </div>
+
+      <button onclick="toggleLoginCard(false)"
+        style="background:transparent;border:none;color:var(--stone);font-family:var(--sans);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;margin-top:1.5rem;cursor:pointer;opacity:0.8;transition:opacity 0.2s;">
+        <i class="fa-solid fa-arrow-left"></i> Back to RSVP
+      </button>
+
+      <div id="login-error"
+        style="position:absolute;bottom:0.5rem;left:0;right:0;color:#ff6b6b;font-family:var(--sans);font-size:0.8rem;opacity:0;transition:opacity 0.3s;letter-spacing:0.1em;text-transform:uppercase;line-height:1.4;">
+      </div>
+    </div>
+
+    <!-- Unified Footer Links for Auth -->
+    <div
+      style="position:absolute;bottom:2.5rem;left:0;right:0;display:flex;gap:1.5rem;justify-content:center;z-index:2;">
+      <button onclick="openLegalModal('privacy-modal')"
+        style="background:none;border:none;color:rgba(255,255,255,0.4);font-family:var(--sans);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:color 0.2s;"
+        onmouseover="this.style.color='rgba(255,255,255,0.8)'"
+        onmouseout="this.style.color='rgba(255,255,255,0.4)'">Privacy</button>
+      <button onclick="openLegalModal('terms-modal')"
+        style="background:none;border:none;color:rgba(255,255,255,0.4);font-family:var(--sans);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:color 0.2s;"
+        onmouseover="this.style.color='rgba(255,255,255,0.8)'"
+        onmouseout="this.style.color='rgba(255,255,255,0.4)'">Terms</button>
+    </div>
+  </div>
+
+  <script>
+    // ─── LOGIN CARD TOGGLE ───
+    function toggleLoginCard(show) {
+      document.getElementById('passcode-card').style.display = show ? 'none' : 'block';
+      document.getElementById('login-card').style.display = show ? 'block' : 'none';
+      document.getElementById('top-right-login-btn').style.display = show ? 'none' : 'block';
+    }
+
+    async function handleLoginSubmit() {
+      const email = document.getElementById('login-email').value.trim();
+      const pwd = document.getElementById('login-password').value;
+      const err = document.getElementById('login-error');
+
+      if (!email || !pwd) {
+        err.textContent = "Please enter both email and password.";
+        err.style.opacity = '1';
+        setTimeout(() => err.style.opacity = '0', 3000);
+        return;
+      }
+
+      const btn = document.getElementById('login-submit');
+      const origText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+      try {
+        if (window.fbSignInWithEmailAndPassword && window.fbAuth) {
+          await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pwd);
+          // onAuthStateChanged will handle hiding the gate
+        } else {
+          throw new Error("Firebase not loaded yet.");
+        }
+      } catch (error) {
+        console.error("Login mapping error", error);
+        err.innerHTML = 'Invalid email or password<br><span style="color:white;text-transform:none;letter-spacing:normal;font-size:0.75rem;">Need help? <a href="mailto:support@voyageurs.app" style="color:white;text-decoration:underline;">Email Support</a></span>';
+        err.style.opacity = '1';
+        setTimeout(() => err.style.opacity = '0', 6000);
+        btn.innerHTML = origText;
+      }
+    }
+
+    // Immediate check to hide gate if already verified
+    (function () {
+      if (localStorage.getItem('passcode_verified') === 'true') {
+        const gate = document.getElementById('passcode-gate');
+        if (gate) {
+          gate.style.display = 'none';
+        }
+        window.scrollTo(0, 0);
+        document.body.style.overflow = '';
+        document.body.style.overflowX = 'hidden';
+      } else {
+        document.body.style.overflow = 'hidden';
+      }
+    })();
+
+    // ─── GOOGLE APPS SCRIPT SETUP ───
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4SzHy_qu8xhIudQjQSLklqYdwHAnhxUfbZTEN1M2fXHcy6JqUWbyIvsIkaPJ-lR_m/exec';
+
+    async function verifyPasscode() {
+      const input = document.getElementById('passcode-input');
+      const btn = document.getElementById('passcode-submit');
+      const spinner = document.getElementById('passcode-spinner');
+      const err = document.getElementById('passcode-error');
+      const val = input.value.trim().toUpperCase();
+
+      if (!val) return;
+
+      // Visual feedback while verifying
+      input.disabled = true;
+      btn.disabled = true;
+      spinner.style.opacity = '1';
+      const originalPlaceholder = input.placeholder;
+      input.placeholder = "Verifying...";
+
+      try {
+        const fetchUrl = `${SCRIPT_URL}?token=${encodeURIComponent(val)}`;
+        const response = await fetch(fetchUrl);
+        const guest = await response.json();
+
+        if (guest.found) {
+          // Success! Hide the gate
+          const gate = document.getElementById('passcode-gate');
+          gate.style.opacity = '0';
+          gate.style.pointerEvents = 'none';
+
+          // Pre-populate the RSVP form fields
+          if (guest.firstName) document.querySelector('input[name="first_name"]').value = guest.firstName;
+
+          // Only fill Guest Name if it's not a placeholder (e.g., "&" or "Guest")
+          const gName = (guest.lastName || "").toString().trim();
+          const isPlaceholder = ["&", "+", "and", "guest"].includes(gName.toLowerCase());
+          document.querySelector('input[name="last_name"]').value = isPlaceholder ? "" : gName;
+
+          // Email should always remain blank for the user to fill out
+          document.querySelector('input[name="email"]').value = "";
+
+          if (guest.guests) document.querySelector('select[name="guests"]').value = guest.guests;
+
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+            gate.style.visibility = 'hidden';
+            document.body.style.overflow = '';
+            document.body.style.overflowX = 'hidden';
+            if (localStorage.getItem('has_rsvpd') === 'true') {
+              revealDetails();
+              updateRSVPUI();
+            }
+          }, 600);
+        } else {
+          throw new Error('Passcode not found');
+        }
+      } catch (error) {
+        console.error('Lookup Error:', error);
+        err.innerHTML = 'Incorrect RSVP code<br><span style="color:white;text-transform:none;letter-spacing:normal;font-size:0.75rem;">Need help? <a href="mailto:support@voyageurs.app" style="color:white;text-decoration:underline;">Email Support</a></span>';
+        err.style.opacity = '1';
+        input.disabled = false;
+        btn.disabled = false;
+        spinner.style.opacity = '0';
+        input.value = '';
+        input.placeholder = originalPlaceholder;
+        setTimeout(() => err.style.opacity = '0', 6000);
+      }
+    }
+
+    document.getElementById('passcode-input').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter' || e.keyCode === 13) verifyPasscode();
+    });
+
+    document.getElementById('passcode-submit').addEventListener('click', verifyPasscode);
+  </script>
+
+  <!-- ══════════════════ NAV ══════════════════ -->
+  <nav id="main-nav">
+    <a href="#hero" class="nav-brand">
+      <div class="nav-brand-text">
+        <strong>Bryan's 40th</strong>
+      </div>
+    </a>
+    <div class="nav-links"></div>
+    <div style="display:flex;gap:.75rem;align-items:center;">
+      <!-- <button class="nav-btn-outline" onclick="openGalleryModal()">Gallery</button> -->
+      <button class="nav-btn-outline" id="nav-logout-btn" onclick="handleLogout()">Logout</button>
+      <button class="nav-rsvp" id="nav-rsvp-btn" onclick="handleNavRSVP()">RSVP Now</button>
+      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════════ HERO ══════════════════ -->
+  <section id="hero">
+    <div class="hero-bg">
+      <img id="hero-img"
+        src="https://images.squarespace-cdn.com/content/v1/62b85870cef97862d6324f88/f26117ce-9085-4af7-8348-c4ea77366c20/montpellier+france+edit26.jpg?format=2500w"
+        alt="Montpellier Architecture" loading="eager">
+      <div class="hero-gradient"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        <span>A Special Invitation</span>
+      </div>
+
+      <h1 class="hero-title">
+        Bryan's<br><em>40th</em>
+      </h1>
+
+      <!-- Countdown -->
+      <div class="countdown">
+        <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-label">Days</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-label">Hrs</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-label">Min</span></div>
+      </div>
+
+    </div>
+
+    <div class="scroll-cue">
+      <i class="fa-solid fa-chevron-down"></i>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════ GALLERY MODAL (HIDDEN) ══════════════════
+  <div id="gallery-modal" class="gallery-modal">
+    <button class="gallery-modal-close" onclick="closeGalleryModal()" aria-label="Close Gallery"><i
+        class="fa-solid fa-xmark"></i></button>
+    <div class="gallery-container fade-up">
+
+      <div class="gallery-grid" id="gallery-grid">
+        <div class="gallery-item fade-up" onclick="openLightbox(this)">
+          <img
+            src="https://d2vbr83hnyiux1.cloudfront.net/image/975050285728/image_28olt637jh2mva7hkv7le4d37l/-FWEBP-S2560"
+            alt="Place de la Comédie" loading="lazy">
+          <div class="gallery-caption">Place de la Comédie</div>
+        </div>
+        <div class="gallery-item fade-up" onclick="openLightbox(this)">
+          <img src="https://www.flaugergues.com/wp-content/uploads/2025/04/Header_responsive.jpg"
+            alt="Château de Flaugergues" loading="lazy" style="object-position: center 30%;">
+          <div class="gallery-caption">Château de Flaugergues</div>
+        </div>
+        <div class="gallery-item fade-up" onclick="openLightbox(this)">
+          <img
+            src="https://media.admagazine.fr/photos/68076b20876606d8bb1dc63e/16:10/w_2240,c_limit/GettyImages-1400810188.jpg"
+            alt="L'Arbre Blanc" loading="lazy">
+          <div class="gallery-caption">L'Arbre Blanc</div>
+        </div>
+        <div class="gallery-item fade-up" onclick="openLightbox(this)">
+          <img
+            src="https://cdn.prod.website-files.com/643b09aaa78bf24039c7744f/6892654b2aad5ecba3a6610c_FMR_2025_V2chaud_GuilhemCANAL_114.jpg"
+            alt="L'Effet Mer Beach Club" loading="lazy" style="object-position: center 50%;">
+          <div class="gallery-caption">L'Effet Mer Beach Club</div>
+        </div>
+        <div class="gallery-item fade-up" onclick="openLightbox(this)">
+          <img
+            src="https://cdn.prod.website-files.com/643b09aaa78bf24039c7744f/6892654b6c129338420f2f9c_FMR_2025_V2chaud_GuilhemCANAL_113.jpg"
+            alt="Beach Brunch at L'Effet Mer" loading="lazy" style="object-position: center 50%;">
+          <div class="gallery-caption">Beach Brunch at L'Effet Mer</div>
+        </div>
+        <div class="gallery-item fade-up" onclick="openLightbox(this)">
+          <img src="https://images.trvl-media.com/place/6068889/ef583947-f153-49c7-8769-1df195f78e13.jpg"
+            alt="Promenade du Peyrou" loading="lazy" style="object-position: center 40%;">
+          <div class="gallery-caption">Promenade du Peyrou</div>
+        </div>
+        <div class="gallery-item fade-up" onclick="openLightbox(this)">
+          <img
+            src="https://d2vbr83hnyiux1.cloudfront.net/image/975050285728/image_3gr7c06jrh5urdpo1sru4vlo2v/-FWEBP-S2560"
+            alt="Musée Fabre" loading="lazy" style="object-position: center 30%;">
+          <div class="gallery-caption">Musée Fabre</div>
+        </div>
+        <div class="gallery-item fade-up" onclick="openLightbox(this)">
+          <img
+            src="https://woody.cloudly.space/app/uploads/montpelliertourisme/2022/10/thumbs/place-saint-ravy-montpellier-1920x960-crop-1668087163.jpg"
+            alt="Place Saint-Ravy" loading="lazy">
+          <div class="gallery-caption">Place Saint-Ravy</div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- ══════════════════ RSVP MODAL ══════════════════ -->
+  <div id="rsvp-modal" class="rsvp-modal">
+    <div class="rsvp-modal-backdrop" onclick="closeRSVPModal()"></div>
+    <div class="rsvp-modal-content">
+      <button class="rsvp-modal-close" onclick="closeRSVPModal()" aria-label="Close RSVP">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="rsvp-grid" id="rsvp-content">
+        <!-- Left -->
+        <div class="rsvp-left">
+          <div class="section-eyebrow">Join the Celebration</div>
+          <h2 class="section-title">Your <em>RSVP</em></h2>
+          <p class="section-body" id="rsvp-intro-text">
+            Please respond by <strong style="color:var(--terra);">July 1, 2026</strong> to unlock
+            the full weekend itinerary, curated hotels, and travel details.
+          </p>
+        </div>
+
+        <!-- Form -->
+        <div class="rsvp-form-wrap">
+          <!-- Success State -->
+          <div class="form-success" id="form-success">
+            <div class="form-success-icon"><i class="fa-solid fa-check"></i></div>
+            <h4>Merci beaucoup!</h4>
+            <p>Your RSVP has been received. We can't wait to see you in Montpellier.</p>
+            <button type="button" class="btn-ghost"
+              style="margin-top: 1.5rem; color: var(--terra); border-color: rgba(192, 125, 94, 0.3);"
+              onclick="manageRSVP()">
+              Edit My RSVP
+            </button>
+          </div>
+
+          <!-- The Form -->
+          <div id="form-inner">
+            <form id="rsvp-form" onsubmit="submitForm(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Your Name *</label>
+                  <input type="text" name="first_name" required placeholder="Jean" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Your Guest</label>
+                  <input type="text" name="last_name" placeholder="Guest Name (Optional)" class="form-input">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Attending? *</label>
+                <div class="attend-group">
+                  <div class="attend-opt">
+                    <input type="radio" name="attending" id="att-yes" value="yes" required onchange="toggleExtra(true)">
+                    <label for="att-yes"><i class="fa-solid fa-check"></i>Yes!</label>
+                  </div>
+                  <div class="attend-opt">
+                    <input type="radio" name="attending" id="att-maybe" value="maybe" onchange="toggleExtra(true)">
+                    <label for="att-maybe"><i class="fa-solid fa-circle-question"></i>Maybe</label>
+                  </div>
+                  <div class="attend-opt">
+                    <input type="radio" name="attending" id="att-no" value="no" onchange="toggleExtra(false)">
+                    <label for="att-no"><i class="fa-solid fa-xmark"></i>Can't make it</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="extra-fields" id="extra-fields">
+                <div class="form-group">
+                  <label class="form-label">Email Address (Required if no phone)</label>
+                  <input type="email" name="email" placeholder="you@example.com" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Number of Guests (incl. yourself)</label>
+                  <select name="guests" class="form-input">
+                    <option value="1">Just me</option>
+                    <option value="2">2 guests</option>
+                    <option value="3">3 guests</option>
+                    <option value="4">4 guests</option>
+                    <option value="5">5 guests</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Arrival Date</label>
+                    <input type="date" name="arrival_date" min="2026-09-01" max="2026-09-22" value="2026-09-18"
+                      class="form-input">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Departure Date</label>
+                    <input type="date" name="departure_date" min="2026-09-15" max="2026-09-30" value="2026-09-20"
+                      class="form-input">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Dietary Restrictions / Allergies</label>
+                  <input type="text" name="dietary" placeholder="Vegetarian, gluten-free, nut allergy…"
+                    class="form-input">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone Number (Required if no email)</label>
+                  <input type="tel" name="phone" placeholder="+1 (555) 000-0000" class="form-input">
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-start; gap: 0.75rem; margin-top: 1rem;">
+                  <input type="checkbox" name="notification_consent" id="notif-consent"
+                    style="width: 18px; height: 18px; cursor: pointer; margin-top: 0.2rem;">
+                  <label for="notif-consent"
+                    style="font-size: 0.82rem; color: var(--stone); line-height: 1.5; cursor: pointer;">
+                    I agree to receive event updates and notifications via email or phone.
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">A Note for Bryan (optional)</label>
+                <textarea name="message" class="form-input" placeholder="Can't wait to celebrate with you…"></textarea>
+              </div>
+
+              <button type="submit" class="form-submit" id="submit-btn" style="padding: 1.25rem 3rem;">
+                RSVP Now
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="weekend-details" style="display:none; opacity:0; transition: opacity 1s var(--ease-out);">
+    <!-- ══════════════════ EVENTS ══════════════════ -->
+    <section id="events">
+      <div class="section-inner">
+        <div class="events-intro">
+          <div class="fade-up">
+            <div class="section-eyebrow">The Celebrations</div>
+            <h2 class="section-title" style="color:var(--navy-mid);">One <em>unforgettable</em> weekend.</h2>
+          </div>
+        </div>
+
+        <div class="events-grid" style="margin-top:3rem;">
+
+          <!-- FRIDAY -->
+          <div class="event-card fade-up">
+            <div class="event-date-stack">
+              <span class="day-num">18</span>
+              <span class="day-name">Friday</span>
+              <div class="event-time"><i class="fa-regular fa-clock"></i> 7:00 PM</div>
+            </div>
+            <div class="event-body">
+              <h3 class="event-title">Rooftop Sunset Welcome</h3>
+              <div class="event-venue">
+                <div class="event-venue-name">
+                  <a href="https://larbre-restaurant.fr/le-bar/" target="_blank" class="venue-link">L'ARBRE BLANC
+                    ROOFTOP</a> &nbsp;·&nbsp;
+                  <a href="https://www.google.com/maps/place/1+Pl.+Christophe+Colomb,+34000+Montpellier,+France"
+                    target="_blank" class="venue-address">1 Pl. Christophe Colomb, Montpellier</a> &nbsp;·&nbsp;
+                  <a href="https://www.instagram.com/larbrerooftop/" target="_blank" rel="noopener"
+                    class="venue-social-link"><i class="fa-brands fa-instagram"></i> @larbrerooftop</a>
+                </div>
+              </div>
+              <p class="event-desc">Join us for welcome drinks and tapas as we toast to 40 years. Experience the golden
+                hour over Montpellier from a landmark architectural landmark.</p>
+            </div>
+          </div>
+
+          <!-- SATURDAY EVENING -->
+          <div class="event-card fade-up">
+            <div class="event-date-stack">
+              <span class="day-num">19</span>
+              <span class="day-name">Saturday</span>
+              <div class="event-time"><i class="fa-regular fa-clock"></i> 8:00 PM</div>
+            </div>
+            <div class="event-body">
+              <h3 class="event-title">Contemporary Garden Soirée</h3>
+              <div class="event-venue">
+                <div class="event-venue-name">
+                  <a href="https://www.moco.art/en" target="_blank" class="venue-link">MO.CO. MONTPELLIER
+                    CONTEMPORAIN</a> &nbsp;·&nbsp;
+                  <a href="https://www.google.com/maps/place/13+Rue+de+la+R%C3%A9publique,+34000+Montpellier,+France"
+                    target="_blank" class="venue-address">13 Rue de la République, Montpellier</a> &nbsp;·&nbsp;
+                  <a href="https://www.instagram.com/montpelliercontemporain/" target="_blank" rel="noopener"
+                    class="venue-social-link"><i class="fa-brands fa-instagram"></i> @montpelliercontemporain</a>
+                </div>
+              </div>
+              <p class="event-desc">A sophisticated evening of modern art, local wines and seasonal cocktails free in
+                the museum gardens. A DJ set will keep the tone for the night.</p>
+            </div>
+          </div>
+
+          <!-- SUNDAY -->
+          <div class="event-card fade-up" style="margin-bottom:0;">
+            <div class="event-date-stack">
+              <span class="day-num">20</span>
+              <span class="day-name">Sunday</span>
+              <div class="event-time"><i class="fa-regular fa-clock"></i> 1:00 PM</div>
+            </div>
+            <div class="event-body">
+              <h3 class="event-title">Boho Beach Brunch</h3>
+              <div class="event-venue">
+                <div class="event-venue-name">
+                  <a href="https://www.effetmer.com/" target="_blank" class="venue-link">EFFET MER</a> &nbsp;·&nbsp;
+                  <a href="https://www.google.com/maps/search/L'Effet+Mer+Avenue+du+Grand+Travers+Route+des+plages+-+Acc%C3%A8s+42,+34280+La+Grande-Motte,+France"
+                    target="_blank" class="venue-address">Avenue du Grand Travers, La Grande-Motte</a> &nbsp;·&nbsp;
+                  <a href="https://www.instagram.com/effet.mer/" target="_blank" rel="noopener"
+                    class="venue-social-link"><i class="fa-brands fa-instagram"></i> @effet.mer</a>
+                </div>
+              </div>
+              <p class="event-desc">A relaxed afternoon brunch on the Mediterranean sands. Expect copious food, ocean
+                swimming and a final toast to the weekend.</p>
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+    </section>
+
+    <!-- ══════════════════ HOTELS ══════════════════ -->
+    <section id="hotels">
+      <div class="section-inner">
+        <div class="hotels-intro">
+          <div class="fade-up">
+            <div class="section-eyebrow">Where to Stay</div>
+            <h2 class="section-title">Your <em>home</em> away from home.</h2>
+          </div>
+          <div class="fade-up affiliate-disclosure" style="margin-top: 1rem;">
+            This section includes affiliate links; we may earn a commission on bookings made through these links at no
+            extra cost to you. <button onclick="openLegalModal('terms-modal')">View Disclosure Policy</button>
+          </div>
+        </div>
+
+        <div class="hotels-grid">
+
+          <!-- Richer de Belleval -->
+          <div class="hotel-card fade-up">
+            <div class="hotel-img">
+              <img
+                src="https://www.hotel-richerdebelleval.com/wp-content/uploads/2021/07/exterieure-hotel-richer-de-belleval-montpellier.jpg"
+                alt="Hôtel Richer De Belleval" loading="lazy">
+              <div class="hotel-tier">Luxury · $$$$</div>
+            </div>
+            <div class="hotel-body">
+              <div class="hotel-location"><i class="fa-solid fa-location-dot"></i><span>L'Écusson · Place de la
+                  Canourgue</span></div>
+              <h3 class="hotel-name">Hôtel Richer De Belleval</h3>
+              <p class="hotel-desc">A Relais & Châteaux property in a magnificently restored 17th-century mansion with
+                Michelin-starred dining and exceptional art. The most romantic address in the city.</p>
+              <div class="hotel-stats">
+                <div class="hotel-stat"><label>Est. Rate</label><span>~€350 / $385</span></div>
+                <div class="hotel-stat"><label>Rating</label><span>⭐ 4.7 / 5</span></div>
+                <div class="hotel-stat"><label>To Comédie</label><span>8 min walk</span></div>
+                <div class="hotel-stat"><label>Check-in</label><span>3:00 PM</span></div>
+              </div>
+              <div class="hotel-actions">
+                <a href="https://www.hotel-richerdebelleval.com/reservations/" target="_blank"
+                  class="hotel-btn-primary"><i class="fa-solid fa-calendar-check"></i> Book Direct</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Oceania Le Métropole -->
+          <div class="hotel-card fade-up">
+            <div class="hotel-img">
+              <img
+                src="https://image-tc.galaxy.tf/wijpeg-53iiy72mryxiajxc5nmfip48n/oceania-montpellier-lobby-5.jpg?width=900"
+                alt="Oceania Le Métropole" loading="lazy">
+              <div class="hotel-tier">Classic · $$$</div>
+            </div>
+            <div class="hotel-body">
+              <div class="hotel-location"><i class="fa-solid fa-location-dot"></i><span>City Center · Near Train
+                  Station</span></div>
+              <h3 class="hotel-name">Oceania Le Métropole</h3>
+              <p class="hotel-desc">Belle Époque charm meets modern comfort with a lovely exotic garden and pool.
+                Unbeatable location — steps from both Place de la Comédie and the train station.</p>
+              <div class="hotel-stats">
+                <div class="hotel-stat"><label>Est. Rate</label><span>~€160 / $175</span></div>
+                <div class="hotel-stat"><label>Rating</label><span>⭐ 4.3 / 5</span></div>
+                <div class="hotel-stat"><label>To Comédie</label><span>3 min walk</span></div>
+                <div class="hotel-stat"><label>Check-in</label><span>3:00 PM</span></div>
+              </div>
+              <div class="hotel-actions">
+                <a href="https://www.oceaniahotels.com/fr/hotel/le-metropole" target="_blank"
+                  class="hotel-btn-primary"><i class="fa-solid fa-calendar-check"></i> Book Direct</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- JOST Hotel -->
+          <div class="hotel-card fade-up">
+            <div class="hotel-img">
+              <img src="https://www.jost-hotel-montpellier.com/wp-content/uploads/schema/jost-hotel-montpellier.jpg"
+                alt="JOST Hotel" loading="lazy">
+              <div class="hotel-tier">Trendy · $$</div>
+            </div>
+            <div class="hotel-body">
+              <div class="hotel-location"><i class="fa-solid fa-location-dot"></i><span>Near Train Station · L'Écusson
+                  Edge</span></div>
+              <h3 class="hotel-name">JOST Hotel</h3>
+              <p class="hotel-desc">A sleek, design-led boutique hotel with a warm atmosphere, a celebrated restaurant,
+                and excellent value. Ideal for guests who want personality over prestige.</p>
+              <div class="hotel-stats">
+                <div class="hotel-stat"><label>Est. Rate</label><span>~€110 / $120</span></div>
+                <div class="hotel-stat"><label>Rating</label><span>⭐ 4.5 / 5</span></div>
+                <div class="hotel-stat"><label>To Comédie</label><span>6 min walk</span></div>
+                <div class="hotel-stat"><label>Check-in</label><span>2:00 PM</span></div>
+              </div>
+              <div class="hotel-actions">
+                <a href="https://www.jost-hotel-montpellier.com" target="_blank" class="hotel-btn-primary"><i
+                    class="fa-solid fa-calendar-check"></i> Book Direct</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aparthotel Adagio -->
+          <div class="hotel-card fade-up">
+            <div class="hotel-img">
+              <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=900&auto=format&fit=crop"
+                alt="Aparthotel" loading="lazy">
+              <div class="hotel-tier">Budget / Groups · $</div>
+            </div>
+            <div class="hotel-body">
+              <div class="hotel-location"><i class="fa-solid fa-location-dot"></i><span>Port Marianne District</span>
+              </div>
+              <h3 class="hotel-name">Aparthotel Adagio</h3>
+              <p class="hotel-desc">Spacious studio and one-bedroom apartments with kitchenettes. A smart choice for
+                families, couples extending their stay, or anyone wanting more space at lower cost.</p>
+              <div class="hotel-stats">
+                <div class="hotel-stat"><label>Est. Rate</label><span>~€80 / $88</span></div>
+                <div class="hotel-stat"><label>Rating</label><span>⭐ 4.1 / 5</span></div>
+                <div class="hotel-stat"><label>To Comédie</label><span>Tram 3 · 8 min</span></div>
+                <div class="hotel-stat"><label>Check-in</label><span>3:00 PM</span></div>
+              </div>
+              <div class="hotel-actions">
+                <a href="https://www.adagio-city.com/gb/hotel-9513-aparthotel-adagio-montpellier-centre/index.shtml"
+                  target="_blank" class="hotel-btn-primary"><i class="fa-solid fa-calendar-check"></i> Book Direct</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Map CTA at Bottom -->
+        <div class="fade-up" style="margin-top: 4rem; text-align: center;">
+          <button class="btn-dark-primary" onclick="openMapModal()">
+            <i class="fa-solid fa-map-location-dot"></i> View accommodations on map
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════ MAP MODAL ══════════════════ -->
+    <div id="map-modal" class="map-modal">
+      <div class="map-modal-backdrop" onclick="closeMapModal()"></div>
+      <div class="map-modal-content">
+        <button class="map-modal-close" onclick="closeMapModal()" aria-label="Close Map">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="map-iframe-container">
+          <iframe id="stay22-widget" width="100%" height="100%"
+            src="https://www.stay22.com/embed/69c1247ab7b17be547e5bff0" frameborder="0"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ TRAVEL ══════════════════ -->
+    <section id="travel">
+      <div class="section-inner">
+        <div class="section-eyebrow">Getting There</div>
+        <h2 class="section-title">Your route to <em>Montpellier</em>.</h2>
+
+        <div class="travel-grid">
+
+          <!-- Paris CDG -->
+          <div class="travel-column travel-column-cdg fade-up">
+            <div class="travel-card">
+              <span class="travel-badge">Recommended · Most Connected</span>
+              <h3 class="travel-title">Via Paris (CDG)</h3>
+              <p class="travel-desc">The most seamless option. Fly into Charles de Gaulle and board the direct TGV from
+                the terminal — no city transfer needed.</p>
+            </div>
+            <div class="travel-actions">
+              <div class="travel-action-secondary">
+                <a href="https://www.google.com/travel/flights?q=Flights+to+Paris" target="_blank" class="travel-btn"><i
+                    class="fa-solid fa-plane"></i> Search Flights</a>
+              </div>
+              <div class="travel-detail">
+                <div class="travel-detail-label">Paris to Montpellier</div>
+                <div class="travel-detail-text">Direct TGV from CDG Terminal 2 → Montpellier Saint-Roch.
+                </div>
+              </div>
+              <a href="https://www.thetrainline.com/" target="_blank" class="travel-btn"><i
+                  class="fa-solid fa-train"></i>
+                Book Train Tickets</a>
+            </div>
+          </div>
+
+          <!-- Barcelona -->
+          <div class="travel-column travel-column-bcn fade-up">
+            <div class="travel-card">
+              <span class="travel-badge">Best Value · Scenic Route</span>
+              <h3 class="travel-title">Via Barcelona (BCN)</h3>
+              <p class="travel-desc">Frequently the cheapest transatlantic option from the Americas. Easy transfer from
+                the airport to Sants station for the spectacular coastal train north into France.</p>
+            </div>
+            <div class="travel-actions">
+              <div class="travel-action-secondary">
+                <a href="https://www.google.com/travel/flights?q=Flights+to+Barcelona" target="_blank"
+                  class="travel-btn"><i class="fa-solid fa-plane"></i> Search Flights</a>
+              </div>
+              <div class="travel-detail">
+                <div class="travel-detail-label">Barcelona to Montpellier</div>
+                <div class="travel-detail-text">Aerobús from BCN → Barcelona Sants, then TGV/Renfe → Montpellier
+                  Saint-Roch.</div>
+              </div>
+              <a href="https://www.thetrainline.com/" target="_blank" class="travel-btn"><i
+                  class="fa-solid fa-train"></i>
+                Book Train Tickets</a>
+            </div>
+          </div>
+
+          <!-- Direct Montpellier -->
+          <div class="travel-column travel-column-mpl fade-up">
+            <div class="travel-card">
+              <span class="travel-badge">Most Convenient · Direct Access</span>
+              <h3 class="travel-title">Direct to Montpellier (MPL)</h3>
+              <p class="travel-desc">The absolute easiest way to arrive. Montpellier is well connected with direct
+                flights from many major hubs like Paris, London, Rome, Istanbul, Amsterdam, and Madrid.</p>
+            </div>
+            <div class="travel-actions">
+              <div class="travel-action-secondary">
+                <a href="https://www.google.com/travel/flights?q=MPL" target="_blank" class="travel-btn"><i
+                    class="fa-solid fa-plane"></i> Search Flights</a>
+              </div>
+              <div class="travel-detail">
+                <div class="travel-detail-label">Montpellier Airport to City Center</div>
+                <div class="travel-detail-text">A quick 15-minute Uber directly to the L'Écusson city center or
+                  take the local airport shuttle.</div>
+              </div>
+              <div class="travel-action-primary">
+                <a href="https://www.google.com/maps/dir/Montpellier+M%C3%A9diterran%C3%A9e+Airport+(MPL),+Mauguio,+France/Pl.+de+la+Com%C3%A9die,+34000+Montpellier,+France/@43.5937198,3.8797455,13z/"
+                  target="_blank" class="travel-btn"><i class="fa-solid fa-map-location-dot"></i> Get Directions</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Train booking CTA (HIDDEN)
+          <div class="travel-tip fade-up">
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">Mastering the Rails</h3>
+            <ul style="list-style: none; padding: 0; margin: 0 0 2rem 0; display: flex; flex-direction: column; gap: 1.25rem;">
+              <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                 <i class="fa-solid fa-ticket" style="color: var(--terra); padding-top: 0.25rem;"></i>
+                 <div style="font-size: 0.9rem; line-height: 1.4;"><strong>Book Early:</strong> Tickets open 3–4 months out (fares from €30 vs €150+).</div>
+              </li>
+              <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                 <i class="fa-solid fa-mobile-screen" style="color: var(--terra); padding-top: 0.25rem;"></i>
+                 <div style="font-size: 0.9rem; line-height: 1.4;"><strong>The App:</strong> Download <strong>Trainline</strong> — it's far easier for US credit cards.</div>
+              </li>
+              <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                 <i class="fa-solid fa-location-dot" style="color: var(--terra); padding-top: 0.25rem;"></i>
+                 <div style="font-size: 0.9rem; line-height: 1.4;"><strong>The Station:</strong> Select <strong>Montpellier Saint-Roch</strong> (it's right in the city center). Avoid "Sud de France".</div>
+              </li>
+              <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                 <i class="fa-solid fa-suitcase" style="color: var(--terra); padding-top: 0.25rem;"></i>
+                 <div style="font-size: 0.9rem; line-height: 1.4;"><strong>Luggage:</strong> There are no checked bags. You must carry them on and use the carriage racks.</div>
+              </li>
+            </ul>
+            <div>
+              <a href="https://www.thetrainline.com/search?journeySearchType=single&origin=Paris%20Charles%20de%20Gaulle%20Airport&destination=Montpellier%20Saint-Roch"
+                target="_blank" class="btn-primary" style="font-size:.7rem;padding:.75rem 1.5rem;"><i
+                  class="fa-solid fa-train"></i> Book on Trainline</a>
+            </div>
+          </div>
+          -->
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ GUIDE CTA ══════════════════ -->
+    <section id="guide" style="display:none;">
+      <div class="section-inner">
+        <div class="guide-card fade-up">
+          <div class="guide-body">
+            <div class="section-eyebrow">The Curated Guide</div>
+            <h2 class="guide-title">Everything you need<br>to know about<br><em>Montpellier</em></h2>
+            <p class="guide-desc">An 18-page illustrated digital travel guide — shareable, and packed with insider
+              knowledge. From hidden courtyards to the best flat white in L'Écusson.</p>
+            <div class="guide-chapters">
+              <div class="guide-chapter"><i class="fa-solid fa-circle-dot"></i> Why Montpellier ("La Douée")</div>
+              <div class="guide-chapter"><i class="fa-solid fa-circle-dot"></i> What to Pack · Wardrobe Guide</div>
+              <div class="guide-chapter"><i class="fa-solid fa-circle-dot"></i> Saturday Morning Excursions</div>
+              <div class="guide-chapter"><i class="fa-solid fa-circle-dot"></i> Dining Guide · Where to Eat</div>
+              <div class="guide-chapter"><i class="fa-solid fa-circle-dot"></i> French Etiquette + Key Phrases</div>
+            </div>
+            <a href="v11.html" target="_blank" class="btn-primary" style="background:var(--terra);width:fit-content;">
+              <i class="fa-solid fa-book-open"></i> Open the Full Guide
+            </a>
+          </div>
+          <div class="guide-img">
+            <img
+              src="https://d2vbr83hnyiux1.cloudfront.net/image/975050285728/image_28olt637jh2mva7hkv7le4d37l/-FWEBP-S2560"
+              alt="Montpellier" loading="lazy">
+            <div class="guide-img-overlay"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ EXCURSIONS ══════════════════ -->
+    <section id="excursions">
+      <div class="section-inner">
+        <!-- OPTIONAL EXCURSIONS -->
+        <div class="events-intro">
+          <div class="fade-up">
+            <div class="section-eyebrow">Optional Excursions</div>
+            <h2 class="section-title" style="color:var(--navy-mid);">Extend your <em>Mediterranean</em> visit.</h2>
+          </div>
+        </div>
+
+        <div class="events-grid" style="margin-top:3rem;">
+          <!-- SATURDAY DAY -->
+          <div class="event-card fade-up" style="margin-bottom:0;">
+            <div class="event-date-stack">
+              <span class="day-num">19</span>
+              <span class="day-name">Saturday</span>
+              <div class="event-time"><i class="fa-regular fa-clock"></i> 10:30 AM</div>
+            </div>
+            <div class="event-body">
+              <h3 class="event-title">Pic St Loup Wine Tour</h3>
+              <div class="event-venue">
+                <div class="event-venue-name">
+                  DEPARTS PREFECTURE &nbsp;·&nbsp;
+                  <a href="https://www.bertrandbosc.guide/en/home/" target="_blank" rel="noopener"
+                    class="venue-social-link"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    bertrandbosc.guide</a>
+                </div>
+              </div>
+              <p class="event-desc">An optional Saturday daytime excursion into the stunning Pic St Loup wine region.
+                Enjoy a
+                guided tasting from Bertrand Bosc and a homemade lunch prepared by his mother on their family estate.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ══════════════════ HELPFUL APPS (HIDDEN) ══════════════════ 
+    <section id="apps">
+      <div class="section-inner">
+        <div class="fade-up">
+          <div class="section-eyebrow">Travel Essentials</div>
+          <h2 class="section-title">Helpful <em>Apps</em> for your trip.</h2>
+          <p class="affiliate-disclosure" style="margin-top: 1rem;">
+            This section includes affiliate links; we may earn a commission on purchases made through these links. <button onclick="openLegalModal('terms-modal')">View Disclosure Policy</button>
+          </p>
+        </div>
+
+        <div class="apps-grid">
+          <div class="app-card fade-up">
+            <div class="app-icon">
+              <img src="https://cdn-revamp.airalo.com/img/media-center/airalo-primary-logo.svg" alt="AirAlo Logo">
+            </div>
+            <div class="app-content">
+              <h3>AirAlo · eSIM</h3>
+              <p>Stay connected across France and Europe without the roaming fees. AirAlo gives you access to local data plans at affordable rates, right from your phone.</p>
+            </div>
+            <a href="https://airalo.tpk.lv/ssHXXI12" target="_blank" class="app-link">
+              Get Your eSIM <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    -->
+  </div>
+
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer class="footer-voyageurs">
+    <div class="footer-container">
+      <div class="footer-bottom">
+        <a href="https://voyageurs.app" target="_blank" class="footer-powered">Powered by Voyageurs</a>
+        <div class="footer-legal">
+          <button onclick="openLegalModal('privacy-modal')">Privacy</button>
+          <button onclick="openLegalModal('terms-modal')">Terms</button>
+        </div>
+        <p class="footer-copy">© 2026 Candor Digital Group, LLC. All rights reserved.</p>
+        <p class="footer-made-by">Made with <i class="fa-solid fa-heart"></i> in Chicago</p>
+      </div>
+    </div>
+  </footer>
+  <!-- ══════════════════ LEGAL MODALS ══════════════════ -->
+  <div id="privacy-modal" class="legal-modal">
+    <div class="legal-modal-backdrop" onclick="closeLegalModal('privacy-modal')"></div>
+    <div class="legal-modal-content">
+      <button class="legal-modal-close" onclick="closeLegalModal('privacy-modal')" aria-label="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="legal-rich-text">
+        <h2 style="font-style: italic; margin-bottom: 0.5rem;">Privacy Policy</h2>
+        <p style="font-size: 0.8rem; color: var(--stone); margin-bottom: 2rem;">Last Updated: March 23, 2026</p>
+
+        <p>Candor Digital Group, LLC ("we," "our," or "us"), based in Chicago, Illinois, respects your privacy and is
+          committed to protecting it through our compliance with this policy.</p>
+        <p>This Privacy Policy describes the types of information we may collect from you or that you may provide when
+          you download, install, register with, access, or use the Voyageurs mobile application (the "App") and our
+          practices for collecting, using, maintaining, protecting, and disclosing that information.</p>
+        <p><strong>Note on Affiliate Tracking:</strong> We may use affiliate tracking cookies to record when you click a
+          link to a recommended service (like hotels or eSIM providers). This helps us track referral activity to
+          fulfill our affiliate relationships.</p>
+
+        <h3>1. Information We Collect About You</h3>
+        <p>We collect information from and about users of our App:</p>
+        <ul>
+          <li>Directly from you when you provide it to us.</li>
+          <li>Automatically when you use the App.</li>
+        </ul>
+
+        <p><strong>A. Information You Provide to Us</strong></p>
+        <ul>
+          <li><strong>Personal Identifiers:</strong> Name, email address, mailing address, and telephone number.</li>
+          <li><strong>Account Details:</strong> Username, password, and registration details.</li>
+          <li><strong>User Contributions:</strong> Content you post (photos, comments, reviews).</li>
+          <li><strong>Transaction Data:</strong> Financial information required to process payments.</li>
+        </ul>
+
+        <p><strong>B. Information Collected Automatically</strong></p>
+        <ul>
+          <li><strong>Usage Details:</strong> Traffic data, logs, and resource access.</li>
+          <li><strong>Device Information:</strong> Unique identifiers (IP address, IMEI, MAC), operating system, browser
+            type.</li>
+          <li><strong>Location Information:</strong> Real-time device location to provide location-based services.</li>
+        </ul>
+
+        <h3>2. How We Use Your Information</h3>
+        <p>We use information collected to:</p>
+        <ul>
+          <li>Provide the App and its contents.</li>
+          <li>Fulfill the purposes for which you provided it.</li>
+          <li>Carry out obligations and enforce rights from contracts (billing/collection).</li>
+          <li>Notify you about changes to our App or services.</li>
+          <li>Carry out obligations and enforce rights from contracts.</li>
+          <li>Comply with applicable laws, including Illinois state regulations.</li>
+        </ul>
+
+        <h3>3. Disclosure of Your Information</h3>
+        <p>We do not sell, trade, or rent personal identification information. We may disclose personal information:</p>
+        <ul>
+          <li>To Service Providers supporting our business.</li>
+          <li>For Legal Reasons (court orders, regulation).</li>
+          <li>For Business Transfers (mergers, assets sale).</li>
+          <li>To Third-Party Services: Google Play Services, Google Analytics for Firebase.</li>
+        </ul>
+
+        <h3>4. Illinois Privacy Rights</h3>
+        <p><strong>Personal Information Protection Act (PIPA):</strong> We comply with Illinois PIPA (815 ILCS 530/). In
+          case of a breach, we will notify you and authorities without delay.</p>
+        <p><strong>Biometric Information (BIPA):</strong> Voyageurs does not collect, store, or transmit biometric
+          identifiers (fingerprints, face scans).</p>
+
+        <h3>5. Your Rights & Account Deletion</h3>
+        <p>In accordance with Apple and Google policies, you have the right to request deletion of your account/data.
+        </p>
+        <ul>
+          <li><strong>In-App:</strong> Settings > Account > Delete Account.</li>
+          <li><strong>Web:</strong> Request via <a href="https://voyageurs.app" target="_blank">voyageurs.app</a> or
+            email <a href="mailto:support@voyageurs.app">support@voyageurs.app</a>.</li>
+        </ul>
+        <p>We will permanently delete data within 30 days, unless required otherwise by law.</p>
+
+        <h3>6. Data Security</h3>
+        <p>We use firewalls and secure servers to protect your information from unauthorized access, use, or loss.</p>
+
+        <h3>7. Children Under 13</h3>
+        <p>The App is not intended for children under 13. We do not knowingly collect information from children under
+          13.</p>
+
+        <h3>8. Changes to Our Policy</h3>
+        <p>Policy changes will be posted on this page with a notice on the App home screen.</p>
+
+        <h3>9. Contact Information</h3>
+        <p>Candor Digital Group, LLC<br>
+          205 N Michigan Ave. Ste 810-B<br>
+          Chicago, IL 60601-5902<br>
+          <a href="mailto:support@voyageurs.app">support@voyageurs.app</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div id="terms-modal" class="legal-modal">
+    <div class="legal-modal-backdrop" onclick="closeLegalModal('terms-modal')"></div>
+    <div class="legal-modal-content">
+      <button class="legal-modal-close" onclick="closeLegalModal('terms-modal')" aria-label="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="legal-rich-text">
+        <h2 style="font-style: italic; margin-bottom: 0.5rem;">Terms of Service</h2>
+        <p style="font-size: 0.8rem; color: var(--stone); margin-bottom: 2rem;">Last Updated: March 23, 2026</p>
+
+        <p>Welcome to Voyageurs. These Terms of Service ("Terms") constitute a legally binding agreement between you
+          ("User" or "you") and Candor Digital Group, LLC ("Company," "we," "us," or "our"), based in Chicago, Illinois.
+        </p>
+        <p>By accessing or using the Voyageurs mobile application (the "App") and our website at <a
+            href="https://voyageurs.app" target="_blank">https://voyageurs.app</a>, you agree to be bound by these
+          Terms. If you do not agree, do not use the App.</p>
+
+        <h3>1. Eligibility</h3>
+        <p>By using the App, you represent and warrant that you are at least 13 years of age. If you are under 18, you
+          represent that you have the consent of a parent or guardian to use this App.</p>
+
+        <h3>2. User Accounts</h3>
+        <p>To access certain features, you may be required to register for an account.</p>
+        <ul>
+          <li>You are responsible for maintaining the confidentiality of your login credentials.</li>
+          <li>You agree to provide accurate, current, and complete information.</li>
+          <li>We reserve the right to suspend or terminate accounts that provide false information or violate these
+            Terms.</li>
+        </ul>
+
+        <h3>3. Use of Services & Restrictions</h3>
+        <p>You are granted a limited, non-exclusive, non-transferable, and revocable license to use the App for
+          personal, non-commercial use. You agree not to:</p>
+        <ul>
+          <li>Use the App for any illegal purpose or in violation of any local, state, or federal law.</li>
+          <li>Copy, modify, distribute, sell, or lease any part of our App or included software.</li>
+          <li>Reverse engineer or attempt to extract the source code of the App.</li>
+          <li>Use the App in a manner that could interfere with, disrupt, or negatively affect other users.</li>
+        </ul>
+
+        <h3 id="tos-affiliate">4. Affiliate Disclaimer & Commissions</h3>
+        <p>Our App and website may contain affiliate links. This means that if you click on a link and make a purchase,
+          we may receive a small commission at no additional cost to you. We only recommend products or services that we
+          believe will add value to our users.</p>
+
+        <h3>5. User-Generated Content</h3>
+        <p>If the App allows you to post reviews, photos, or comments ("Content"):</p>
+        <ul>
+          <li>You retain ownership of your Content, but you grant Candor Digital Group, LLC a worldwide, royalty-free,
+            perpetual license to use, host, store, reproduce, and display such Content.</li>
+          <li>You are solely responsible for the Content you post. We reserve the right to remove any Content that we
+            deem offensive, inappropriate, or in violation of intellectual property rights.</li>
+        </ul>
+
+        <h3>5. Intellectual Property</h3>
+        <p>All rights, title, and interest in and to the App (excluding Content provided by users), including its "look
+          and feel," logos, graphics, and code, are the exclusive property of Candor Digital Group, LLC.</p>
+
+        <h3>6. Location-Based Services</h3>
+        <p>The App may provide location-based data. This data is for basic informational purposes only and is not
+          intended to be relied upon in situations where precise location information is needed or where erroneous,
+          inaccurate, or incomplete location data may lead to death, personal injury, property, or environmental damage.
+          We do not guarantee the availability, accuracy, or timeliness of location data.</p>
+
+        <h3>7. Limitation of Liability</h3>
+        <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, CANDOR DIGITAL GROUP, LLC SHALL NOT BE LIABLE FOR ANY INDIRECT,
+          INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED
+          DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.</p>
+        <p>In no event shall our aggregate liability exceed the greater of one hundred U.S. Dollars ($100.00) or the
+          amount you paid us, if any, in the past six months for the services giving rise to the claim.</p>
+
+        <h3>8. Disclaimer of Warranties</h3>
+        <p>YOUR USE OF THE APP IS AT YOUR SOLE RISK. THE APP IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. WE
+          EXPRESSLY DISCLAIM ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+          IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.</p>
+
+        <h3>9. Governing Law & Jurisdiction</h3>
+        <p>These Terms are governed by the laws of the State of Illinois, without regard to its conflict of laws
+          principles. Any legal action or proceeding arising under these Terms will be brought exclusively in the
+          federal or state courts located in Cook County, Chicago, Illinois, and the parties hereby irrevocably consent
+          to the personal jurisdiction and venue therein.</p>
+
+        <h3>10. Termination</h3>
+        <p>We may terminate or suspend your access to the App immediately, without prior notice or liability, for any
+          reason whatsoever, including without limitation if you breach the Terms. Upon termination, your right to use
+          the App will immediately cease.</p>
+
+        <h3>11. Changes to Terms</h3>
+        <p>We reserve the right to modify these Terms at any time. We will notify you of any changes by posting the new
+          Terms on this page and updating the "Last Updated" date. Your continued use of the App after such changes
+          constitutes your acceptance of the new Terms.</p>
+
+        <h3>12. Contact Information</h3>
+        <p>Candor Digital Group, LLC<br>
+          205 N Michigan Ave. Ste 810-B<br>
+          Chicago, IL 60601-5902<br>
+          <a href="mailto:support@voyageurs.app">support@voyageurs.app</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openLegalModal(id) {
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }, 10);
+    }
+    function closeLegalModal(id) {
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+        // Only clear overflow if no other modal is open
+        const otherOpen = document.querySelector('.legal-modal.show, .rsvp-modal.show, .gallery-modal.show, .map-modal.show');
+        if (!otherOpen) {
+          document.body.style.overflow = '';
+        }
+      }, 400);
+    }
+  </script>
+  <!-- ══════════════════ JS ══════════════════ -->
+  <script>
+    // ─── Hero image ken-burns ───
+    const heroImg = document.getElementById('hero-img');
+    heroImg.onload = () => heroImg.classList.add('loaded');
+    if (heroImg.complete) heroImg.classList.add('loaded');
+
+    // ─── Nav scroll behavior ───
+    const nav = document.getElementById('main-nav');
+    let lastY = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      nav.classList.toggle('scrolled', y > 60);
+      lastY = y;
+    }, { passive: true });
+
+    // ─── Logout ───
+    async function handleLogout() {
+      localStorage.removeItem('passcode_verified');
+      if (window.fbSignOut && window.fbAuth) {
+        try { await window.fbSignOut(window.fbAuth); } catch (e) { }
+      }
+      window.location.reload();
+    }
+
+    // ─── Mobile menu ───
+    function toggleMenu() {
+      nav.classList.toggle('menu-open');
+    }
+    document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => nav.classList.remove('menu-open')));
+
+    // ─── Countdown ───
+    function tick() {
+      const target = new Date('2026-09-18T18:30:00+02:00');
+      const diff = target - Date.now();
+      if (diff <= 0) return;
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor(diff % 86400000 / 3600000);
+      const m = Math.floor(diff % 3600000 / 60000);
+      const pad = n => String(n).padStart(2, '0');
+      document.getElementById('cd-d').textContent = pad(d);
+      document.getElementById('cd-h').textContent = pad(h);
+      document.getElementById('cd-m').textContent = pad(m);
+    }
+    tick(); setInterval(tick, 30000);
+
+    // ─── RSVP extra fields toggle ───
+    function toggleExtra(show) {
+      document.getElementById('extra-fields').classList.toggle('show', show);
+    }
+
+    // ─── Reveal Details Logic ───
+    function revealDetails() {
+      const details = document.getElementById('weekend-details');
+      if (details) {
+        details.style.display = 'block';
+        setTimeout(() => {
+          details.style.opacity = '1';
+          const navLinks = document.querySelector('.nav-links');
+          if (navLinks && !navLinks.dataset.restored) {
+            navLinks.dataset.restored = 'true';
+            // Insert the new links before the last link (RSVP)
+            navLinks.insertAdjacentHTML('afterbegin', '<a href="#events">Events</a><a href="#hotels">Hotels</a><a href="#travel">Getting Here</a>');
+          }
+        }, 50);
+      }
+    }
+
+    // ─── Form submission to Google Forms ───
+    // ─── RSVP State Management ───
+    // ─── RSVP Modal Functions ───
+    function openRSVPModal() {
+      const modal = document.getElementById('rsvp-modal');
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }, 10);
+    }
+
+    function closeRSVPModal() {
+      const modal = document.getElementById('rsvp-modal');
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+        if (!document.getElementById('gallery-modal').classList.contains('show')) {
+          document.body.style.overflow = '';
+        }
+      }, 400);
+    }
+
+    // ─── RSVP State Management ───
+    function updateRSVPUI() {
+      const hasRSVPd = localStorage.getItem('has_rsvpd') === 'true';
+      const navBtn = document.getElementById('nav-rsvp-btn');
+      const hideElems = document.querySelectorAll('.hide-on-rsvp');
+      const introText = document.getElementById('rsvp-intro-text');
+
+      if (hasRSVPd) {
+        // Update Intro Text
+        if (introText) {
+          introText.innerHTML = 'Please confirm any changes to your RSVP before <strong style="color:var(--terra);">July 1, 2026</strong>.';
+        }
+        // Hide global CTAs
+        hideElems.forEach(el => el.classList.add('rsvp-hidden'));
+        // Update Nav Button
+        if (navBtn) navBtn.innerHTML = 'Manage RSVP';
+        revealDetails();
+
+        // Show Success View
+        const formInner = document.getElementById('form-inner');
+        const formSuccess = document.getElementById('form-success');
+        if (formInner && formSuccess) {
+          formInner.style.display = 'none';
+          formSuccess.classList.add('show');
+        }
+      } else {
+        if (introText) {
+          introText.innerHTML = 'Please respond by <strong style="color:var(--terra);">July 1, 2026</strong> to unlock the full weekend itinerary, curated hotels, and travel details.';
+        }
+        hideElems.forEach(el => el.classList.remove('rsvp-hidden'));
+        if (navBtn) navBtn.innerHTML = 'RSVP Now';
+      }
+    }
+
+    function handleNavRSVP() {
+      openRSVPModal();
+    }
+
+    function manageRSVP() {
+      const formInner = document.getElementById('form-inner');
+      const formSuccess = document.getElementById('form-success');
+      const submitBtn = document.getElementById('submit-btn');
+
+      if (formInner && formSuccess) {
+        formSuccess.classList.remove('show');
+        formInner.style.display = 'block';
+        if (submitBtn) submitBtn.innerHTML = 'Update RSVP';
+      }
+    }
+
+    // ─── Map Modal Functions ───
+    function openMapModal() {
+      const modal = document.getElementById('map-modal');
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }, 10);
+    }
+
+    function closeMapModal() {
+      const modal = document.getElementById('map-modal');
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+        if (!document.getElementById('gallery-modal').classList.contains('show') &&
+          !document.getElementById('rsvp-modal').classList.contains('show')) {
+          document.body.style.overflow = '';
+        }
+      }, 400);
+    }
+
+    // Call on load (if passcode already verified)
+    document.addEventListener('DOMContentLoaded', () => {
+      // The gate handles its own state, but we check UI here too
+      if (localStorage.getItem('passcode_verified') === 'true') {
+        updateRSVPUI();
+      }
+    });
+
+    async function submitForm(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Sending…</span>';
+
+      const formData = new FormData(e.target);
+      const attending = formData.get('attending');
+
+      // Validation for Attending/Maybe: Email or Phone + Consent
+      if (attending === 'yes' || attending === 'maybe') {
+        const email = (formData.get('email') || '').trim();
+        const phone = (formData.get('phone') || '').trim();
+        const consent = formData.get('notification_consent');
+
+        if (!email && !phone) {
+          alert('Please provide either an email or a phone number so we can send you event updates!');
+          btn.disabled = false;
+          btn.innerHTML = 'RSVP Now';
+          return;
+        }
+        if (!consent) {
+          alert('Please agree to receive notifications to proceed with your RSVP.');
+          btn.disabled = false;
+          btn.innerHTML = 'RSVP Now';
+          return;
+        }
+      }
+
+      const data = {
+        name: formData.get('first_name'),
+        guest: formData.get('last_name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        consent: formData.get('notification_consent') === 'on',
+        attending: attending,
+        guests: formData.get('guests'),
+        comments: (formData.get('dietary') ? "Dietary: " + formData.get('dietary') + "\n" : "") + (formData.get('message') || "")
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        document.getElementById('form-inner').style.display = 'none';
+        document.getElementById('form-success').classList.add('show');
+
+        const att = formData.get('attending');
+        if (att === 'yes' || att === 'maybe') {
+          // Firebase account creation & password reset linking
+          const email = (formData.get('email') || '').trim();
+          if (email && window.fbCreateUserWithEmailAndPassword) {
+            const tempPwd = Math.random().toString(36).slice(-10) + "Aa1!";
+            try {
+              await window.fbCreateUserWithEmailAndPassword(window.fbAuth, email, tempPwd);
+              await window.fbSendPasswordResetEmail(window.fbAuth, email);
+            } catch (e) {
+              console.error("Auth pre-registration issue (might already exist):", e);
+            }
+          }
+
+          localStorage.setItem('has_rsvpd', 'true');
+          revealDetails();
+          updateRSVPUI();
+        }
+      } catch (error) {
+        console.error('Submission Error:', error);
+        alert('Something went wrong. Please try again or email Bryan directly.');
+        btn.disabled = false;
+        btn.innerHTML = 'RSVP Now';
+      }
+    }
+
+    // ─── Intersection Observer → fade-up animations ───
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) { el.target.classList.add('visible'); io.unobserve(el.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+  </script>
+
+
+
+  <!-- Lightbox Overlay -->
+  <div id="gallery-lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="Gallery Fullscreen">
+    <div id="lightbox-caption"></div>
+  </div>
+
+  <script>
+    function openLightbox(element) {
+      const lb = document.getElementById('gallery-lightbox');
+      document.getElementById('lightbox-img').src = element.querySelector('img').src;
+      document.getElementById('lightbox-caption').innerText = element.querySelector('.gallery-caption').innerText;
+      lb.style.display = 'flex';
+      // Trigger reflow
+      void lb.offsetWidth;
+      lb.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      const lb = document.getElementById('gallery-lightbox');
+      lb.classList.remove('show');
+      setTimeout(() => {
+        lb.style.display = 'none';
+        // Only clear overflow if gallery modal is not open
+        if (!document.getElementById('gallery-modal').classList.contains('show')) {
+          document.body.style.overflow = '';
+        }
+      }, 400);
+    }
+
+    function openGalleryModal() {
+      document.getElementById('gallery-modal').classList.add('show');
+      document.body.style.overflow = 'hidden';
+      // Trigger observers for images that might be in view
+      setTimeout(() => window.dispatchEvent(new Event('scroll')), 100);
+    }
+
+    function closeGalleryModal() {
+      document.getElementById('gallery-modal').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+  </script>
+</body>
+
+</html>
