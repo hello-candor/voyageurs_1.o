@@ -44,35 +44,41 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
 
   // --- Animation Physics ---
 
-  // Horizontal position (based on stack index)
+  // Deck View Fanned Cards layout calculation
   const relativeIndex = index - activeIndex;
-  const overviewX = relativeIndex * 280;
+  
+  const distance = Math.abs(relativeIndex);
+  const sign = Math.sign(relativeIndex);
+  
+  let baseOffset = 0;
+  if (distance === 1) baseOffset = 240;
+  else if (distance === 2) baseOffset = 400;
+  else if (distance > 2) baseOffset = 400 + (distance - 2) * 120;
+  
+  const overviewX = sign * baseOffset;
   
   // Vertical Stacking position (based on card index within stack)
   const depth = (stackSize - 1) - stackIndex;
   const stackYOffset = isOverview ? -40 * depth : 0;
   
-  // "Push down" inactive stacks in overview mode
-  const inactiveStackYOffset = (isOverview && !isActive) ? 40 : 0;
-  const totalYOffset = stackYOffset + inactiveStackYOffset;
+  const totalYOffset = stackYOffset;
 
   // --- Visual State Calculations ---
 
-  // Scale: Shrink in overview, slightly smaller if inactive or occluded
-  const baseOverviewScale = isActive ? 0.7 : 0.6;
+  // Scale: Shrink in overview, further cards shrink more
+  const baseOverviewScale = isActive ? 0.85 : Math.max(0.6, 0.75 - distance * 0.05);
   const targetScale = isOverview ? baseOverviewScale - (depth * 0.05) : 1;
   
-  // Opacity: Only top card of active stack is visible in focus mode.
-  // In overview, we show the top card and slightly visible stacked cards.
+  // Opacity
   const targetOpacity = isOverview ? (isTopCard ? 1 : 0) : (isActive && isTopCard ? 1 : 0);
   
-  // Z-Index: For proper layering in overview
+  // Z-Index: Center is top
   const targetZIndex = isOverview 
-    ? ((100 - Math.abs(relativeIndex) * 10) + stackIndex) 
+    ? (100 - distance * 10 - depth) 
     : (isActive && isTopCard ? 100 : 0);
   
-  // Brightness/Blur: De-emphasize inactive/occluded cards
-  const targetBrightness = (isOverview && !isActive) ? (theme === 'dark' ? 0.6 : 0.9) : (isOverview && !isTopCard) ? 0.8 : 1;
+  // Brightness/Blur
+  const targetBrightness = (isOverview && !isActive) ? (theme === 'dark' ? 0.5 : 0.8) : (isOverview && !isTopCard) ? 0.8 : 1;
   const targetBlur = (isOverview && !isActive) ? 'blur(4px)' : 'none';
 
   // --- Interaction Rules ---
@@ -142,13 +148,13 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
     >
         <div className={`
             w-full h-full flex flex-col overflow-hidden shadow-2xl transition-all duration-300 relative
-            ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-slate-900 border-white/5'}
-            ${isOverview ? 'rounded-[2.5rem] ring-2 ring-white/10' : isFullScreen ? 'rounded-none' : 'rounded-none md:rounded-[2rem]'}
+            ${theme === 'light' ? 'bg-white/60 backdrop-blur-3xl border-white/50 shadow-xl' : 'bg-[#330046]/30 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]'}
+            ${isOverview ? 'rounded-[32px] ring-1 ring-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]' : isFullScreen ? 'rounded-none' : 'rounded-none md:rounded-[24px] ring-1 ring-white/10'}
         `}>
             {/* Header Bar */}
             <div className={`
-                h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-xl border-b relative z-20 select-none
-                ${theme === 'light' ? 'bg-gray-50/90 border-gray-200' : 'bg-gray-800/90 border-gray-700'}
+                h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none
+                ${theme === 'light' ? 'bg-white/40 border-white/40' : 'bg-transparent border-white/10'}
                 ${isOverview ? 'pointer-events-none' : ''}
             `}>
                 <div className="flex items-center gap-3">
@@ -184,7 +190,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
             </div>
 
             {/* Content Mask */}
-            <div className={`flex-1 relative overflow-hidden ${isOverview ? 'pointer-events-none' : ''} ${theme === 'light' ? 'bg-background' : 'bg-gray-950'}`}>
+            <div className={`flex-1 relative overflow-hidden ${isOverview ? 'pointer-events-none' : ''} ${theme === 'light' ? 'bg-transparent' : 'bg-transparent'}`}>
                 <div className="w-full h-full overflow-y-auto scrollbar-hide">
                     {children}
                 </div>

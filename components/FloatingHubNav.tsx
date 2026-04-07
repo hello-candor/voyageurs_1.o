@@ -40,6 +40,14 @@ const APP_DEFINITIONS: Record<string, any> = {
 // Category Structure
 const NAV_CATEGORIES = [
     { 
+        id: 'overview', 
+        label: 'Journal', 
+        description: 'Journal',
+        icon: LayoutDashboard, 
+        target: 'overview',
+        color: 'text-blue-400'
+    },
+    { 
         id: 'planning', 
         label: 'Planning', 
         description: 'Logistics',
@@ -303,10 +311,10 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
 
                 {/* MAIN DOCK */}
                 <div className="pointer-events-auto flex items-center gap-4">
-                    <nav className={`backdrop-blur-2xl border p-2 rounded-[2.5rem] shadow-2xl flex items-end gap-3 md:gap-4 ring-1
+                    <nav className={`backdrop-blur-[40px] border p-2 rounded-[2.5rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] flex items-end gap-3 md:gap-4 ring-1
                         ${theme === 'light' 
-                            ? 'bg-white/80 border-black/10 ring-black/5' 
-                            : 'bg-gray-900/80 border-white/10 ring-black/50'
+                            ? 'bg-white/60 border-white/50 ring-white/20' 
+                            : 'bg-[#330046]/30 border-white/10 ring-white/5 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]'
                         }
                     `}>
                         {NAV_CATEGORIES.map((cat) => {
@@ -345,10 +353,10 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                     )}
 
                                     <div className={`
-                                        w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center transition-all duration-500 relative
+                                        w-6 h-6 md:w-8 md:h-8 rounded-[12px] flex items-center justify-center transition-all duration-500 relative
                                         ${isActive 
-                                            ? `shadow-lg -translate-y-1.5 scale-110 ${theme === 'light' ? 'bg-med-blue text-slate-800 dark:text-white' : 'bg-white text-med-blue'}`
-                                            : `group-hover:scale-105 group-active:scale-95 ${theme === 'light' ? 'bg-gray-200 text-gray-700 group-hover:bg-gray-300' : `bg-gray-800 ${cat.color} group-hover:bg-gray-700`}`
+                                            ? `shadow-[0_0_20px_#508BC5] -translate-y-1.5 scale-110 ${theme === 'light' ? 'bg-[#508BC5] text-white' : 'bg-[#508BC5] text-white'}`
+                                            : `group-hover:scale-105 group-active:scale-95 ${theme === 'light' ? 'bg-white/50 text-gray-700 group-hover:bg-white' : `bg-white/5 border border-white/10 ${cat.color} group-hover:bg-white/10`}`
                                         }
                                     `}>
                                         <cat.icon 
@@ -357,7 +365,7 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
                                             className="transition-all duration-300"
                                         />
                                         {isActive && (
-                                            <div className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${theme === 'light' ? 'bg-med-blue shadow-[0_0_8px_#3B82F6]' : 'bg-white shadow-[0_0_8px_white]'}`} />
+                                            <div className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${theme === 'light' ? 'bg-[#508BC5] shadow-[0_0_8px_#508BC5]' : 'bg-[#508BC5] shadow-[0_0_12px_#508BC5]'}`} />
                                         )}
                                         {getCategoryBadge(cat.id, cat.children)}
                                     </div>

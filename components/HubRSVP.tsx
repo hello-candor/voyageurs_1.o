@@ -1,323 +1,125 @@
-import React, { useState, useEffect } from 'react';
-import { Check, Save, Calendar, Utensils, Users, Heart, Send, Sparkles, XCircle, Compass, Home, ChevronRight, Loader2, Clock } from 'lucide-react';
+import React, { useState } from 'react';
 import { useUser } from '../context/UserContext';
 import { useTripPlanner } from '../context/TripPlannerContext';
 import { useNotification } from '../context/NotificationContext';
-import { notificationService } from '../services/notificationService';
-import { Button } from './Button';
 
 interface HubRSVPProps {
     onComplete?: () => void;
 }
 
 export const HubRSVP: React.FC<HubRSVPProps> = ({ onComplete }) => {
-  const { user, submitRSVP, logout } = useUser();
+  const { user, submitRSVP } = useUser();
   const { updateSettings } = useTripPlanner();
   const { addNotification } = useNotification();
   
-  const [status, setStatus] = useState<'Yes' | 'Maybe' | 'No' | ''>('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-  
-  // Countdown State
-  const [timeLeft, setTimeLeft] = useState<{d: number, h: number, m: number, s: number} | null>(null);
+  const [status, setStatus] = useState<'Yes' | 'No' | ''>(
+    user?.status === 'Confirmed' ? 'Yes' : user?.status === 'Declined' ? 'No' : ''
+  );
+  const [guests, setGuests] = useState(user?.guestsCount || 1);
 
-  // Form State - Updated to match 9/15/26 to 9/22/26
-  const [formData, setFormData] = useState({
-      startDate: '2026-09-15',
-      endDate: '2026-09-22',
-      guests: 1,
-      dietary: '',
-      note: ''
-  });
-
-  // Countdown Timer Logic
-  useEffect(() => {
-      const target = new Date('2026-07-01T00:00:00').getTime();
-      
-      const updateTimer = () => {
-          const now = Date.now();
-          const diff = target - now;
-          
-          if (diff <= 0) {
-              setTimeLeft(null);
-          } else {
-              setTimeLeft({
-                  d: Math.floor(diff / (1000 * 60 * 60 * 24)),
-                  h: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                  m: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
-                  s: Math.floor((diff % (1000 * 60)) / 1000),
-              });
+  const handleAttend = () => {
+      setStatus('Yes');
+      submitRSVP({
+          status: 'Confirmed',
+          guestsCount: guests,
+          dietary: '',
+          note: '',
+          arrival: '2026-09-15',
+          travelDetails: {
+              ...user?.travelDetails,
           }
-      };
-
-      updateTimer();
-      const interval = setInterval(updateTimer, 1000);
-      return () => clearInterval(interval);
-  }, []);
-
-  // Sync with User Context on Load
-  useEffect(() => {
-      if (user) {
-          const currentStatus = user.status === 'Confirmed' ? 'Yes' : user.status === 'Declined' ? 'No' : '';
-          setStatus(currentStatus);
-          setFormData({
-              startDate: user.travelDetails?.arrivalDate || '2026-09-15',
-              endDate: user.travelDetails?.departureDate || '2026-09-22',
-              guests: user.guestsCount || 1,
-              dietary: user.dietary || '',
-              note: user.note || ''
-          });
-      }
-  }, [user]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setIsSubmitting(true);
-
-      const mappedStatus = status === 'No' ? 'Declined' : (status === 'Maybe' ? 'Pending' : 'Confirmed');
-      
-      // Calculate duration for planner
-      const start = new Date(formData.startDate);
-      const end = new Date(formData.endDate);
-      const diffDays = Math.ceil(Math.abs(end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-
-      // Simulate network delay for UX
-      setTimeout(async () => {
-          submitRSVP({
-              status: mappedStatus,
-              guestsCount: status === 'No' ? 0 : formData.guests,
-              dietary: formData.dietary,
-              note: formData.note,
-              arrival: status === 'No' ? 'N/A' : `${formData.startDate}`,
-              travelDetails: {
-                  ...user?.travelDetails,
-                  arrivalDate: formData.startDate,
-                  departureDate: formData.endDate,
-                  arrivalMode: user?.travelDetails?.arrivalMode || 'Plane',
-                  arrivalNumber: user?.travelDetails?.arrivalNumber || '',
-                  accommodation: user?.travelDetails?.accommodation || ''
-              }
-          });
-
-          if (status !== 'No') {
-              updateSettings(formData.guests, Math.max(1, diffDays));
-          }
-
-          if (user?.email && status === 'Yes') {
-             await notificationService.sendEmail(
-                user.email, 
-                "RSVP Confirmed", 
-                `We have confirmed your attendance for ${formData.guests} people.`
-             );
-          }
-
-          addNotification("RSVP preferences updated.", "success");
-          setIsSubmitting(false);
-          setIsSaved(true);
-          
-          if (onComplete) {
-              setTimeout(onComplete, 1000);
-          } else {
-              setTimeout(() => setIsSaved(false), 2000);
-          }
-      }, 800);
+      });
+      updateSettings(guests, 7);
+      addNotification("RSVP Confirmed!", "success");
+      // Optional: automatically route away on complete
+      // if (onComplete) setTimeout(onComplete, 1200);
   };
 
-  if (status === 'No' && isSaved) {
-      return (
-          <div className="flex flex-col items-center justify-center h-full text-center p-8 animate-in zoom-in-95 duration-500">
-              <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 text-gray-400 rounded-full flex items-center justify-center mb-6">
-                  <Heart size={40} className="fill-gray-400" />
-              </div>
-              <h3 className="font-serif text-3xl text-med-blue dark:text-white mb-4">Miss You Already</h3>
-              <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-xs mb-8">
-                  Your response has been logged. If your plans change, you can always come back and update your RSVP.
-              </p>
-              <Button onClick={logout} variant="secondary" size="md">
-                  Return Home
-              </Button>
-              <button onClick={() => setIsSaved(false)} className="mt-6 text-xs text-med-blue underline decoration-dotted underline-offset-4">
-                  Edit Response
-              </button>
-          </div>
-      );
-  }
+  const handleDecline = () => {
+      setStatus('No');
+      submitRSVP({
+          status: 'Declined',
+          guestsCount: 0,
+          dietary: '',
+          note: '',
+          arrival: 'N/A'
+      });
+      addNotification("Miss You Already", "success");
+      // if (onComplete) setTimeout(onComplete, 1200);
+  };
 
   return (
-    <div className="h-full overflow-y-auto scrollbar-hide px-4 py-2 md:p-8 pb-32">
-        <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            
-            {/* Header */}
-            <div className="text-center space-y-2">
-                <span className="text-med-terracotta font-bold uppercase tracking-[0.2em] text-[10px]">The Celebration</span>
-                <h2 className="font-serif text-3xl md:text-4xl text-med-blue dark:text-white">Will you be there?</h2>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">, France • Sept 18—20, 2026</p>
-            </div>
+      <div className="absolute inset-0 w-full h-full text-white overflow-hidden isolate font-sans">
+          {/* Aesthetic Aurora Background */}
+          <div className="absolute inset-0 -z-10 bg-[#15151e] overflow-hidden">
+              <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-[#5d4485] rounded-full blur-[120px] opacity-40 mix-blend-screen"></div>
+              <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#36687c] rounded-full blur-[140px] opacity-40 mix-blend-screen"></div>
+              <div className="absolute top-[20%] right-[30%] w-[40%] h-[40%] bg-[#774f4f] rounded-full blur-[100px] opacity-30 mix-blend-screen"></div>
+          </div>
 
-            {/* Countdown Banner */}
-            {timeLeft && (
-                <div className="flex flex-col items-center justify-center space-y-3 py-2 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-100">
-                    <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-med-terracotta bg-med-terracotta/10 px-3 py-1 rounded-full border border-med-terracotta/20">
-                        <Clock size={10} /> Response Deadline: July 1st
-                    </div>
-                    <div className="flex items-baseline gap-3 md:gap-5 text-med-blue dark:text-white">
-                        <div className="text-center">
-                            <span className="font-serif text-2xl md:text-3xl font-bold leading-none tabular-nums">{timeLeft.d}</span>
-                            <span className="block text-[8px] uppercase tracking-wider opacity-60">Days</span>
-                        </div>
-                        <span className="text-lg font-serif opacity-30">:</span>
-                        <div className="text-center">
-                            <span className="font-serif text-2xl md:text-3xl font-bold leading-none tabular-nums">{timeLeft.h.toString().padStart(2, '0')}</span>
-                            <span className="block text-[8px] uppercase tracking-wider opacity-60">Hrs</span>
-                        </div>
-                        <span className="text-lg font-serif opacity-30">:</span>
-                        <div className="text-center">
-                            <span className="font-serif text-2xl md:text-3xl font-bold leading-none tabular-nums">{timeLeft.m.toString().padStart(2, '0')}</span>
-                            <span className="block text-[8px] uppercase tracking-wider opacity-60">Mins</span>
-                        </div>
-                        <span className="text-lg font-serif opacity-30">:</span>
-                        <div className="text-center">
-                            <span className="font-serif text-2xl md:text-3xl font-bold leading-none tabular-nums w-8 md:w-10">{timeLeft.s.toString().padStart(2, '0')}</span>
-                            <span className="block text-[8px] uppercase tracking-wider opacity-60">Secs</span>
-                        </div>
-                    </div>
-                </div>
-            )}
+          {/* OS Header Text */}
+          <h1 className="absolute top-6 left-6 md:top-8 md:left-10 text-2xl md:text-3xl font-bold tracking-[-0.03em] text-white/95 drop-shadow-md z-10">
+              RSVP Invitation Card
+          </h1>
 
-            {/* Status Selection Cards */}
-            <div className="grid grid-cols-3 gap-3 md:gap-4">
-                <button 
-                    onClick={() => setStatus('Yes')}
-                    className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 ${
-                        status === 'Yes' 
-                        ? 'bg-med-blue text-white border-med-blue shadow-lg scale-105' 
-                        : 'bg-white dark:bg-gray-900 text-gray-400 border-gray-100 dark:border-gray-800 hover:border-med-blue/30 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                >
-                    <Check size={24} strokeWidth={status === 'Yes' ? 3 : 2} />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Yes</span>
-                </button>
+          <div className="w-full h-full flex flex-col items-center justify-center p-4 pb-20">
+              {/* iOS 18 style Squircle Card */}
+              <div className="relative w-full max-w-[360px] h-auto min-h-[440px] rounded-[36px] overflow-hidden bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl flex flex-col z-20 transition-all duration-500 ease-out">
+                  
+                  {/* Image Section */}
+                  <div className="h-[200px] w-full relative shrink-0">
+                      <img 
+                          src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=800&auto=format&fit=crop" 
+                          alt="Cooking Class" 
+                          className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/50 to-transparent"></div>
+                  </div>
 
-                <button 
-                    onClick={() => setStatus('Maybe')}
-                    className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 ${
-                        status === 'Maybe' 
-                        ? 'bg-amber-500 text-white border-amber-500 shadow-lg scale-105' 
-                        : 'bg-white dark:bg-gray-900 text-gray-400 border-gray-100 dark:border-gray-800 hover:border-amber-500/30 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                >
-                    <Compass size={24} strokeWidth={status === 'Maybe' ? 3 : 2} />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Maybe</span>
-                </button>
+                  {/* Content Section */}
+                  <div className="flex-1 flex flex-col items-center justify-start py-8 px-6 bg-gradient-to-b from-[#b7bdca]/10 to-[#8c94a6]/10 text-center">
+                      <h2 className="font-serif text-[28px] leading-tight text-white/95 mb-2 drop-shadow-sm">
+                          Join us for a<br/>Cooking Class
+                      </h2>
+                      <p className="text-white/60 text-[13px] font-medium tracking-wide mb-auto">
+                          Tomorrow, 10:00 AM • Lyon, France
+                      </p>
 
-                <button 
-                    onClick={() => setStatus('No')}
-                    className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 ${
-                        status === 'No' 
-                        ? 'bg-gray-200 dark:bg-gray-800 text-gray-500 border-gray-300 dark:border-gray-700 shadow-inner' 
-                        : 'bg-white dark:bg-gray-900 text-gray-400 border-gray-100 dark:border-gray-800 hover:border-red-400/30 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                >
-                    <XCircle size={24} strokeWidth={status === 'No' ? 3 : 2} />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">No</span>
-                </button>
-            </div>
+                      <div className="w-full mt-8 mb-5 flex gap-3">
+                          {/* Attend Button */}
+                          <button 
+                              onClick={handleAttend}
+                              className={`flex-1 py-3.5 rounded-[24px] font-semibold text-[15px] transition-all active:scale-95 border
+                                  ${status === 'Yes' 
+                                      ? 'bg-amber-500 text-white border-amber-400 shadow-[0_0_30px_rgba(245,158,11,0.5)]' 
+                                      : 'bg-[#d29b4e]/10 text-[#d29b4e] border-[#d29b4e]/70 shadow-[0_0_24px_rgba(210,155,78,0.2)] hover:bg-[#d29b4e]/20'}
+                              `}
+                          >
+                              {status === 'Yes' ? 'Attending' : 'Attend'}
+                          </button>
+                           {/* Decline Button */}
+                           <button 
+                              onClick={handleDecline}
+                              className={`flex-1 py-3.5 rounded-[24px] font-semibold text-[15px] transition-all active:scale-95 border
+                                  ${status === 'No'
+                                      ? 'bg-white/20 text-white border-white/40'
+                                      : 'bg-white/5 text-white/80 border-white/20 hover:bg-white/10'}
+                              `}
+                          >
+                              {status === 'No' ? 'Declined' : 'Decline'}
+                          </button>
+                      </div>
 
-            {/* Conditional Form */}
-            {status && (
-                <form onSubmit={handleSubmit} className="space-y-6 animate-in slide-in-from-bottom-2 duration-500 bg-white/50 dark:bg-gray-900/50 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800">
-                    
-                    {/* Yes Logic */}
-                    {status === 'Yes' && (
-                        <div className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Dates */}
-                                <div className="space-y-2 group">
-                                    <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2 group-focus-within:text-med-blue">
-                                        <Calendar size={12} /> Arrival
-                                    </label>
-                                    <input 
-                                        type="date" 
-                                        value={formData.startDate}
-                                        onChange={e => setFormData({...formData, startDate: e.target.value})}
-                                        className="w-full p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 outline-none focus:border-med-blue focus:ring-4 focus:ring-med-blue/10 text-sm font-bold font-sans text-med-blue dark:text-white transition-all"
-                                    />
-                                </div>
-                                <div className="space-y-2 group">
-                                    <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2 group-focus-within:text-med-blue">
-                                        <Calendar size={12} /> Departure
-                                    </label>
-                                    <input 
-                                        type="date" 
-                                        value={formData.endDate}
-                                        onChange={e => setFormData({...formData, endDate: e.target.value})}
-                                        className="w-full p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 outline-none focus:border-med-blue focus:ring-4 focus:ring-med-blue/10 text-sm font-bold font-sans text-med-blue dark:text-white transition-all"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Guests */}
-                                <div className="space-y-2 group">
-                                    <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2 group-focus-within:text-med-blue">
-                                        <Users size={12} /> Party Size
-                                    </label>
-                                    <select 
-                                        value={formData.guests} 
-                                        onChange={e => setFormData({...formData, guests: parseInt(e.target.value)})}
-                                        className="w-full p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 outline-none focus:border-med-blue focus:ring-4 focus:ring-med-blue/10 text-sm font-bold font-sans text-med-blue dark:text-white appearance-none cursor-pointer transition-all"
-                                    >
-                                        {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n} {n===1?'Guest':'Guests'}</option>)}
-                                    </select>
-                                </div>
-
-                                {/* Dietary */}
-                                <div className="space-y-2 group">
-                                    <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2 group-focus-within:text-med-blue">
-                                        <Utensils size={12} /> Dietary Needs
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="None, Vegetarian, Allergies..."
-                                        value={formData.dietary}
-                                        onChange={e => setFormData({...formData, dietary: e.target.value})}
-                                        className="w-full p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 outline-none focus:border-med-blue focus:ring-4 focus:ring-med-blue/10 text-sm font-sans text-med-blue dark:text-white transition-all"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Note Field (All Statuses) */}
-                    <div className="space-y-2 group">
-                        <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2 group-focus-within:text-med-blue">
-                            <Send size={12} /> {status === 'No' ? 'Send a Note' : 'Message to Host'}
-                        </label>
-                        <textarea 
-                            rows={3}
-                            placeholder={status === 'No' ? "Sending love from afar..." : "Can't wait! Also, I love dark chocolate..."}
-                            value={formData.note}
-                            onChange={e => setFormData({...formData, note: e.target.value})}
-                            className="w-full p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 outline-none focus:border-med-blue focus:ring-4 focus:ring-med-blue/10 text-sm font-sans text-med-blue dark:text-white resize-none transition-all"
-                        />
-                    </div>
-
-                    {/* Submit Button */}
-                    <Button 
-                        type="submit"
-                        disabled={isSubmitting || isSaved}
-                        variant={isSaved ? 'success' : 'primary'}
-                        fullWidth
-                        size="lg"
-                        isLoading={isSubmitting}
-                        loadingText="Saving..."
-                    >
-                        {isSaved ? 'Saved' : 'Confirm RSVP'}
-                    </Button>
-                </form>
-            )}
-        </div>
-    </div>
+                      {/* Add Guest / Footer Component */}
+                      <button 
+                          onClick={() => setGuests(guests + 1)}
+                          className="text-white/60 hover:text-white text-[13px] underline decoration-white/30 hover:decoration-white/80 underline-offset-4 transition-colors font-medium"
+                      >
+                          {guests > 1 ? `Add another Guest (Total: ${guests})` : 'Add a Guest'}
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
   );
 };

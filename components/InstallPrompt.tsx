@@ -72,42 +72,46 @@ export const InstallPrompt: React.FC = () => {
     if (!showPrompt) return null;
 
     return (
-        <div className="fixed bottom-6 left-4 right-4 md:left-auto md:right-8 md:bottom-24 z-[300] max-w-xs animate-in slide-in-from-bottom-10 fade-in duration-700 ease-out">
-            <div className="relative overflow-hidden bg-med-blue dark:bg-slate-800 text-white rounded-3xl shadow-2xl border border-white/10 dark:border-gray-700 p-5 min-h-[210px] min-w-[210px] flex flex-col justify-center group">
+        <div className="hidden lg:block fixed bottom-6 left-4 right-4 md:left-auto md:right-8 md:bottom-24 z-[300] max-w-xs animate-in slide-in-from-bottom-10 fade-in duration-700 ease-out">
+            <div className="relative overflow-hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl text-slate-800 dark:text-white rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 p-6 min-h-[220px] min-w-[240px] flex flex-col justify-center group">
+                
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-med-terracotta/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-med-blue/20 dark:bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+
                 <button
                     onClick={handleDismiss}
-                    className="absolute top-2 right-2 p-2 text-white/40 hover:text-white rounded-full transition-all"
+                    className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-800 dark:text-slate-500 dark:hover:text-white rounded-full transition-all z-10"
                     aria-label="Dismiss"
                 >
                     <X size={16} />
                 </button>
 
-                <div className="flex flex-col items-center text-center space-y-4 pt-2">
-                    <div className="p-3 bg-white/10 rounded-2xl shadow-inner">
-                        <Download size={24} className="text-white" />
+                <div className="flex flex-col items-center text-center space-y-4 pt-2 relative z-10">
+                    <div className="p-3 bg-med-terracotta/10 dark:bg-white/10 rounded-2xl shadow-inner text-med-terracotta dark:text-white ring-1 ring-med-terracotta/20 dark:ring-white/20">
+                        <Download size={26} strokeWidth={1.5} />
                     </div>
 
                     <div>
-                        <h3 className="font-bold text-lg leading-tight">Install App</h3>
-                        <p className="text-xs text-white/70 mt-1">Add to home screen for offline access.</p>
+                        <h3 className="font-heading text-2xl font-bold leading-tight text-med-blue dark:text-white">Get the App</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Add to home screen for offline access.</p>
                     </div>
 
                     {isIOS ? (
-                        <div className="text-[10px] bg-white/10 rounded-xl p-3 w-full border border-white/5">
-                            <p className="flex items-center justify-center gap-1.5 mb-2">
-                                Tap <Share size={12} /> then <span className="font-bold">Add to Home Screen</span>
+                        <div className="text-[10px] bg-white/50 dark:bg-black/20 rounded-xl p-3 w-full border border-slate-200 dark:border-white/5">
+                            <p className="flex items-center justify-center gap-1.5 mb-2 text-slate-600 dark:text-slate-300">
+                                Tap <Share size={12} className="text-med-blue dark:text-white" /> then <span className="font-bold text-med-blue dark:text-white">Add to Home Screen</span>
                             </p>
-                            <div className="w-full h-0.5 bg-white/10 mb-2" />
-                            <div className="flex items-center justify-center gap-1.5 opacity-70">
+                            <div className="w-full h-px bg-slate-200 dark:bg-white/10 mb-2" />
+                            <div className="flex items-center justify-center gap-1.5 text-slate-500 dark:text-slate-400">
                                 <PlusSquare size={12} /> <span className="font-bold">Add</span>
                             </div>
                         </div>
                     ) : (
                         <button
                             onClick={handleInstallClick}
-                            className="w-full bg-white text-med-blue dark:text-slate-900 hover:bg-med-terracotta hover:text-white py-3 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg transition-all active:scale-95"
+                            className="w-full bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
                         >
-                            Install Now
+                            Install Now <Download size={14} />
                         </button>
                     )}
                 </div>

@@ -34,6 +34,7 @@ const Activities = React.lazy(() => import('./Activities').then(module => ({ def
 const ChatSystem = React.lazy(() => import('./ChatSystem').then(module => ({ default: module.ChatSystem })));
 const FAQApp = React.lazy(() => import('./FAQApp').then(module => ({ default: module.FAQApp })));
 const TravelHub = React.lazy(() => import('./TravelHub').then(module => ({ default: module.TravelHub })));
+const JournalPage = React.lazy(() => import('./JournalPage').then(module => ({ default: module.JournalPage })));
 
 export type HubView = 'overview' | 'rsvp' | 'messages' | 'logistics' | 'activities' | 'expenses' | 'registry' | 'guide' | 'profile' | 'calendar' | 'map' | 'detail' | 'faq';
 
@@ -267,7 +268,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
     // App Content Renderer
     const renderAppContent = (view: HubView, props?: any) => {
         switch (view) {
-            case 'overview': return <div className="p-8 text-center text-primary">Journal View</div>;
+            case 'overview': return <JournalPage />;
             case 'rsvp': return <HubRSVP onComplete={() => launchApp('logistics')} />;
             case 'messages': return <ChatSystem onNavigate={(v) => launchApp(v)} />;
             case 'calendar': return <WithPadding><SeptemberCalendar onOpenMap={() => launchApp('map')} /></WithPadding>;
@@ -347,7 +348,14 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                         opacity: theme === 'dark' ? 0.6 : 0.4
                     }}
                 />
-                <div className={`absolute inset-0 transition-colors duration-700 ${theme === 'dark' ? 'bg-gradient-to-br from-med-blue/60 via-slate-900/80 to-black/90' : 'bg-white/20'}`} />
+                <div className={`absolute inset-0 transition-colors duration-700 ${theme === 'dark' ? 'bg-gradient-to-br from-[#330046]/80 via-[#1a1b2e]/90 to-slate-950/90' : 'bg-white/20'}`} />
+                {theme === 'dark' && (
+                    <>
+                        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#508BC5] rounded-full blur-[120px] mix-blend-screen opacity-20 pointer-events-none" />
+                        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-[#FFCDA6] rounded-full blur-[150px] mix-blend-screen opacity-[0.08] pointer-events-none" />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#330046] rounded-full blur-[150px] mix-blend-multiply opacity-80 pointer-events-none" />
+                    </>
+                )}
             </div>
 
             <div
@@ -387,6 +395,14 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                 </div>
 
                 <div className="flex items-center gap-1 md:gap-2 pointer-events-auto h-full py-2">
+
+                    <button 
+                        onClick={() => launchApp('overview')}
+                        className={`flex items-center justify-center h-full px-3 md:px-4 rounded-full border text-[9px] font-bold uppercase tracking-widest backdrop-blur-md transition-all hover:opacity-80 active:scale-95 ${theme === 'light' ? 'bg-white/80 text-med-blue border-med-blue/20' : 'bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:border-white/30'}`}
+                        title="Open Journal"
+                    >
+                        Journal
+                    </button>
 
                     {isHost && (
                         <button
@@ -548,7 +564,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                     style={{
                         display: stacks.length === 0 ? 'none' : 'flex',
                         transform: isOverviewMode
-                            ? `translateX(calc(50vw - 50% - ${activeStackIndex * 280}px))`
+                            ? `translateX(0)`
                             : `translateX(0)`
                     }}
                 >

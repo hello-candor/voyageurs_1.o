@@ -282,32 +282,36 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
         <div className="font-body bg-med-sand dark:bg-gray-950 text-slate-800 dark:text-slate-200 selection:bg-med-terracotta selection:text-white transition-colors duration-500 overflow-x-hidden">
             <Styles />
             
-            <nav className="fixed w-full z-50 top-0 left-0 transition-all duration-500 px-4 py-6">
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="fixed w-full z-[100] top-6 px-4 flex justify-center">
+                <nav className="w-full max-w-6xl flex items-center justify-between px-6 py-3 bg-white/80 dark:bg-white/90 backdrop-blur-xl border border-med-blue/10 dark:border-white/20 rounded-full shadow-lg transition-all duration-500">
                     <div className="flex items-center gap-3">
                         <img
                           src="/assets/voyageurs-logo.png"
                           alt="Voyageurs"
-                          className="h-10 w-auto object-contain dark:brightness-90"
+                          className="h-8 w-auto object-contain"
                         />
                     </div>
                     
-                    <div className="hidden md:flex items-center gap-8 px-8 py-3 rounded-full border transition-all duration-500 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-med-blue/10 dark:border-white/10 shadow-sm">
-                        <a href="#philosophy" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 hover:text-med-blue dark:hover:text-white transition-colors">About</a>
-                        <a href="#features" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 hover:text-med-blue dark:hover:text-white transition-colors">Features</a>
-                        <a href="#pricing" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 hover:text-med-blue dark:hover:text-white transition-colors">Pricing</a>
+                    <div className="hidden md:flex items-center gap-8">
+                        <a href="#philosophy" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-med-blue transition-colors">About</a>
+                        <a href="#features" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-med-blue transition-colors">Features</a>
+                        <a href="#pricing" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-med-blue transition-colors">Pricing</a>
+                        <a href="/journal" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-med-blue transition-colors">Journal</a>
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-full bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border border-med-blue/10 dark:border-white/10 shadow-sm text-slate-500 dark:text-slate-400 hover:text-med-blue dark:hover:text-white transition-colors">
+                        <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-med-blue transition-colors">
                             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
                         </button>
-                        <button onClick={onShowLogin} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] shadow-xl hover:shadow-2xl px-6 py-2.5 text-[10px] sm:px-8 sm:py-3.5 sm:text-xs">
+                        <button onClick={onShowLogin} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-terracotta text-white hover:bg-[#bf6344] shadow-md hover:shadow-lg px-6 py-2.5 text-[10px] sm:px-6 sm:py-2.5 sm:text-xs">
                             RSVP
                         </button>
+                        <button onClick={onShowLogin} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-white/80 dark:bg-gray-800 text-med-blue dark:text-white border border-slate-200 dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-700 shadow-sm px-6 py-2.5 text-[10px] sm:px-6 sm:py-2.5 sm:text-xs">
+                            Login
+                        </button>
                     </div>
-                </div>
-            </nav>
+                </nav>
+            </div>
 
             <section className="relative pt-48 pb-20 overflow-hidden min-h-screen flex flex-col justify-center">
                 <div className="container mx-auto px-4 max-w-7xl relative z-10">
@@ -315,7 +319,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                         <div className="lg:w-1/2 text-center lg:text-left animate-in slide-in-from-bottom-8 duration-700">
                             <div className="flex items-center justify-center lg:justify-start gap-4 mb-6">
                                 <div className="h-px w-8 bg-med-terracotta dark:bg-[#C25E3E]"></div>
-                                <span className="text-med-terracotta dark:text-[#C25E3E] font-bold uppercase tracking-[0.2em] text-[10px]">You're Invited</span>
+                                <span className="text-med-terracotta dark:text-[#C25E3E] font-bold uppercase tracking-[0.2em] text-[10px]">Better Group Travel</span>
                             </div>
                             <h1 className="text-6xl md:text-8xl font-heading font-light text-med-blue dark:text-blue-100 mb-8 leading-[0.9]">
                                 Less planning, <br/>
@@ -325,9 +329,9 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                                 Orchestrate your next group trip without the spreadsheet fatigue. Voyageurs unifies collaborative itinerary planning, shared expense tracking, and local discovery into one fluid experience.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <button onClick={onShowLogin} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] px-8 py-3.5 text-xs shadow-xl">
-                                    RSVP NOW <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-                                </button>
+                                <a href="#features" className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] px-8 py-3.5 text-xs shadow-xl">
+                                    Learn More
+                                </a>
                             </div>
                         </div>
 
@@ -368,7 +372,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                                 Great journeys shouldn't require a project manager. We believe the magic of travel lies in the moment, not the administration. By replacing fragmented chat threads and endless email chains with a centralized hub for group coordination, we make the logistics invisible—letting the memories take center stage.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <button onClick={() => setShowAbout(true)} className="text-med-blue dark:text-white font-bold uppercase tracking-[0.2em] text-[10px] border-b border-med-blue dark:border-white pb-1 hover:text-med-terracotta hover:border-med-terracotta transition-all">
+                                <button onClick={() => setShowAbout(true)} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] px-8 py-3.5 text-xs shadow-xl">
                                     Read our Manifesto
                                 </button>
                             </div>
@@ -652,10 +656,16 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
 
             <section id="pricing" className="py-24 bg-white dark:bg-[#1e293b] relative overflow-hidden">
                 <div className="absolute inset-0 z-50 bg-white/40 dark:bg-[#1e293b]/60 backdrop-blur-sm flex items-center justify-center">
-                    <div className="px-10 py-6 rounded-[2rem] bg-white/80 dark:bg-gray-900/80 shadow-2xl border border-white/50 dark:border-gray-700/50 backdrop-blur-md transform hover:scale-105 transition-transform duration-500">
-                        <h3 className="text-4xl md:text-6xl font-heading font-light text-med-blue dark:text-white">
-                            Coming <span className="italic text-med-terracotta dark:text-[#C25E3E]">Soon</span>
+                    <div className="px-10 py-8 flex flex-col items-center rounded-[2rem] bg-white/80 dark:bg-gray-900/80 shadow-2xl border border-white/50 dark:border-gray-700/50 backdrop-blur-md transform hover:scale-105 transition-transform duration-500 max-w-lg text-center">
+                        <h3 className="text-4xl md:text-6xl font-heading font-light text-med-blue dark:text-white mb-4">
+                            Coming <span className="italic text-med-terracotta dark:text-[#C25E3E]">Soon!</span>
                         </h3>
+                        <p className="text-sm font-light text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+                            Have an idea worth sharing? Join the waitlist, and you'll not only have the option to provide feedback, but you'll also receive an invite to help us test new features and functionality while we're still in development.
+                        </p>
+                        <button onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSfhZJq8_d20yI7c33-8R-14K0n09p-96x23gO0H1_k_v-6oRQ/viewform', '_blank')} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-blue dark:bg-white text-white dark:text-med-blue hover:bg-blue-800 dark:hover:bg-gray-100 shadow-xl px-8 py-3.5 text-[10px] sm:text-xs">
+                            Join Waitlist
+                        </button>
                     </div>
                 </div>
                 <div className="container mx-auto px-4 max-w-7xl">
@@ -758,17 +768,17 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                 <div className="container mx-auto px-4 max-w-7xl relative z-10 flex flex-col items-center text-center">
                     <div className="flex items-center justify-center gap-4 mb-6">
                         <div className="h-px w-8 bg-med-terracotta"></div>
-                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-med-terracotta">Start Your Journey</span>
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-med-terracotta">Better Group Travel</span>
                         <div className="h-px w-8 bg-med-terracotta"></div>
                     </div>
                     <h2 className="text-4xl md:text-6xl font-heading font-light text-white mb-6 leading-tight">
-                        Your <span className="italic text-med-terracotta">Odyssey</span> Awaits.
+                        Ready to <span className="italic text-med-terracotta">RSVP?</span>
                     </h2>
                     <p className="text-blue-100/80 text-lg font-light leading-relaxed max-w-2xl mx-auto mb-10">
-                        Orchestrate your next group trip with elegance. Access your event or sign up to create a new one.
+                        Have an invite code? Access your private event to submit your RSVP, review the itinerary, and begin collaborating with your fellow guests.
                     </p>
                     <button onClick={onShowLogin} className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] px-8 py-3.5 text-xs shadow-xl">
-                        Access Your Event <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                        RSVP NOW
                     </button>
                 </div>
             </section>
@@ -781,7 +791,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                                 <img
                                   src="/assets/voyageurs-logo.png"
                                   alt="Voyageurs"
-                                  className="h-9 w-auto object-contain dark:brightness-90"
+                                  className="h-9 w-auto object-contain dark:brightness-0 dark:invert"
                                 />
                             </div>
                             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-sm mb-8">

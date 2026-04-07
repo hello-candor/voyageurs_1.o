@@ -10,6 +10,7 @@ import { safeStorage } from './utils/storage';
 import { notificationService } from './services/notificationService';
 import { OSContainer } from './components/OSContainer';
 import { Button } from './components/Button';
+import { MobileNav } from './components/MobileNav';
 import './styles/global.css';
 
 // Lazy load heavy components
@@ -21,6 +22,7 @@ const MarketingPage = React.lazy(() => import('./components/MarketingPage').then
 const HostOnboarding = React.lazy(() => import('./components/HostOnboarding').then(m => ({ default: m.HostOnboarding })));
 const LoginPage = React.lazy(() => import('./components/LoginPage').then(m => ({ default: m.LoginPage })));
 const OnboardingFlow = React.lazy(() => import('./components/OnboardingFlow').then(m => ({ default: m.OnboardingFlow })));
+const JournalPage = React.lazy(() => import('./components/JournalPage').then(m => ({ default: m.JournalPage })));
 
 const LoadingScreen = () => (
   <div className="fixed inset-0 bg-background flex items-center justify-center z-[9999]">
@@ -141,6 +143,8 @@ const App = () => {
     );
   }
 
+  const isJournalPage = window.location.pathname === '/journal';
+
   return (
     <div className="min-h-screen font-sans selection:bg-med-terracotta/30 bg-background transition-colors duration-300 flex flex-col overflow-x-hidden">
       <main id="main-content" className="flex-1 w-full">
@@ -148,6 +152,10 @@ const App = () => {
           // Guest Hub is triggered for onboarding or profile view
           <Suspense fallback={<LoadingScreen />}>
             <TravelHub isOpen={true} onClose={toggleProfile} />
+          </Suspense>
+        ) : isJournalPage ? (
+          <Suspense fallback={<LoadingScreen />}>
+            <JournalPage />
           </Suspense>
         ) : (
           // Standard public marketing page
@@ -180,7 +188,8 @@ const App = () => {
         <PrivacyPolicyModal isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />
         <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
       </Suspense>
-      {!showGuestOnboarding && <RSVPPrompt />}
+      {!showGuestOnboarding && <MobileNav />}
+      {/* Archiving RSVPPrompt for now: !showGuestOnboarding && <RSVPPrompt onRSVP={() => setShowLogin(true)} /> */}
       <InstallPrompt />
     </div>
   );

@@ -11,6 +11,7 @@ import {
 import { HubView } from './HubLayout';
 import { Button } from './Button';
 import { useGuidance } from '../hooks/useGuidance';
+import { DeckCarousel } from './DeckCarousel';
 
 interface HubOverviewProps {
   onTabChange: (tab: HubView) => void;
@@ -186,6 +187,15 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                         {timeLeft ? `${timeLeft.d} days until ${config.destination.split(',')[0]}.` : "Welcome to the Celebration."}
                     </p>
                 </div>
+
+                {items.length > 0 && (
+                    <div className="w-full relative mt-4 mb-8">
+                        <DeckCarousel items={items} onFocusItem={() => onTabChange('logistics' as HubView)} />
+                        <div className="text-center mt-2">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Journey Deck</span>
+                        </div>
+                    </div>
+                )}
 
                 {/* JOURNEY STEPPER WIDGET */}
                 <div className={`group relative overflow-hidden backdrop-blur-md border p-6 md:p-8 rounded-[2rem] shadow-2xl animate-in slide-in-from-bottom-4 duration-700 transition-all ${theme === 'light' ? 'bg-white/60 border-med-blue/10' : 'bg-black/40 border-white/10 hover:bg-black/50'}`}>

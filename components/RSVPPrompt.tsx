@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowRight, X, CalendarCheck } from 'lucide-react';
 import { safeStorage } from '../utils/storage';
 
-export const RSVPPrompt: React.FC = () => {
+export const RSVPPrompt: React.FC<{ onRSVP?: () => void }> = ({ onRSVP }) => {
     const [showPrompt, setShowPrompt] = useState(false);
 
     useEffect(() => {
@@ -24,35 +24,45 @@ export const RSVPPrompt: React.FC = () => {
 
     const handleRSVP = () => {
         setShowPrompt(false);
-        window.dispatchEvent(new Event('open_login'));
+        if (onRSVP) {
+            onRSVP();
+        } else {
+            window.dispatchEvent(new Event('open_login'));
+        }
     };
 
     if (!showPrompt) return null;
 
     return (
-        <div className="fixed bottom-6 left-4 right-4 md:left-auto md:right-8 md:bottom-24 z-[310] max-w-xs animate-in slide-in-from-bottom-10 fade-in duration-700 ease-out">
-            <div className="relative overflow-hidden bg-med-blue dark:bg-slate-800 text-white rounded-3xl shadow-2xl border border-white/10 dark:border-gray-700 p-5 min-h-[210px] min-w-[210px] flex flex-col justify-center group">
+        <div className="hidden lg:block fixed bottom-6 left-4 right-4 md:left-auto md:right-8 md:bottom-24 z-[310] max-w-xs animate-in slide-in-from-bottom-10 fade-in duration-700 ease-out">
+            <div className="relative overflow-hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl text-slate-800 dark:text-white rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 p-6 min-h-[200px] min-w-[240px] flex flex-col justify-center group">
+                
+                {/* Accent glow */}
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-med-terracotta/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-med-blue/20 dark:bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+
                 <button
                     onClick={handleDismiss}
-                    className="absolute top-2 right-2 p-2 text-white/40 hover:text-white rounded-full transition-all"
+                    className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-800 dark:text-slate-500 dark:hover:text-white rounded-full transition-all z-10"
                     aria-label="Dismiss"
                 >
                     <X size={16} />
                 </button>
 
-                <div className="flex flex-col items-center text-center space-y-4 pt-2">
-                    <div className="p-3 bg-white/10 rounded-2xl shadow-inner">
-                        <CalendarCheck size={24} className="text-white" />
+                <div className="flex flex-col items-center text-center space-y-4 pt-2 relative z-10">
+                    <div className="p-3 bg-med-terracotta/10 dark:bg-white/10 rounded-2xl shadow-inner text-med-terracotta dark:text-white ring-1 ring-med-terracotta/20 dark:ring-white/20">
+                        <CalendarCheck size={26} strokeWidth={1.5} />
                     </div>
 
                     <div>
-                        <h3 className="font-bold text-lg leading-tight">Join the Trip</h3>
+                        <h3 className="font-heading font-bold text-2xl leading-tight text-med-blue dark:text-white">Join A Trip</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Enter your code to begin.</p>
                     </div>
 
-                    <div className="flex flex-col w-full gap-2 pt-2 pb-2">
+                    <div className="flex flex-col w-full gap-2 pt-2">
                         <button 
                             onClick={handleRSVP}
-                            className="w-full bg-white text-med-blue dark:text-slate-900 hover:bg-med-terracotta hover:text-white py-3 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+                            className="w-full bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
                         >
                             RSVP Now <ArrowRight size={14} />
                         </button>

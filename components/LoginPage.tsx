@@ -59,7 +59,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-med-sand dark:bg-[#111827] transition-colors duration-500 overflow-hidden">
+    <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-med-sand dark:bg-[#111827] transition-colors duration-500 overflow-y-auto">
       {/* Styles Injection */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
@@ -81,11 +81,11 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
         />
       </div>
 
-      <div className="relative w-full max-w-2xl px-5 sm:px-8 py-8 h-full flex items-center">
+      <div className="relative w-full max-w-2xl px-5 sm:px-8 py-8 my-auto mx-auto flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[3.5rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] border border-white dark:border-gray-800 px-8 py-12 sm:px-14 sm:py-16 md:px-20 md:py-20 relative flex flex-col justify-center min-h-[88vh] sm:min-h-0"
+          className="w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[3rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] border border-white dark:border-gray-800 px-6 py-10 sm:px-14 sm:py-16 md:px-20 md:py-16 relative flex flex-col justify-center"
         >
           {/* Back button MOVED INSIDE card */}
           {onClose && (
@@ -102,9 +102,9 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
           <div className="absolute top-0 right-0 w-72 h-72 bg-med-terracotta/10 rounded-full blur-[120px] opacity-60 pointer-events-none" />
           
           <div className="relative z-10 flex flex-col items-center w-full max-w-lg mx-auto">
-            <Logo className="mb-10 w-24 h-24 sm:w-28 sm:h-28" />
+            <Logo className="mb-6 sm:mb-10 w-20 h-20 sm:w-28 sm:h-28" />
             
-            <div className="text-center mb-14">
+            <div className="text-center mb-8 sm:mb-14">
               <div className="flex items-center justify-center gap-6 mb-6">
                   <div className="h-px w-10 bg-med-terracotta/40"></div>
                   <span className="text-[11px] font-body font-bold uppercase tracking-[0.4em] text-med-terracotta">
@@ -121,14 +121,14 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
               </h1>
             </div>
 
-            <form onSubmit={handleAuth} className="w-full space-y-8">
+            <form onSubmit={handleAuth} className="w-full space-y-5 sm:space-y-8">
               <div className="relative group">
                 <input 
                   type="text" 
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value.toUpperCase())}
                   placeholder="INVITE CODE" 
-                  className="w-full h-32 bg-slate-50/50 dark:bg-[#1a1f2e] border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta rounded-none px-6 text-center font-body font-bold tracking-[0.2em] text-med-blue dark:text-white outline-none transition-all flex items-center justify-center leading-none placeholder:text-sm placeholder:tracking-[0.5em] placeholder:font-body placeholder:opacity-30 placeholder:font-normal"
+                  className="w-full h-24 sm:h-32 bg-slate-50/50 dark:bg-[#1a1f2e] border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta rounded-none px-6 text-center font-body font-bold tracking-[0.2em] text-med-blue dark:text-white outline-none transition-all flex items-center justify-center leading-none placeholder:text-sm placeholder:tracking-[0.5em] placeholder:font-body placeholder:opacity-30 placeholder:font-normal"
                   style={{ fontSize: 'clamp(2rem, 8vw, 4rem)' }}
                   disabled={isLoading}
                   autoFocus
@@ -139,7 +139,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
               </div>
 
               <div className="px-2 space-y-4">
-                <div className="flex items-start gap-4 p-6 bg-med-sand/40 dark:bg-[#1a1f2e]/40 rounded-[2rem] border border-med-blue/5">
+                <div className="flex items-start gap-4 p-5 sm:p-6 bg-med-sand/40 dark:bg-[#1a1f2e]/40 rounded-[2rem] border border-med-blue/5">
                     <div className="w-8 h-8 rounded-full bg-med-terracotta/10 flex items-center justify-center shrink-0">
                        <CheckCircle size={18} className="text-med-terracotta" />
                     </div>
@@ -175,15 +175,12 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
               <button 
                 type="submit"
                 disabled={isLoading || !inputValue}
-                className="w-full h-20 bg-[#E2923D] text-white rounded-full text-xs font-bold uppercase tracking-[0.3em] shadow-2xl hover:bg-[#d17e2b] shadow-[#E2923D]/30 transition-all flex items-center justify-center gap-4 group active:scale-95 disabled:opacity-50 font-body"
+                className="w-full h-16 sm:h-20 bg-[#E2923D] text-white rounded-full text-xs font-bold uppercase tracking-[0.3em] shadow-2xl hover:bg-[#d17e2b] shadow-[#E2923D]/30 transition-all flex items-center justify-center gap-4 group active:scale-95 disabled:opacity-50 font-body"
               >
                 {isLoading ? (
                   <Loader2 className="animate-spin w-6 h-6" />
                 ) : (
-                  <>
-                    RSVP NOW
-                    <ChevronRight size={20} className="group-hover:translate-x-2 transition-transform" />
-                  </>
+                  "RSVP NOW"
                 )}
               </button>
             </form>
