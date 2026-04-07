@@ -89,6 +89,36 @@ const DEFAULT_PRIVACY: PrivacySettings = {
     smsConsent: true
 };
 
+const getEventIdFromUrl = () => {
+    if (typeof window === 'undefined') return "voyageurs_2026";
+    
+    // 1. Check Query Parameters (?event=trip2026)
+    const params = new URLSearchParams(window.location.search);
+    const eventParam = params.get('e') || params.get('event');
+    if (eventParam) {
+        sessionStorage.setItem('active_event_id', eventParam);
+        return eventParam;
+    }
+    
+    // 2. Check URL Path (/trip2026)
+    const segments = window.location.pathname.split('/').filter(Boolean);
+    const knownRoutes = ['rsvp', 'journal', 'admin'];
+    if (segments.length > 0 && !knownRoutes.includes(segments[0].toLowerCase())) {
+        sessionStorage.setItem('active_event_id', segments[0]);
+        return segments[0];
+    }
+    
+    // 3. Fallback to session storage if they navigated around and URL cleared
+    const stored = sessionStorage.getItem('active_event_id');
+    if (stored) return stored;
+    
+    // 4. Default baseline event (Fallback)
+    return "voyageurs_2026";
+};
+
+export const CURRENT_EVENT_ID = getEventIdFromUrl();
+export const CURRENT_HOST_ID = "bryan@2026.com";
+
 const HOST_EMAILS = ['bryan@2026.com', 'admin@voyageurs.app', 'host@example.com'];
 
 const INITIAL_GUESTS: Guest[] = [
@@ -194,7 +224,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         try {
-            const unsubscribe = onSnapshot(collection(db, "guests"), (snapshot) => {
+            const guestsCollection = collection(db, "events", CURRENT_EVENT_ID, "guests");
+            const unsubscribe = onSnapshot(guestsCollection, (snapshot) => {
                 const guests: Guest[] = [];
                 snapshot.forEach((doc) => {
                     guests.push({ id: doc.id, ...doc.data() } as Guest);
@@ -327,7 +358,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (isCloudEnabled && auth.currentUser) {
             try {
-                const guestDocRef = doc(db, "guests", normalizedEmail);
+                const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", normalizedEmail);
                 const guestData: Partial<Guest> = {
                     id: normalizedEmail,
                     name,
@@ -363,7 +394,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const normalizedEmail = email.toLowerCase().trim();
 
             if (isCloudEnabled && auth.currentUser) {
-                const guestDocRef = doc(db, "guests", normalizedEmail);
+                const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", normalizedEmail);
                 try {
                     const guestSnap = await getDoc(guestDocRef);
                     if (guestSnap.exists()) {
@@ -439,7 +470,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (isCloudEnabled && auth.currentUser) {
             try {
-                const guestDocRef = doc(db, "guests", user.email);
+                const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", user.email);
                 await updateDoc(guestDocRef, data);
             } catch (e: any) {
                 if (e.code === 'permission-denied') setIsCloudEnabled(false);
@@ -500,7 +531,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (isCloudEnabled && auth.currentUser) {
             try {
-                const guestDocRef = doc(db, "guests", id);
+                const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", id);
                 await updateDoc(guestDocRef, { status });
             } catch (e: any) {
                 if (e.code === 'permission-denied') setIsCloudEnabled(false);
@@ -513,7 +544,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (isCloudEnabled && auth.currentUser) {
             try {
-                const guestDocRef = doc(db, "guests", id);
+                const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", id);
                 await updateDoc(guestDocRef, data);
             } catch (e: any) {
                 if (e.code === 'permission-denied') setIsCloudEnabled(false);
@@ -536,7 +567,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (isCloudEnabled && auth.currentUser) {
             try {
-                const guestDocRef = doc(db, "guests", guest.email);
+                const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", guest.email);
                 await setDoc(guestDocRef, newGuest, { merge: true });
             } catch (e: any) {
                 if (e.code === 'permission-denied') setIsCloudEnabled(false);

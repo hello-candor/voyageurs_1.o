@@ -93,9 +93,9 @@ async function importCsv() {
         trim: true
     });
 
-    console.log(`Parsed ${records.length} records. Uploading to Firestore...`);
+    const EVENT_ID = "voyageurs_2026";
     const batch = db.batch();
-    const guestsRef = db.collection('guests');
+    const guestsRef = db.collection('events').doc(EVENT_ID).collection('guests');
     
     let processedCount = 0;
 
