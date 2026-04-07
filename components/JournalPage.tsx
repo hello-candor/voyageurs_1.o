@@ -450,107 +450,113 @@ export const JournalPage: React.FC = () => {
         {!activeArticle && (
           <div className="animate-[fadeIn_0.6s_ease-out_forwards]">
             
+            {isDefaultView && (
+              <>
+                {/* HERO: Cover Story (Uses Article 1) */}
+                <header className="max-w-7xl mx-auto px-6 mb-12 mt-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+                  <div className="lg:col-span-6 order-2 lg:order-1">
+                    <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#595959] mb-6 block">{displayPosts[0].edition} • Cover Feature</span>
+                    <h2 
+                      className="text-5xl md:text-7xl font-serif font-bold leading-[1.1] mb-8 text-[#1A1A1A]"
+                      style={{ fontFamily: "'Playfair Display', serif" }}
+                    >
+                      {displayPosts[0].title}
+                    </h2>
+                    <p className="text-xl text-[#333333] leading-relaxed mb-10 font-normal">
+                      {displayPosts[0].excerpt}
+                    </p>
+                    <button 
+                      onClick={() => handleArticleClick(displayPosts[0].id)} 
+                      className="group inline-flex items-center space-x-4 border-b border-[#1A1A1A] pb-2 hover:opacity-70 transition-all"
+                    >
+                      <span className="uppercase text-xs tracking-[0.2em] font-bold text-[#1A1A1A]">Read the Feature</span>
+                      <span className="transform group-hover:translate-x-2 transition-transform">→</span>
+                    </button>
+                  </div>
+                  
+                  {/* Hero Image Placeholder (Lux Editorial Style) */}
+                  <div className="lg:col-span-6 order-1 lg:order-2 h-[500px] lg:h-[700px] bg-[#EAE6DF] relative overflow-hidden flex flex-col justify-between p-8 group cursor-pointer" onClick={() => handleArticleClick(displayPosts[0].id)}>
+                    {displayPosts[0].image ? (
+                      <img src={displayPosts[0].image} alt={displayPosts[0].title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    ) : (
+                      <div className="w-full flex justify-center items-center h-full absolute inset-0">
+                        <span className="text-[12rem] font-serif text-[#FDFBF7] opacity-60" style={{ fontFamily: "'Playfair Display', serif" }}>V</span>
+                      </div>
+                    )}
+                    <div className="relative z-10 flex justify-between w-full text-xs uppercase tracking-[0.2em] font-bold drop-shadow-md text-white/90">
+                      <span>{displayPosts[0].edition}</span>
+                      <span>{displayPosts[0].category}</span>
+                    </div>
+                  </div>
+                </div>
+              </header>
+              </>
+            )}
+
             {/* TOOLBAR */}
-            <section className="max-w-7xl mx-auto px-6 mb-12 mt-8">
-              <div className="bg-white border border-[#EAE6DF] rounded-xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between shadow-sm">
-                
-                <div className="relative w-full md:w-1/3">
-                  <input 
-                    type="text" 
-                    placeholder="Search journal..." 
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-[#FDFBF7] border border-[#EAE6DF] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#A68966] text-[#1A1A1A] placeholder-[#595959]"
-                  />
-                  <svg className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#595959]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <section className="sticky top-[73px] z-40 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-white/50 mb-12 shadow-sm transition-all pb-4 pt-4">
+              <div className="max-w-7xl mx-auto px-6">
+                <div className="bg-white border border-[#EAE6DF] rounded-xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between shadow-sm">
+                  
+                  <div className="relative w-full md:w-1/3">
+                    <input 
+                      type="text" 
+                      placeholder="Search journal..." 
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 bg-[#FDFBF7] border border-[#EAE6DF] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#A68966] text-[#1A1A1A] placeholder-[#595959]"
+                    />
+                    <svg className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#595959]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                  </div>
+
+                  <div className="flex flex-wrap md:flex-nowrap gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#595959] whitespace-nowrap">Edition:</span>
+                      <select 
+                        value={activeEdition} 
+                        onChange={(e) => setActiveEdition(e.target.value)}
+                        className="bg-transparent text-sm font-medium text-[#1A1A1A] focus:outline-none cursor-pointer border-b border-transparent hover:border-[#A68966] transition-colors"
+                      >
+                        {editions.map(ed => <option key={ed} value={ed}>{ed}</option>)}
+                      </select>
+                    </div>
+
+                    <div className="hidden md:block w-px h-4 bg-[#EAE6DF] my-auto"></div>
+
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#595959] whitespace-nowrap">Topic:</span>
+                      <select 
+                        value={activeCategory} 
+                        onChange={(e) => setActiveCategory(e.target.value)}
+                        className="bg-transparent text-sm font-medium text-[#1A1A1A] focus:outline-none cursor-pointer border-b border-transparent hover:border-[#A68966] transition-colors"
+                      >
+                        {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                      </select>
+                    </div>
+
+                    <div className="hidden md:block w-px h-4 bg-[#EAE6DF] my-auto"></div>
+
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#595959] whitespace-nowrap">Sort:</span>
+                      <select 
+                        value={sortBy} 
+                        onChange={(e) => setSortBy(e.target.value as any)}
+                        className="bg-transparent text-sm font-medium text-[#1A1A1A] focus:outline-none cursor-pointer border-b border-transparent hover:border-[#A68966] transition-colors"
+                      >
+                        <option value="Date (Newest)">Newest</option>
+                        <option value="Date (Oldest)">Oldest</option>
+                        <option value="Title (A-Z)">Title (A-Z)</option>
+                      </select>
+                    </div>
+                  </div>
+
                 </div>
-
-                <div className="flex flex-wrap md:flex-nowrap gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#595959] whitespace-nowrap">Edition:</span>
-                    <select 
-                      value={activeEdition} 
-                      onChange={(e) => setActiveEdition(e.target.value)}
-                      className="bg-transparent text-sm font-medium text-[#1A1A1A] focus:outline-none cursor-pointer border-b border-transparent hover:border-[#A68966] transition-colors"
-                    >
-                      {editions.map(ed => <option key={ed} value={ed}>{ed}</option>)}
-                    </select>
-                  </div>
-
-                  <div className="hidden md:block w-px h-4 bg-[#EAE6DF] my-auto"></div>
-
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#595959] whitespace-nowrap">Topic:</span>
-                    <select 
-                      value={activeCategory} 
-                      onChange={(e) => setActiveCategory(e.target.value)}
-                      className="bg-transparent text-sm font-medium text-[#1A1A1A] focus:outline-none cursor-pointer border-b border-transparent hover:border-[#A68966] transition-colors"
-                    >
-                      {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                    </select>
-                  </div>
-
-                  <div className="hidden md:block w-px h-4 bg-[#EAE6DF] my-auto"></div>
-
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#595959] whitespace-nowrap">Sort:</span>
-                    <select 
-                      value={sortBy} 
-                      onChange={(e) => setSortBy(e.target.value as any)}
-                      className="bg-transparent text-sm font-medium text-[#1A1A1A] focus:outline-none cursor-pointer border-b border-transparent hover:border-[#A68966] transition-colors"
-                    >
-                      <option value="Date (Newest)">Newest</option>
-                      <option value="Date (Oldest)">Oldest</option>
-                      <option value="Title (A-Z)">Title (A-Z)</option>
-                    </select>
-                  </div>
-                </div>
-
               </div>
             </section>
 
             {isDefaultView ? (
               <>
-                {/* HERO: Cover Story (Uses Article 1) */}
-                <header className="max-w-7xl mx-auto px-6 mb-24 mt-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
-                    <div className="lg:col-span-6 order-2 lg:order-1">
-                      <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#595959] mb-6 block">{displayPosts[0].edition} • Cover Feature</span>
-                      <h2 
-                        className="text-5xl md:text-7xl font-serif font-bold leading-[1.1] mb-8 text-[#1A1A1A]"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
-                      >
-                        {displayPosts[0].title}
-                      </h2>
-                      <p className="text-xl text-[#333333] leading-relaxed mb-10 font-normal">
-                        {displayPosts[0].excerpt}
-                      </p>
-                      <button 
-                        onClick={() => handleArticleClick(displayPosts[0].id)} 
-                        className="group inline-flex items-center space-x-4 border-b border-[#1A1A1A] pb-2 hover:opacity-70 transition-all"
-                      >
-                        <span className="uppercase text-xs tracking-[0.2em] font-bold text-[#1A1A1A]">Read the Feature</span>
-                        <span className="transform group-hover:translate-x-2 transition-transform">→</span>
-                      </button>
-                    </div>
-                    
-                    {/* Hero Image Placeholder (Lux Editorial Style) */}
-                    <div className="lg:col-span-6 order-1 lg:order-2 h-[500px] lg:h-[700px] bg-[#EAE6DF] relative overflow-hidden flex flex-col justify-between p-8 group cursor-pointer" onClick={() => handleArticleClick(displayPosts[0].id)}>
-                      {displayPosts[0].image ? (
-                        <img src={displayPosts[0].image} alt={displayPosts[0].title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
-                      ) : (
-                        <div className="w-full flex justify-center items-center h-full absolute inset-0">
-                          <span className="text-[12rem] font-serif text-[#FDFBF7] opacity-60" style={{ fontFamily: "'Playfair Display', serif" }}>V</span>
-                        </div>
-                      )}
-                      <div className="relative z-10 flex justify-between w-full text-xs uppercase tracking-[0.2em] font-bold drop-shadow-md text-white/90">
-                        <span>{displayPosts[0].edition}</span>
-                        <span>{displayPosts[0].category}</span>
-                      </div>
-                    </div>
-                  </div>
-                </header>
-
                 {/* EDITORIAL GRID (Articles 2-6) */}
                 <section className="max-w-7xl mx-auto px-6 border-t border-[#EAE6DF] pt-16">
                   <div className="flex justify-between items-end mb-16">

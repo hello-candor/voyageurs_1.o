@@ -339,23 +339,26 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
     return (
         <div className="relative h-full w-full overflow-hidden bg-background font-sans select-none transition-colors duration-300">
 
-            <div className="fixed inset-0 z-0 pointer-events-none">
+            <div className={`fixed inset-0 z-0 pointer-events-none transition-colors duration-700 ${theme === 'dark' ? 'bg-[#1A1A1A]' : 'bg-[#F5F2EB]'}`}>
+                {/* Light Mode Gradients */}
+                <div className={`absolute inset-0 bg-gradient-to-br from-white/60 via-[#F5F2EB] to-[#F5F2EB] transition-opacity duration-700 ${theme === 'light' ? 'opacity-100' : 'opacity-0'}`} />
+                
+                {/* Dark Mode Gradients */}
+                <div className={`absolute inset-0 bg-gradient-to-br from-[#330046]/40 via-[#1A1A1A] to-[#1A1A1A] transition-opacity duration-700 ${theme === 'dark' ? 'opacity-100' : 'opacity-0'}`} />
+
                 <div
-                    className="absolute inset-0 bg-cover bg-center transition-all duration-[1.2s] ease-out"
+                    className={`absolute inset-0 transition-all duration-[1.2s] ease-out`}
                     style={{
-                        backgroundImage: "url('https://images.unsplash.com/photo-1512403913063-e380f68288ce?q=80&w=1920&auto=format&fit=crop')",
-                        transform: isOverviewMode || stacks.length === 0 ? 'scale(1.1)' : 'scale(1.0) blur(20px)',
-                        opacity: theme === 'dark' ? 0.6 : 0.4
+                        transform: isOverviewMode || stacks.length === 0 ? 'scale(1.1)' : 'scale(1.0)',
                     }}
-                />
-                <div className={`absolute inset-0 transition-colors duration-700 ${theme === 'dark' ? 'bg-gradient-to-br from-[#330046]/80 via-[#1a1b2e]/90 to-slate-950/90' : 'bg-white/20'}`} />
-                {theme === 'dark' && (
-                    <>
-                        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#508BC5] rounded-full blur-[120px] mix-blend-screen opacity-20 pointer-events-none" />
-                        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-[#FFCDA6] rounded-full blur-[150px] mix-blend-screen opacity-[0.08] pointer-events-none" />
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#330046] rounded-full blur-[150px] mix-blend-multiply opacity-80 pointer-events-none" />
-                    </>
-                )}
+                >
+                    {/* Slate Blue Glow */}
+                    <div className={`absolute top-[20%] left-[30%] w-[600px] h-[600px] bg-[#508BC5] rounded-full blur-[120px] transition-all duration-700 ${theme === 'dark' ? 'mix-blend-screen opacity-[0.15]' : 'mix-blend-multiply opacity-[0.1]'}`} />
+                    {/* Warm Amber Glow */}
+                    <div className={`absolute bottom-[10%] right-[20%] w-[500px] h-[500px] bg-[#FFCDA6] rounded-full blur-[140px] transition-all duration-700 ${theme === 'dark' ? 'mix-blend-screen opacity-[0.10]' : 'mix-blend-multiply opacity-[0.2]'}`} />
+                    {/* Dark Mode Specific Deep Charcoal Overlay Glow */}
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#330046] rounded-full blur-[160px] transition-opacity duration-700 mix-blend-screen ${theme === 'dark' ? 'opacity-40' : 'opacity-0'}`} />
+                </div>
             </div>
 
             <div
@@ -396,13 +399,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
 
                 <div className="flex items-center gap-1 md:gap-2 pointer-events-auto h-full py-2">
 
-                    <button 
-                        onClick={() => launchApp('overview')}
-                        className={`flex items-center justify-center h-full px-3 md:px-4 rounded-full border text-[9px] font-bold uppercase tracking-widest backdrop-blur-md transition-all hover:opacity-80 active:scale-95 ${theme === 'light' ? 'bg-white/80 text-med-blue border-med-blue/20' : 'bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:border-white/30'}`}
-                        title="Open Journal"
-                    >
-                        Journal
-                    </button>
+                    {/* Journal button removed */}
 
                     {isHost && (
                         <button

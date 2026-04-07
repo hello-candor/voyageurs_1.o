@@ -24,7 +24,6 @@ interface FloatingHubNavProps {
 
 // App Definition Map
 const APP_DEFINITIONS: Record<string, any> = {
-    'overview': { icon: LayoutDashboard, label: 'Journal', description: 'Overview & Timeline', color: 'bg-blue-600', textColor: 'text-blue-400', glow: 'shadow-blue-600/40' },
     'rsvp': { icon: Ticket, label: 'RSVP', description: 'Confirm Attendance', color: 'bg-orange-500', textColor: 'text-orange-400', glow: 'shadow-orange-500/40' },
     'logistics': { icon: Compass, label: 'Plan', description: 'Flights & Hotels', color: 'bg-cyan-500', textColor: 'text-cyan-400', glow: 'shadow-cyan-500/40' },
     'calendar': { icon: Calendar, label: 'Agenda', description: 'Official Schedule', color: 'bg-amber-500', textColor: 'text-amber-400', glow: 'shadow-amber-500/40' },
@@ -39,14 +38,6 @@ const APP_DEFINITIONS: Record<string, any> = {
 
 // Category Structure
 const NAV_CATEGORIES = [
-    { 
-        id: 'overview', 
-        label: 'Journal', 
-        description: 'Journal',
-        icon: LayoutDashboard, 
-        target: 'overview',
-        color: 'text-blue-400'
-    },
     { 
         id: 'planning', 
         label: 'Planning', 
@@ -311,10 +302,10 @@ export const FloatingHubNav: React.FC<FloatingHubNavProps> = ({
 
                 {/* MAIN DOCK */}
                 <div className="pointer-events-auto flex items-center gap-4">
-                    <nav className={`backdrop-blur-[40px] border p-2 rounded-[2.5rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] flex items-end gap-3 md:gap-4 ring-1
+                    <nav className={`backdrop-blur-[60px] border p-2 rounded-[32px] shadow-[0_8px_32px_rgba(0,0,0,0.8)] flex items-end gap-3 md:gap-4 ring-1
                         ${theme === 'light' 
-                            ? 'bg-white/60 border-white/50 ring-white/20' 
-                            : 'bg-[#330046]/30 border-white/10 ring-white/5 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]'
+                            ? 'bg-white/80 border-white/50 ring-white/20' 
+                            : 'bg-white/10 border-white/20 ring-white/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]'
                         }
                     `}>
                         {NAV_CATEGORIES.map((cat) => {

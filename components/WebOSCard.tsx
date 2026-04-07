@@ -149,7 +149,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
         <div className={`
             w-full h-full flex flex-col overflow-hidden shadow-2xl transition-all duration-300 relative
             ${theme === 'light' ? 'bg-white/60 backdrop-blur-3xl border-white/50 shadow-xl' : 'bg-[#330046]/30 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]'}
-            ${isOverview ? 'rounded-[32px] ring-1 ring-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]' : isFullScreen ? 'rounded-none' : 'rounded-none md:rounded-[24px] ring-1 ring-white/10'}
+            ${isOverview ? `rounded-[32px] ring-1 ${theme === 'light' ? 'ring-black/5 shadow-[inset_0_0_20px_rgba(0,0,0,0.02)]' : 'ring-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]'}` : isFullScreen ? 'rounded-none' : `rounded-none md:rounded-[24px] ring-1 ${theme === 'light' ? 'ring-black/5' : 'ring-white/10'}`}
         `}>
             {/* Header Bar */}
             <div className={`
