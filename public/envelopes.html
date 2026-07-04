@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voyageurs — 5×7 Envelope Printer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --navy: #1B2A4A;
+            --navy-mid: #2A3F6B;
+            --terracotta: #D67252;
+            --gold: #E2923D;
+            --sand: #F5F0E8;
+            --olive: #6B7F5E;
+            --serif: 'Cormorant Garamond', Georgia, serif;
+            --sans: 'Montserrat', sans-serif;
+        }
+
+        body {
+            font-family: var(--sans);
+            background: linear-gradient(180deg, #f5f0e8 0%, #ebe4d8 100%);
+            color: var(--navy);
+            min-height: 100vh;
+        }
+
+        /* ═══════════ LAYOUT ═══════════ */
+        .app-layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 1100px) {
+            .app-layout { grid-template-columns: 1fr; }
+        }
+
+        /* ═══════════ SIDEBAR ═══════════ */
+        .sidebar {
+            background: white;
+            border-right: 1px solid rgba(0,0,0,0.06);
+            overflow-y: auto;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            padding: 24px 20px;
+        }
+
+        @media (max-width: 1100px) {
+            .sidebar { height: auto; position: static; border-right: none; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        }
+
+        .sidebar-header {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 4px;
+        }
+
+        .sidebar-header h1 {
+            font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--navy);
+        }
+
+        .sidebar-header h1 em { color: var(--terracotta); }
+
+        .sidebar-desc {
+            color: #aaa; font-size: 0.72rem; margin-bottom: 20px; line-height: 1.5;
+        }
+
+        /* Tabs */
+        .tab-bar {
+            display: flex; gap: 2px; margin-bottom: 16px; background: var(--sand); border-radius: 10px; padding: 3px;
+        }
+
+        .tab-btn {
+            flex: 1; padding: 8px 4px; border: none; background: transparent; font-family: var(--sans);
+            font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+            color: #999; cursor: pointer; border-radius: 8px; transition: all 0.2s;
+        }
+
+        .tab-btn.active { background: white; color: var(--terracotta); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Section */
+        .section { margin-bottom: 20px; }
+
+        .section-title {
+            font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em;
+            color: var(--terracotta); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+        }
+
+        /* Form controls */
+        .field { margin-bottom: 10px; }
+
+        .field label {
+            display: block; font-size: 0.6rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.12em; color: #999; margin-bottom: 3px;
+        }
+
+        .field input[type="text"], .field select {
+            width: 100%; padding: 8px 10px; border: 1px solid #e8e4dc; border-radius: 8px;
+            font-family: var(--sans); font-size: 0.78rem; color: var(--navy); background: #faf8f5;
+            outline: none; transition: border-color 0.2s;
+        }
+
+        .field input:focus, .field select:focus { border-color: var(--terracotta); }
+
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+        /* Range slider */
+        .range-field { margin-bottom: 12px; }
+
+        .range-field .range-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;
+        }
+
+        .range-field label {
+            font-size: 0.58rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #999;
+        }
+
+        .range-field .range-val {
+            font-size: 0.65rem; font-weight: 700; color: var(--navy); font-family: var(--sans);
+        }
+
+        .range-field input[type="range"] {
+            width: 100%; height: 4px; -webkit-appearance: none; appearance: none; background: #e8e4dc;
+            border-radius: 4px; outline: none;
+        }
+
+        .range-field input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+            background: var(--terracotta); cursor: pointer; border: 2px solid white;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        }
+
+        /* Color picker */
+        .color-field { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+
+        .color-field label {
+            font-size: 0.58rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #999; flex: 1;
+        }
+
+        .color-field input[type="color"] {
+            width: 32px; height: 32px; border: 2px solid #e8e4dc; border-radius: 8px;
+            cursor: pointer; padding: 0; background: none;
+        }
+
+        /* Toggle */
+        .toggle-field {
+            display: flex; align-items: center; justify-content: space-between; padding: 8px 0;
+            border-bottom: 1px solid #f0ece4;
+        }
+
+        .toggle-field label {
+            font-size: 0.65rem; font-weight: 600; color: var(--navy);
+        }
+
+        .toggle-switch {
+            position: relative; width: 40px; height: 22px; background: #ddd; border-radius: 11px;
+            cursor: pointer; transition: background 0.2s;
+        }
+
+        .toggle-switch.on { background: var(--terracotta); }
+
+        .toggle-switch::after {
+            content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
+            background: white; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .toggle-switch.on::after { transform: translateX(18px); }
+
+        /* Buttons */
+        .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+
+        .btn {
+            padding: 10px 20px; border-radius: 100px; font-family: var(--sans); font-size: 0.65rem;
+            font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+            border: none; transition: all 0.2s;
+        }
+
+        .btn-primary { background: var(--terracotta); color: white; }
+        .btn-primary:hover { background: #c4613f; }
+        .btn-secondary { background: var(--navy); color: white; }
+        .btn-ghost { background: transparent; color: var(--navy); border: 1.5px solid #ddd; }
+        .btn-ghost:hover { border-color: var(--terracotta); color: var(--terracotta); }
+
+        /* Filter pills */
+        .filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+
+        .filter-pill {
+            padding: 5px 12px; border-radius: 100px; font-family: var(--sans); font-size: 0.6rem;
+            font-weight: 600; cursor: pointer; border: 1.5px solid #e0dcd4; background: white;
+            color: #888; transition: all 0.2s;
+        }
+
+        .filter-pill:hover, .filter-pill.active {
+            border-color: var(--terracotta); color: var(--terracotta); background: rgba(214,114,82,0.06);
+        }
+
+        .stats { font-size: 0.68rem; color: #999; margin-top: 10px; }
+
+        /* Guest checklist */
+        .guest-list-search {
+            width: 100%; padding: 8px 10px; border: 1px solid #e8e4dc; border-radius: 8px;
+            font-family: var(--sans); font-size: 0.75rem; color: var(--navy); background: #faf8f5;
+            outline: none; margin-bottom: 8px; transition: border-color 0.2s;
+        }
+        .guest-list-search:focus { border-color: var(--terracotta); }
+        .guest-list-search::placeholder { color: #ccc; }
+
+        .guest-list {
+            max-height: 320px; overflow-y: auto; border: 1px solid #f0ece4; border-radius: 10px;
+            background: #faf8f5;
+        }
+
+        .guest-list::-webkit-scrollbar { width: 4px; }
+        .guest-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+        .guest-item {
+            display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+            border-bottom: 1px solid #f0ece4; cursor: pointer; transition: background 0.15s;
+            font-size: 0.7rem;
+        }
+
+        .guest-item:last-child { border-bottom: none; }
+        .guest-item:hover { background: rgba(214,114,82,0.04); }
+        .guest-item.hidden { display: none; }
+
+        .guest-item input[type="checkbox"] {
+            width: 15px; height: 15px; accent-color: var(--terracotta); cursor: pointer; flex-shrink: 0;
+        }
+
+        .guest-item-info { flex: 1; min-width: 0; }
+
+        .guest-item-name {
+            font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        .guest-item-city {
+            font-size: 0.55rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        .guest-item-warn {
+            font-size: 0.6rem; flex-shrink: 0;
+        }
+
+        .guest-list-actions {
+            display: flex; gap: 6px; margin-top: 6px;
+        }
+
+        .guest-list-actions button {
+            flex: 1; padding: 5px; border: 1px solid #e0dcd4; border-radius: 6px; background: white;
+            font-family: var(--sans); font-size: 0.55rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: #999; cursor: pointer; transition: all 0.2s;
+        }
+
+        .guest-list-actions button:hover { border-color: var(--terracotta); color: var(--terracotta); }
+
+        /* Refresh button */
+        .refresh-row {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+        }
+
+        .btn-refresh {
+            display: flex; align-items: center; gap: 6px; padding: 7px 14px;
+            border: 1.5px solid #e0dcd4; border-radius: 8px; background: white;
+            font-family: var(--sans); font-size: 0.6rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--navy); cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+
+        .btn-refresh:hover { border-color: var(--terracotta); color: var(--terracotta); }
+        .btn-refresh:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-refresh .spin {
+            display: inline-block; animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .refresh-status {
+            font-size: 0.55rem; color: #aaa; flex: 1;
+        }
+
+        .refresh-status.success { color: var(--olive); }
+        .refresh-status.error { color: #c44; }
+
+        /* Sortable back elements */
+        .sort-list { display: flex; flex-direction: column; gap: 4px; }
+
+        .sort-item {
+            display: flex; align-items: center; gap: 6px; padding: 6px 8px;
+            background: #faf8f5; border: 1px solid #f0ece4; border-radius: 8px;
+            transition: all 0.15s;
+        }
+
+        .sort-item.disabled { opacity: 0.4; }
+
+        .sort-item-handle {
+            display: flex; flex-direction: column; gap: 1px; cursor: default;
+        }
+
+        .sort-item-handle button {
+            display: flex; align-items: center; justify-content: center;
+            width: 18px; height: 14px; border: none; background: transparent;
+            color: #bbb; font-size: 0.6rem; cursor: pointer; border-radius: 3px;
+            transition: all 0.15s; padding: 0; line-height: 1;
+        }
+
+        .sort-item-handle button:hover { background: rgba(214,114,82,0.1); color: var(--terracotta); }
+
+        .sort-item-toggle {
+            width: 14px; height: 14px; accent-color: var(--terracotta); cursor: pointer; flex-shrink: 0;
+        }
+
+        .sort-item-label {
+            flex: 1; font-size: 0.65rem; font-weight: 600; color: var(--navy);
+        }
+
+        .sort-item-preview {
+            font-size: 0.55rem; color: #aaa; max-width: 80px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* ═══════════ PREVIEW AREA ═══════════ */
+        .preview-area {
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex; gap: 2px; margin: 0 auto 24px; background: var(--sand); border-radius: 10px;
+            padding: 3px; max-width: 320px;
+        }
+
+        .view-btn {
+            flex: 1; padding: 10px; border: none; background: transparent; font-family: var(--sans);
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+            color: #999; cursor: pointer; border-radius: 8px; transition: all 0.2s;
+        }
+
+        .view-btn.active { background: white; color: var(--terracotta); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+        .envelopes-container {
+            display: flex; flex-direction: column; gap: 24px; align-items: center;
+        }
+
+        /* ═══════════ ENVELOPE FRONT ═══════════ */
+        .envelope {
+            background: white; border-radius: 6px; box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            position: relative; overflow: hidden; page-break-after: always; page-break-inside: avoid;
+        }
+
+        .envelope::before {
+            content: ''; position: absolute; inset: 6px; border: 1px solid rgba(214,114,82,0.12);
+            border-radius: 4px; pointer-events: none;
+        }
+
+        .env-return { position: absolute; }
+        .env-return-name { font-weight: 600; letter-spacing: 0.02em; }
+        .env-return-line { line-height: 1.5; letter-spacing: 0.02em; }
+        .env-stamp {
+            position: absolute; border: 1.5px dashed rgba(27,42,74,0.15); border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .env-stamp-text {
+            font-family: var(--sans); font-size: 0.38rem; text-transform: uppercase;
+            letter-spacing: 0.2em; color: #ccc; font-weight: 600;
+        }
+
+        .env-recipient { position: absolute; }
+        .env-recipient-name { margin-bottom: 6px; letter-spacing: 0.02em; line-height: 1.3; }
+        .env-recipient-line { line-height: 1.7; letter-spacing: 0.03em; }
+
+        .env-accent {
+            position: absolute; bottom: 0.3in; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .env-accent-line { width: 20px; height: 1px; opacity: 0.3; }
+        .env-accent-icon { font-size: 0.5rem; opacity: 0.3; }
+
+        /* ═══════════ ENVELOPE BACK ═══════════ */
+        .envelope-back {
+            background: white; border-radius: 6px; box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            position: relative; overflow: hidden; page-break-after: always; page-break-inside: avoid;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .envelope-back::before {
+            content: ''; position: absolute; inset: 0.25in;
+            border: 1px solid rgba(214,114,82,0.1); border-radius: 4px; pointer-events: none;
+        }
+
+        .env-back-corner { position: absolute; width: 0.5in; height: 0.5in; opacity: 0.12; }
+        .env-back-corner.tl { top: 0.2in; left: 0.2in; border-top: 2px solid; border-left: 2px solid; }
+        .env-back-corner.tr { top: 0.2in; right: 0.2in; border-top: 2px solid; border-right: 2px solid; }
+        .env-back-corner.bl { bottom: 0.2in; left: 0.2in; border-bottom: 2px solid; border-left: 2px solid; }
+        .env-back-corner.br { bottom: 0.2in; right: 0.2in; border-bottom: 2px solid; border-right: 2px solid; }
+
+        .env-back-eyebrow {
+            font-family: var(--sans); font-weight: 700; text-transform: uppercase;
+        }
+
+        .env-back-title { text-align: center; line-height: 1.2; }
+        .env-back-title em { font-style: italic; }
+
+        .env-back-qr { display: flex; flex-direction: column; align-items: center; }
+        .env-back-qr img { border-radius: 8px; border: 1px solid rgba(0,0,0,0.04); }
+
+        .env-back-name { text-align: center; }
+        .env-back-code {
+            font-family: var(--sans); font-weight: 700; text-align: center;
+            padding: 4px 16px; border-radius: 100px;
+        }
+        .env-back-url { font-family: var(--sans); font-weight: 600; text-align: center; }
+        .env-back-instruction {
+            font-family: var(--sans); color: #aaa; text-align: center; max-width: 3.5in; line-height: 1.6;
+        }
+
+        .env-pair-label {
+            font-family: var(--sans); font-size: 0.6rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.15em; color: #ccc; text-align: center; margin-top: 8px;
+        }
+
+        /* ═══════════ PRINT ═══════════ */
+        @media print {
+            body { background: white; padding: 0; margin: 0; }
+            .sidebar, .view-toggle, .env-pair-label { display: none !important; }
+            .app-layout { display: block; }
+            .preview-area { padding: 0; }
+            .envelopes-container { gap: 0; }
+            .envelope, .envelope-back { box-shadow: none; border-radius: 0; margin: 0; }
+            .envelope::before, .envelope-back::before { border-color: transparent; }
+            @page { size: 7in 5in; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-layout">
+    <!-- ═══════════ SIDEBAR ═══════════ -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>✉️ Envelope <em>Studio</em></h1>
+        </div>
+        <p class="sidebar-desc">Customize and print 5×7 envelopes with QR codes for mailed invitations.</p>
+
+        <!-- Tabs -->
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('content')">Content</button>
+            <button class="tab-btn" onclick="switchTab('layout')">Layout</button>
+            <button class="tab-btn" onclick="switchTab('style')">Style</button>
+            <button class="tab-btn" onclick="switchTab('back')">Back</button>
+        </div>
+
+        <!-- ─── CONTENT TAB ─── -->
+        <div class="tab-panel active" id="tab-content">
+            <div class="section">
+                <div class="section-title">📬 Return Address</div>
+                <div class="field"><label>Name</label><input type="text" id="returnName" value="Bryan Espey" oninput="render()"></div>
+                <div class="field"><label>Street</label><input type="text" id="returnStreet" value="" placeholder="123 Main Street" oninput="render()"></div>
+                <div class="field-row">
+                    <div class="field"><label>City, State</label><input type="text" id="returnCityState" value="" placeholder="Kansas City, MO" oninput="render()"></div>
+                    <div class="field"><label>ZIP</label><input type="text" id="returnZip" value="" placeholder="64108" oninput="render()"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">👥 Guests</div>
+                <div class="refresh-row">
+                    <button class="btn-refresh" id="refreshBtn" onclick="refreshFromSheet()">🔄 Refresh from Google Sheets</button>
+                    <span class="refresh-status" id="refreshStatus"></span>
+                </div>
+                <div class="filter-row" id="filterRow"></div>
+                <input type="text" class="guest-list-search" id="guestSearch" placeholder="🔍 Search guests..." oninput="filterGuestList()">
+                <div class="guest-list" id="guestList"></div>
+                <div class="guest-list-actions">
+                    <button onclick="selectAllVisible()">✓ Select All</button>
+                    <button onclick="deselectAllVisible()">✕ Deselect All</button>
+                    <button onclick="invertSelection()">⇅ Invert</button>
+                </div>
+                <div class="stats" id="stats"></div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="window.print()">🖨️ Print</button>
+                <button class="btn btn-secondary" onclick="downloadCSV()">📋 CSV</button>
+            </div>
+        </div>
+
+        <!-- ─── LAYOUT TAB ─── -->
+        <div class="tab-panel" id="tab-layout">
+            <div class="section">
+                <div class="section-title">📐 Envelope Size</div>
+                <div class="field"><label>Preset</label>
+                    <select id="sizePreset" onchange="applyPreset()">
+                        <option value="5x7" selected>5 × 7 in (A7 Invitation)</option>
+                        <option value="4.375x5.75">4⅜ × 5¾ in (A2 Note)</option>
+                        <option value="6x9">6 × 9 in (Booklet)</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                <div class="field-row">
+                    <div class="field"><label>Width (in)</label><input type="text" id="envWidth" value="7" oninput="render()"></div>
+                    <div class="field"><label>Height (in)</label><input type="text" id="envHeight" value="5" oninput="render()"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📍 Return Address Position</div>
+                <div class="field-row">
+                    <div class="range-field"><div class="range-header"><label>Left</label><span class="range-val" id="retLeftVal">0.4in</span></div><input type="range" id="retLeft" min="0.1" max="1.5" step="0.05" value="0.4" oninput="updateVal('retLeft'); render()"></div>
+                    <div class="range-field"><div class="range-header"><label>Top</label><span class="range-val" id="retTopVal">0.35in</span></div><input type="range" id="retTop" min="0.1" max="1.5" step="0.05" value="0.35" oninput="updateVal('retTop'); render()"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📍 Recipient Position</div>
+                <div class="field"><label>Alignment</label>
+                    <select id="recipientAlign" onchange="render()">
+                        <option value="center" selected>Center</option>
+                        <option value="left">Left</option>
+                    </select>
+                </div>
+                <div class="field-row">
+                    <div class="range-field"><div class="range-header"><label>Vertical</label><span class="range-val" id="recipYVal">50%</span></div><input type="range" id="recipY" min="30" max="70" step="1" value="50" oninput="updateVal('recipY'); render()"></div>
+                    <div class="range-field"><div class="range-header"><label>Left Pad</label><span class="range-val" id="recipXVal">0.6in</span></div><input type="range" id="recipX" min="0.3" max="2" step="0.05" value="0.6" oninput="updateVal('recipX'); render()"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📍 Stamp</div>
+                <div class="field-row">
+                    <div class="range-field"><div class="range-header"><label>Right</label><span class="range-val" id="stampRightVal">0.4in</span></div><input type="range" id="stampRight" min="0.2" max="1.5" step="0.05" value="0.4" oninput="updateVal('stampRight'); render()"></div>
+                    <div class="range-field"><div class="range-header"><label>Top</label><span class="range-val" id="stampTopVal">0.3in</span></div><input type="range" id="stampTop" min="0.1" max="1.5" step="0.05" value="0.3" oninput="updateVal('stampTop'); render()"></div>
+                </div>
+                <div class="toggle-field"><label>Show stamp box</label><div class="toggle-switch on" id="showStamp" onclick="toggleSwitch('showStamp'); render()"></div></div>
+            </div>
+        </div>
+
+        <!-- ─── STYLE TAB ─── -->
+        <div class="tab-panel" id="tab-style">
+            <div class="section">
+                <div class="section-title">🎨 Colors</div>
+                <div class="color-field"><label>Accent Color</label><input type="color" id="accentColor" value="#D67252" oninput="render()"></div>
+                <div class="color-field"><label>Text Color</label><input type="color" id="textColor" value="#1B2A4A" oninput="render()"></div>
+                <div class="color-field"><label>Return Addr Color</label><input type="color" id="returnColor" value="#999999" oninput="render()"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">✏️ Typography</div>
+                <div class="field"><label>Recipient Font</label>
+                    <select id="recipientFont" onchange="render()">
+                        <option value="'Cormorant Garamond', serif" selected>Cormorant Garamond</option>
+                        <option value="'Playfair Display', serif">Playfair Display</option>
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="Georgia, serif">Georgia</option>
+                        <option value="'Times New Roman', serif">Times New Roman</option>
+                    </select>
+                </div>
+                <div class="range-field"><div class="range-header"><label>Name Size</label><span class="range-val" id="nameSizeVal">1.15rem</span></div><input type="range" id="nameSize" min="0.7" max="2" step="0.05" value="1.15" oninput="updateVal('nameSize'); render()"></div>
+                <div class="range-field"><div class="range-header"><label>Address Size</label><span class="range-val" id="addrSizeVal">0.6rem</span></div><input type="range" id="addrSize" min="0.4" max="1.2" step="0.05" value="0.6" oninput="updateVal('addrSize'); render()"></div>
+                <div class="range-field"><div class="range-header"><label>Return Addr Size</label><span class="range-val" id="retSizeVal">0.5rem</span></div><input type="range" id="retSize" min="0.3" max="0.9" step="0.05" value="0.5" oninput="updateVal('retSize'); render()"></div>
+                <div class="range-field"><div class="range-header"><label>Return Name Size</label><span class="range-val" id="retNameSizeVal">0.65rem</span></div><input type="range" id="retNameSize" min="0.4" max="1.2" step="0.05" value="0.65" oninput="updateVal('retNameSize'); render()"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">✨ Decoration</div>
+                <div class="toggle-field"><label>Inner border</label><div class="toggle-switch on" id="showBorder" onclick="toggleSwitch('showBorder'); render()"></div></div>
+                <div class="toggle-field"><label>Bottom accent (✦)</label><div class="toggle-switch on" id="showAccent" onclick="toggleSwitch('showAccent'); render()"></div></div>
+            </div>
+        </div>
+
+        <!-- ─── BACK TAB ─── -->
+        <div class="tab-panel" id="tab-back">
+            <div class="section">
+                <div class="toggle-field"><label>Print QR code backs</label><div class="toggle-switch on" id="showBacks" onclick="toggleSwitch('showBacks'); render()"></div></div>
+                <div class="toggle-field"><label>Corner ornaments</label><div class="toggle-switch on" id="showCorners" onclick="toggleSwitch('showCorners'); render()"></div></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🔀 Elements &amp; Order</div>
+                <p style="font-size:0.55rem; color:#aaa; margin-bottom:8px;">Toggle visibility and drag to reorder back elements.</p>
+                <div class="sort-list" id="sortList"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📐 Sizing</div>
+                <div class="range-field"><div class="range-header"><label>QR Size</label><span class="range-val" id="qrSizeVal">1.6in</span></div><input type="range" id="qrSize" min="0.8" max="2.5" step="0.1" value="1.6" oninput="updateVal('qrSize'); render()"></div>
+                <div class="range-field"><div class="range-header"><label>Title Size</label><span class="range-val" id="backTitleSizeVal">1.4rem</span></div><input type="range" id="backTitleSize" min="0.8" max="2.5" step="0.1" value="1.4" oninput="updateVal('backTitleSize'); render()"></div>
+                <div class="range-field"><div class="range-header"><label>Eyebrow Size</label><span class="range-val" id="backEyebrowSizeVal">0.45rem</span></div><input type="range" id="backEyebrowSize" min="0.3" max="0.8" step="0.05" value="0.45" oninput="updateVal('backEyebrowSize'); render()"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">✏️ Text Content</div>
+                <div class="field"><label>Eyebrow</label><input type="text" id="backEyebrow" value="You're Invited" oninput="render()"></div>
+                <div class="field"><label>Title</label><input type="text" id="backTitle" value="Bryan's 40th" oninput="render()"></div>
+                <div class="field"><label>Instruction</label><input type="text" id="backInstruction" value="Scan this QR code or visit the URL above and enter your invite code to RSVP" oninput="render()"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ PREVIEW ═══════════ -->
+    <div class="preview-area">
+        <div class="view-toggle">
+            <button class="view-btn active" id="viewFront" onclick="setView('front')">▲ Front</button>
+            <button class="view-btn" id="viewBack" onclick="setView('back')">▼ Back</button>
+            <button class="view-btn" id="viewBoth" onclick="setView('both')">Both</button>
+        </div>
+        <div class="envelopes-container" id="envelopesContainer"></div>
+    </div>
+</div>
+
+<script>
+// ─── Guest Data ──────────────────────────────────────────────────────
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1MZNtv8kjgr6bYzSW_ZPlY1R37-B2jBUt9YIS-QoxzpY/export?format=csv';
+
+let guests = [
+    { code: "B40-606-ADA", name: "Adam Beauchamp & Guest", street: "4738 N Lincoln Ave Apt 2", city: "Chicago", state: "IL", zip: "60613", country: "" },
+    { code: "B40-606-TIM", name: "Tim Kaatman & Stephen Schofield", street: "5218 N Winthrop Ave Apt 1N", city: "Chicago", state: "IL", zip: "60640", country: "" },
+    { code: "B40-641-ADA", name: "Adam Ralston & Jonathan Richard", street: "17 E 65th St", city: "Kansas City", state: "MO", zip: "64110", country: "" },
+    { code: "B40-641-MIT", name: "Mitch Messner & Whit Adams", street: "628 Romany Rd", city: "Kansas City", state: "MO", zip: "64113", country: "" },
+    { code: "B40-648-ERI", name: "Erica Espey & Guest", street: "1719 Sophia St", city: "Carthage", state: "MO", zip: "64836", country: "" },
+    { code: "B40-662-JER", name: "Jeremy Espey & Nika McDonald", street: "2117 Drury Lane", city: "Mission Hills", state: "KS", zip: "66208", country: "" },
+    { code: "B40-681-JED", name: "Jed Sanders & Guest", street: "915 Jones St Unit 601", city: "Omaha", state: "NE", zip: "68102", country: "" },
+    { code: "B40-752-WES", name: "Weslin Thomas & Guest", street: "7111 Claybrook Dr", city: "Dallas", state: "TX", zip: "75231", country: "" },
+    { code: "B40-860-JAY", name: "Jaymee Bohannon & Guest", street: "498 E Twelve Oaks Dr", city: "Flagstaff", state: "AZ", zip: "86005", country: "" },
+    { code: "B40-681-DAV", name: "David Lemp & Guest", street: "2320 Country Club Ave", city: "Omaha", state: "NE", zip: "68104", country: "" },
+    { code: "B40-M4E-PAU", name: "Paul & Victoria Mahoney", street: "9 Love Crescent", city: "Toronto", state: "ON", zip: "M4E 1V6", country: "CANADA" },
+    { code: "B40-708-JEN", name: "Jenny Bräutigam & Guest", street: "Mittlere Ringstr. 83", city: "Gerlingen", state: "", zip: "70839", country: "GERMANY" },
+    { code: "B40-904-NAS", name: "Nastasia Glaser & Guest", street: "Söderblomstraße 15", city: "Nürnberg", state: "", zip: "90439", country: "GERMANY" },
+    { code: "B40-999-TIM", name: "Tim & Kate Stephens", street: "109 Repulse Bay, Harston 9B", city: "Repulse Bay", state: "", zip: "999", country: "HONG KONG" },
+    { code: "B40-201-BRI", name: "Brian & Daniela Johnson", street: "40716 Keesling Farm Lane", city: "Lovettsville", state: "VA", zip: "20180", country: "" },
+    { code: "B40-331-SAR", name: "Sarah Klugh & Guest", street: "100 NW 6th St Apt 3511", city: "Miami", state: "FL", zip: "33136", country: "" },
+    { code: "B40-415-PAU", name: "Paul Feuerborn & Mike Burkhalter", street: "Rua de Gondarem 488 R/C", city: "Porto", state: "", zip: "4150-372", country: "PORTUGAL" },
+    { code: "B40-641-JOE", name: "Joe Tharp & Guest", street: "6026 Rockhill Rd", city: "Kansas City", state: "MO", zip: "64110", country: "" },
+    { code: "B40-774-CHA", name: "Chakra & Rupali Gopichetty", street: "23 Amalfi Dr", city: "Missouri City", state: "TX", zip: "77459", country: "" },
+    { code: "B40-M6K-GAB", name: "Gabi Pirraglia & Guest", street: "1520 Dundas St West, Apt 5", city: "Toronto", state: "ON", zip: "M6K 1T5", country: "CANADA" },
+    { code: "B40-641-MAT", name: "Matthew LaBreche & Guest", street: "4240 Virginia Ave", city: "Kansas City", state: "MO", zip: "64110", country: "" },
+    { code: "B40-644-JAM", name: "James & Terra Feick", street: "1720 Walton Bnd", city: "Maryville", state: "MO", zip: "64468", country: "" },
+    { code: "B40-630-JOS", name: "Josh & Shannon Bucholz", street: "9429 Highway NN", city: "Cedar Hill", state: "MO", zip: "63016", country: "" },
+    { code: "B40-641-CHR", name: "Chris & Melissa Hawkins", street: "4202 NW 77th Ter", city: "Kansas City", state: "MO", zip: "64151", country: "" },
+    { code: "B40-662-DOU", name: "Doug & Katie Faltermeier", street: "5326 Gleason Rd", city: "Shawnee", state: "KS", zip: "66226", country: "" },
+    { code: "B40-802-MAT", name: "Matt & Amber Andre", street: "6901 Eliot St", city: "Denver", state: "CO", zip: "80221", country: "" },
+    { code: "B40-805-CAR", name: "Carl & Paige Lorch", street: "4204 Martinson Dr", city: "Littleton", state: "CO", zip: "80537", country: "" },
+    { code: "B40-871-ERI", name: "Eric Cruz & Kevin Schroeder", street: "3600 Pitt St NE", city: "Albuquerque", state: "NM", zip: "87111", country: "" },
+    { code: "B40-605-RYA", name: "Ryan & Kelsey Gohl", street: "839 Homestead Rd", city: "La Grange Park", state: "IL", zip: "60526", country: "" },
+    { code: "B40-606-MIK", name: "Mike McGrath & Lindy Triebes", street: "2640 N Springfield Ave", city: "Chicago", state: "IL", zip: "60647", country: "" },
+    { code: "B40-606-PHI", name: "Phil Kural & Guest", street: "707 W Sheridan Rd #409", city: "Chicago", state: "IL", zip: "60613", country: "" },
+    { code: "B40-606-STE", name: "Stephen Chambers & Guest", street: "517 W Oakdale Ave #406", city: "Chicago", state: "IL", zip: "60657", country: "" },
+    { code: "B40-641-HAL", name: "Haley Grayless & Guest", street: "635 E 69th Terrace", city: "Kansas City", state: "MO", zip: "64131", country: "" },
+    { code: "B40-641-LUK", name: "Luke & Allison Armstrong", street: "701 NE 99th St", city: "Kansas City", state: "MO", zip: "64155", country: "" },
+    { code: "B40-658-J.", name: "J. & Lori Hill", street: "2571 S Skyline Dr", city: "Springfield", state: "MO", zip: "65804", country: "" },
+    { code: "B40-658-JAC", name: "Jacob Havens & Lindsey Wheeler", street: "2759 E Verona St", city: "Springfield", state: "MO", zip: "65804", country: "" },
+    { code: "", name: "Dimitri Njalvick & Guest", street: "", city: "Vienna", state: "", zip: "", country: "AUSTRIA" },
+    { code: "B40--RII", name: "Riina Leht & Guest", street: "", city: "", state: "", zip: "", country: "" },
+    { code: "B40--MAR", name: "Martin Smahvosky & Guest", street: "", city: "", state: "", zip: "", country: "" },
+    { code: "B40--CAR", name: "Carmine Tobiello & Guest", street: "", city: "", state: "", zip: "", country: "" },
+    { code: "B40--ANA", name: "Anaelle", street: "", city: "", state: "", zip: "", country: "" },
+    { code: "", name: "Timothy Weber & Joshua Lewis", street: "", city: "Leawood", state: "KS", zip: "", country: "" },
+];
+
+// ─── State ───────────────────────────────────────────────────────────
+let selectedGuests = new Set(guests.map((_, i) => i));
+let activeFilter = 'all';
+let currentView = 'both';
+const DOMAIN = "bryans40th.voyageurs.app";
+
+// ─── Refresh from Google Sheets ─────────────────────────────────────────
+async function refreshFromSheet() {
+    const btn = document.getElementById('refreshBtn');
+    const status = document.getElementById('refreshStatus');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin">🔄</span> Fetching...';
+    status.className = 'refresh-status';
+    status.textContent = '';
+
+    try {
+        const resp = await fetch(SHEET_CSV_URL);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const csv = await resp.text();
+        const rows = parseCSV(csv);
+
+        // Header: Invitation Code, First Guest, Separator, Second Guest, AddressTO, Street Address, City, State, ZIP, Country
+        const header = rows[0];
+        const codeIdx    = header.findIndex(h => h.trim().toLowerCase().includes('invitation code'));
+        const nameIdx    = header.findIndex(h => h.trim().toLowerCase().includes('addressto'));
+        const streetIdx  = header.findIndex(h => h.trim().toLowerCase().includes('street'));
+        const cityIdx    = header.findIndex(h => h.trim().toLowerCase().includes('city'));
+        const stateIdx   = header.findIndex(h => h.trim().toLowerCase().includes('state'));
+        const zipIdx     = header.findIndex(h => h.trim().toLowerCase().includes('zip'));
+        const countryIdx = header.findIndex(h => h.trim().toLowerCase().includes('country'));
+
+        const newGuests = [];
+        for (let i = 1; i < rows.length; i++) {
+            const r = rows[i];
+            const name = (r[nameIdx] || '').trim();
+            if (!name) continue;
+            const street = (r[streetIdx] || '').trim();
+            // Skip "Email" as a street
+            const cleanStreet = street.toLowerCase() === 'email' ? '' : street;
+            newGuests.push({
+                code:    (r[codeIdx] || '').trim(),
+                name:    name,
+                street:  cleanStreet,
+                city:    (r[cityIdx] || '').trim(),
+                state:   (r[stateIdx] || '').trim(),
+                zip:     (r[zipIdx] || '').trim(),
+                country: (r[countryIdx] || '').trim(),
+            });
+        }
+
+        guests = newGuests;
+        selectedGuests = new Set(guests.map((_, i) => i));
+        activeFilter = 'all';
+        renderFilters();
+        renderGuestList();
+        render();
+
+        const now = new Date().toLocaleTimeString();
+        status.className = 'refresh-status success';
+        status.textContent = `✓ ${guests.length} guests loaded at ${now}`;
+    } catch (err) {
+        status.className = 'refresh-status error';
+        status.textContent = `✗ Failed: ${err.message}`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🔄 Refresh from Google Sheets';
+    }
+}
+
+// Simple CSV parser (handles quoted fields with commas)
+function parseCSV(text) {
+    const rows = [];
+    let row = []; let field = ''; let inQuote = false;
+    for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inQuote) {
+            if (ch === '"') {
+                if (text[i + 1] === '"') { field += '"'; i++; }
+                else inQuote = false;
+            } else { field += ch; }
+        } else {
+            if (ch === '"') { inQuote = true; }
+            else if (ch === ',') { row.push(field); field = ''; }
+            else if (ch === '\n' || ch === '\r') {
+                if (ch === '\r' && text[i + 1] === '\n') i++;
+                row.push(field); field = '';
+                if (row.some(c => c.trim())) rows.push(row);
+                row = [];
+            } else { field += ch; }
+        }
+    }
+    row.push(field);
+    if (row.some(c => c.trim())) rows.push(row);
+    return rows;
+}
+
+const toggles = { showBacks: true, showStamp: true, showBorder: true, showAccent: true, showCorners: true };
+
+// Back elements: ordered array with visibility
+let backElements = [
+    { id: 'eyebrow',     label: 'Eyebrow',        visible: true },
+    { id: 'title',       label: 'Title',           visible: true },
+    { id: 'qr',          label: 'QR Code',         visible: true },
+    { id: 'name',        label: 'Guest Name',      visible: true },
+    { id: 'code',        label: 'Invite Code',     visible: true },
+    { id: 'url',         label: 'Domain URL',      visible: true },
+    { id: 'instruction', label: 'Instruction Text', visible: true },
+];
+
+function renderSortList() {
+    const list = document.getElementById('sortList');
+    list.innerHTML = backElements.map((el, i) => `
+        <div class="sort-item ${el.visible ? '' : 'disabled'}" data-index="${i}">
+            <div class="sort-item-handle">
+                <button onclick="moveElement(${i}, -1)" ${i === 0 ? 'disabled style="opacity:0.3"' : ''}>▲</button>
+                <button onclick="moveElement(${i}, 1)" ${i === backElements.length - 1 ? 'disabled style="opacity:0.3"' : ''}>▼</button>
+            </div>
+            <input type="checkbox" class="sort-item-toggle" ${el.visible ? 'checked' : ''} onchange="toggleElement(${i})">
+            <span class="sort-item-label">${el.label}</span>
+        </div>
+    `).join('');
+}
+
+function toggleElement(i) {
+    backElements[i].visible = !backElements[i].visible;
+    renderSortList();
+    render();
+}
+
+function moveElement(i, dir) {
+    const j = i + dir;
+    if (j < 0 || j >= backElements.length) return;
+    [backElements[i], backElements[j]] = [backElements[j], backElements[i]];
+    renderSortList();
+    render();
+}
+
+function getQRUrl(code) {
+    const rsvpUrl = `https://${DOMAIN}?code=${encodeURIComponent(code)}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(rsvpUrl)}&color=1B2A4A&bgcolor=FFFFFF&margin=4`;
+}
+
+// ─── UI Helpers ──────────────────────────────────────────────────────
+function switchTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+    event.target.classList.add('active');
+}
+
+function setView(view) {
+    currentView = view;
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`view${view.charAt(0).toUpperCase() + view.slice(1)}`).classList.add('active');
+    render();
+}
+
+function updateVal(id) {
+    const el = document.getElementById(id);
+    const valEl = document.getElementById(id + 'Val');
+    if (!valEl) return;
+    const v = el.value;
+    if (id === 'recipY') valEl.textContent = v + '%';
+    else if (['nameSize','addrSize','retSize','retNameSize','backTitleSize','backEyebrowSize'].includes(id)) valEl.textContent = v + 'rem';
+    else valEl.textContent = v + 'in';
+}
+
+function toggleSwitch(id) {
+    toggles[id] = !toggles[id];
+    document.getElementById(id).classList.toggle('on', toggles[id]);
+}
+
+function applyPreset() {
+    const preset = document.getElementById('sizePreset').value;
+    const sizes = { '5x7': [7, 5], '4.375x5.75': [5.75, 4.375], '6x9': [9, 6] };
+    if (sizes[preset]) {
+        document.getElementById('envWidth').value = sizes[preset][0];
+        document.getElementById('envHeight').value = sizes[preset][1];
+        render();
+    }
+}
+
+function toggleGuest(i) {
+    if (selectedGuests.has(i)) selectedGuests.delete(i);
+    else selectedGuests.add(i);
+    updateGuestListCheckboxes();
+    render();
+}
+
+function renderGuestList() {
+    const list = document.getElementById('guestList');
+    let html = '';
+    guests.forEach((g, i) => {
+        const loc = [g.city, g.state, g.country].filter(Boolean).join(', ');
+        const warn = !g.street ? '<span class="guest-item-warn">⚠️</span>' : '';
+        html += `
+            <label class="guest-item" data-index="${i}" data-name="${g.name.toLowerCase()}" data-loc="${loc.toLowerCase()}">
+                <input type="checkbox" ${selectedGuests.has(i) ? 'checked' : ''} onchange="toggleGuest(${i})">
+                <div class="guest-item-info">
+                    <div class="guest-item-name">${g.name}</div>
+                    <div class="guest-item-city">${loc || 'No location'}</div>
+                </div>
+                ${warn}
+            </label>
+        `;
+    });
+    list.innerHTML = html;
+}
+
+function updateGuestListCheckboxes() {
+    document.querySelectorAll('.guest-item').forEach(item => {
+        const i = parseInt(item.dataset.index);
+        const cb = item.querySelector('input[type="checkbox"]');
+        if (cb) cb.checked = selectedGuests.has(i);
+    });
+}
+
+function filterGuestList() {
+    const q = document.getElementById('guestSearch').value.toLowerCase().trim();
+    document.querySelectorAll('.guest-item').forEach(item => {
+        const name = item.dataset.name;
+        const loc = item.dataset.loc;
+        const match = !q || name.includes(q) || loc.includes(q);
+        item.classList.toggle('hidden', !match);
+    });
+}
+
+function selectAllVisible() {
+    document.querySelectorAll('.guest-item:not(.hidden)').forEach(item => {
+        selectedGuests.add(parseInt(item.dataset.index));
+    });
+    updateGuestListCheckboxes();
+    render();
+}
+
+function deselectAllVisible() {
+    document.querySelectorAll('.guest-item:not(.hidden)').forEach(item => {
+        selectedGuests.delete(parseInt(item.dataset.index));
+    });
+    updateGuestListCheckboxes();
+    render();
+}
+
+function invertSelection() {
+    guests.forEach((_, i) => {
+        if (selectedGuests.has(i)) selectedGuests.delete(i);
+        else selectedGuests.add(i);
+    });
+    updateGuestListCheckboxes();
+    render();
+}
+
+// ─── Filters ─────────────────────────────────────────────────────────
+function renderFilters() {
+    const regions = {};
+    guests.forEach(g => { const r = g.country || g.state || 'Other'; regions[r] = (regions[r] || 0) + 1; });
+    const row = document.getElementById('filterRow');
+    let html = `<button class="filter-pill ${activeFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">All (${guests.length})</button>`;
+    html += `<button class="filter-pill ${activeFilter === 'missing' ? 'active' : ''}" onclick="setFilter('missing')">⚠️ No Address</button>`;
+    Object.entries(regions).sort((a, b) => b[1] - a[1]).forEach(([r, c]) => {
+        html += `<button class="filter-pill ${activeFilter === r ? 'active' : ''}" onclick="setFilter('${r.replace(/'/g, "\\'")}')">${r} (${c})</button>`;
+    });
+    row.innerHTML = html;
+}
+
+function setFilter(f) {
+    activeFilter = f;
+    selectedGuests.clear();
+    guests.forEach((g, i) => {
+        const r = g.country || g.state || 'Other';
+        if (f === 'all') selectedGuests.add(i);
+        else if (f === 'missing' && !g.street) selectedGuests.add(i);
+        else if (r === f) selectedGuests.add(i);
+    });
+    renderFilters();
+    updateGuestListCheckboxes();
+    render();
+}
+
+// ─── Render ──────────────────────────────────────────────────────────
+function render() {
+    const c = document.getElementById('envelopesContainer');
+    const retName = document.getElementById('returnName').value;
+    const retStreet = document.getElementById('returnStreet').value;
+    const retCS = document.getElementById('returnCityState').value;
+    const retZ = document.getElementById('returnZip').value;
+
+    // Dimensions
+    const w = parseFloat(document.getElementById('envWidth').value) || 7;
+    const h = parseFloat(document.getElementById('envHeight').value) || 5;
+
+    // Positions
+    const retL = document.getElementById('retLeft').value;
+    const retT = document.getElementById('retTop').value;
+    const recipYpct = document.getElementById('recipY').value;
+    const recipXpad = document.getElementById('recipX').value;
+    const stampR = document.getElementById('stampRight').value;
+    const stampT = document.getElementById('stampTop').value;
+    const recipAlign = document.getElementById('recipientAlign').value;
+
+    // Colors
+    const accent = document.getElementById('accentColor').value;
+    const textCol = document.getElementById('textColor').value;
+    const retCol = document.getElementById('returnColor').value;
+
+    // Typography
+    const recipFont = document.getElementById('recipientFont').value;
+    const nameS = document.getElementById('nameSize').value;
+    const addrS = document.getElementById('addrSize').value;
+    const retS = document.getElementById('retSize').value;
+    const retNS = document.getElementById('retNameSize').value;
+
+    // Back
+    const qrS = document.getElementById('qrSize').value;
+    const backEye = document.getElementById('backEyebrow').value;
+    const backTit = document.getElementById('backTitle').value;
+    const backInst = document.getElementById('backInstruction').value;
+    const backTS = document.getElementById('backTitleSize').value;
+    const backES = document.getElementById('backEyebrowSize').value;
+
+    // Parse title for italic
+    const titleHtml = backTit.replace(/(40th|celebration|party)/gi, '<em>$1</em>');
+
+    let html = '';
+    let count = 0;
+
+    guests.forEach((g, i) => {
+        if (!selectedGuests.has(i)) return;
+        count++;
+
+        let cityLine = '';
+        if (g.city) cityLine += g.city;
+        if (g.state) cityLine += (cityLine ? ', ' : '') + g.state;
+        if (g.zip) cityLine += (cityLine ? '  ' : '') + g.zip;
+        const countryLine = g.country || '';
+
+        // ── FRONT ──
+        if (currentView === 'front' || currentView === 'both') {
+            const recipStyle = recipAlign === 'center'
+                ? `position:absolute; top:${recipYpct}%; left:50%; transform:translate(-50%,-50%); text-align:center; width:${w * 0.65}in;`
+                : `position:absolute; top:${recipYpct}%; left:${recipXpad}in; transform:translateY(-50%); text-align:left; width:${w * 0.6}in;`;
+
+            html += `
+                ${currentView === 'both' ? `<div class="env-pair-label">▲ FRONT — ${g.name}</div>` : ''}
+                <div class="envelope" style="width:${w}in; height:${h}in; ${!g.street ? 'border:2px dashed '+accent+';' : ''}">
+                    ${toggles.showBorder ? `<div style="position:absolute; inset:6px; border:1px solid ${accent}20; border-radius:4px; pointer-events:none;"></div>` : ''}
+                    <div class="env-return" style="top:${retT}in; left:${retL}in; max-width:2.4in;">
+                        ${retName ? `<div class="env-return-name" style="font-family:${recipFont}; font-size:${retNS}rem; color:${textCol};">${retName}</div>` : ''}
+                        ${retStreet ? `<div class="env-return-line" style="font-family:var(--sans); font-size:${retS}rem; color:${retCol};">${retStreet}</div>` : ''}
+                        ${retCS || retZ ? `<div class="env-return-line" style="font-family:var(--sans); font-size:${retS}rem; color:${retCol};">${retCS}${retCS && retZ ? '  ' : ''}${retZ}</div>` : ''}
+                    </div>
+                    ${toggles.showStamp ? `<div class="env-stamp" style="top:${stampT}in; right:${stampR}in; width:0.85in; height:1.0in;"><div class="env-stamp-text">Stamp</div></div>` : ''}
+                    <div class="env-recipient" style="${recipStyle}">
+                        <div class="env-recipient-name" style="font-family:${recipFont}; font-size:${nameS}rem; color:${textCol}; font-weight:500;">${g.name}</div>
+                        ${g.street ? `<div class="env-recipient-line" style="font-family:var(--sans); font-size:${addrS}rem; color:${textCol}99;">${g.street}</div>` : `<div style="font-family:var(--sans); font-size:${addrS}rem; color:${accent}; font-style:italic;">Address needed</div>`}
+                        ${cityLine ? `<div class="env-recipient-line" style="font-family:var(--sans); font-size:${addrS}rem; color:${textCol}99;">${cityLine}</div>` : ''}
+                        ${countryLine ? `<div class="env-recipient-line" style="font-family:var(--sans); font-size:${addrS}rem; color:${textCol}99;">${countryLine}</div>` : ''}
+                    </div>
+                    ${toggles.showAccent ? `<div class="env-accent"><div class="env-accent-line" style="background:${accent};"></div><div class="env-accent-icon" style="color:${accent};">✦</div><div class="env-accent-line" style="background:${accent};"></div></div>` : ''}
+                </div>
+            `;
+        }
+
+        // ── BACK ──
+        if ((currentView === 'back' || currentView === 'both') && toggles.showBacks) {
+            const qrUrl = getQRUrl(g.code);
+
+            // Build elements in user-defined order
+            const elRenderers = {
+                eyebrow:     () => `<div class="env-back-eyebrow" style="font-size:${backES}rem; color:${accent}; letter-spacing:0.35em; opacity:0.6;">${backEye}</div>`,
+                title:       () => `<div class="env-back-title" style="font-family:${recipFont}; font-size:${backTS}rem; color:${textCol};">${titleHtml}</div>`,
+                qr:          () => `<div class="env-back-qr"><img src="${qrUrl}" alt="QR" loading="lazy" style="width:${qrS}in; height:${qrS}in;"></div>`,
+                name:        () => `<div class="env-back-name" style="font-family:${recipFont}; font-size:0.75rem; color:${textCol}; font-weight:500;">${g.name}</div>`,
+                code:        () => `<div class="env-back-code" style="font-size:0.55rem; letter-spacing:0.2em; color:${textCol}; background:${accent}10;">${g.code}</div>`,
+                url:         () => `<div class="env-back-url" style="font-size:0.42rem; color:${accent}; letter-spacing:0.08em;">${DOMAIN}</div>`,
+                instruction: () => `<div class="env-back-instruction" style="font-size:0.4rem;">${backInst}</div>`,
+            };
+
+            const orderedContent = backElements
+                .filter(el => el.visible)
+                .map(el => elRenderers[el.id]())
+                .join('\n                    ');
+
+            html += `
+                ${currentView === 'both' ? `<div class="env-pair-label">▼ BACK — ${g.name}</div>` : ''}
+                <div class="envelope-back" style="width:${w}in; height:${h}in; gap:0.15in;">
+                    ${toggles.showCorners ? `
+                        <div class="env-back-corner tl" style="border-color:${accent};"></div>
+                        <div class="env-back-corner tr" style="border-color:${accent};"></div>
+                        <div class="env-back-corner bl" style="border-color:${accent};"></div>
+                        <div class="env-back-corner br" style="border-color:${accent};"></div>
+                    ` : ''}
+                    ${orderedContent}
+                </div>
+            `;
+        }
+    });
+
+    c.innerHTML = html;
+
+    const missing = guests.filter((g, i) => selectedGuests.has(i) && !g.street).length;
+    document.getElementById('stats').innerHTML =
+        `${count} envelope${count !== 1 ? 's' : ''}` +
+        (missing > 0 ? ` · <span style="color:${document.getElementById('accentColor').value};">⚠️ ${missing} need address</span>` : '');
+
+    // Update print @page
+    const style = document.getElementById('printPageStyle');
+    if (style) style.textContent = `@media print { @page { size: ${w}in ${h}in; margin: 0; } }`;
+}
+
+function downloadCSV() {
+    let csv = 'Name,Street,City,State,ZIP,Country,Code\n';
+    guests.forEach((g, i) => { if (!selectedGuests.has(i)) return; csv += `"${g.name}","${g.street}","${g.city}","${g.state}","${g.zip}","${g.country}","${g.code}"\n`; });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'voyageurs_envelopes.csv'; a.click();
+}
+
+// ─── Init ────────────────────────────────────────────────────────────
+// Dynamic print page size
+const ps = document.createElement('style'); ps.id = 'printPageStyle'; document.head.appendChild(ps);
+
+renderFilters();
+renderGuestList();
+renderSortList();
+render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voyageurs RSVP Labels — Print Sheet</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --navy: #1B2A4A;
+            --terracotta: #D67252;
+            --gold: #E2923D;
+            --sand: #F5F0E8;
+            --olive: #6B7F5E;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #f0ebe3;
+            color: var(--navy);
+            padding: 20px;
+        }
+
+        /* Screen-only controls */
+        .controls {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            padding: 24px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .controls h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .controls p {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .controls select, .controls button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .controls select {
+            border: 1px solid #ddd;
+            background: white;
+            color: var(--navy);
+        }
+
+        .btn-print {
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: background 0.2s;
+        }
+
+        .btn-print:hover { background: #c4613f; }
+
+        .btn-secondary {
+            background: var(--navy);
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary:hover { background: #142040; }
+
+        .stats {
+            margin-top: 16px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Labels Grid */
+        .labels-container {
+            max-width: 8.5in;
+            margin: 0 auto;
+        }
+
+        /* --- AVERY 5160 / 8160 (30 per sheet, 3 columns × 10 rows) --- */
+        .labels-grid-5160 {
+            display: grid;
+            grid-template-columns: repeat(3, 2.625in);
+            grid-auto-rows: 1in;
+            gap: 0;
+            justify-content: center;
+            padding: 0.5in 0.1875in;
+        }
+
+        /* --- AVERY 5163 (10 per sheet, 2 columns × 5 rows) --- */
+        .labels-grid-5163 {
+            display: grid;
+            grid-template-columns: repeat(2, 4in);
+            grid-auto-rows: 2in;
+            gap: 0;
+            justify-content: center;
+            padding: 0.5in 0.15625in;
+        }
+
+        /* --- AVERY 5164 (6 per sheet, 2 columns × 3 rows) --- */
+        .labels-grid-5164 {
+            display: grid;
+            grid-template-columns: repeat(2, 4in);
+            grid-auto-rows: 3.3125in;
+            gap: 0.03in;
+            justify-content: center;
+            padding: 0.5in 0.15625in;
+        }
+
+        /* Individual Label */
+        .label {
+            border: 1px dashed #ccc;
+            padding: 0.2in;
+            display: flex;
+            align-items: center;
+            gap: 0.2in;
+            overflow: hidden;
+            background: white;
+        }
+
+        /* QR Column — centered with URL underneath */
+        .label-qr {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .label-qr img {
+            display: block;
+        }
+
+        .label-url {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.5rem;
+            color: var(--terracotta);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Text Column — clear hierarchy */
+        .label-text {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .label-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            color: var(--navy);
+            line-height: 1.2;
+        }
+
+        .label-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, var(--terracotta), transparent);
+        }
+
+        .label-instruction {
+            font-family: 'Montserrat', sans-serif;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .label-code-label {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #999;
+        }
+
+        .label-code {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--navy);
+            letter-spacing: 0.1em;
+        }
+
+        /* ── Avery 5160: 30/sheet (small address labels) ── */
+        .labels-grid-5160 .label { padding: 0.08in; gap: 0.1in; }
+        .labels-grid-5160 .label-qr img { width: 0.6in; height: 0.6in; }
+        .labels-grid-5160 .label-qr { gap: 1px; }
+        .labels-grid-5160 .label-url { font-size: 0.3rem; }
+        .labels-grid-5160 .label-name { font-size: 0.55rem; margin-bottom: 2px; }
+        .labels-grid-5160 .label-divider { display: none; }
+        .labels-grid-5160 .label-instruction { font-size: 0.32rem; margin-bottom: 2px; }
+        .labels-grid-5160 .label-code-label { display: none; }
+        .labels-grid-5160 .label-code { font-size: 0.45rem; }
+
+        /* ── Avery 5163: 10/sheet (shipping labels — default) ── */
+        .labels-grid-5163 .label { padding: 0.15in; gap: 0.18in; }
+        .labels-grid-5163 .label-qr img { width: 1.2in; height: 1.2in; }
+        .labels-grid-5163 .label-qr { gap: 3px; }
+        .labels-grid-5163 .label-url { font-size: 0.5rem; }
+        .labels-grid-5163 .label-name { font-size: 1rem; margin-bottom: 5px; }
+        .labels-grid-5163 .label-divider { margin-bottom: 5px; }
+        .labels-grid-5163 .label-instruction { font-size: 0.48rem; margin-bottom: 6px; }
+        .labels-grid-5163 .label-code-label { font-size: 0.35rem; margin-bottom: 1px; }
+        .labels-grid-5163 .label-code { font-size: 0.7rem; }
+
+        /* ── Avery 5164: 6/sheet (large labels) ── */
+        .labels-grid-5164 .label { padding: 0.25in; gap: 0.25in; }
+        .labels-grid-5164 .label-qr img { width: 1.8in; height: 1.8in; }
+        .labels-grid-5164 .label-qr { gap: 4px; }
+        .labels-grid-5164 .label-url { font-size: 0.6rem; }
+        .labels-grid-5164 .label-name { font-size: 1.2rem; margin-bottom: 8px; }
+        .labels-grid-5164 .label-divider { margin-bottom: 8px; }
+        .labels-grid-5164 .label-instruction { font-size: 0.55rem; margin-bottom: 10px; }
+        .labels-grid-5164 .label-code-label { font-size: 0.4rem; margin-bottom: 2px; }
+        .labels-grid-5164 .label-code { font-size: 0.85rem; }
+
+        /* Print styles */
+        @media print {
+            body { background: white; padding: 0; margin: 0; }
+            .controls { display: none !important; }
+            .labels-container { max-width: none; }
+            .label { border: none; }
+
+            @page {
+                size: letter;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="controls" id="controls">
+    <h1>✈️ Voyageurs RSVP Labels</h1>
+    <p>Print labels with QR codes for your mailed RSVP invitations. Each QR code links to <strong>bryans40th.voyageurs.app</strong> with the guest's unique invite code.</p>
+    <div class="controls-row">
+        <select id="labelFormat">
+            <option value="5163" selected>Avery 5163 — 2×5 (10/sheet, shipping size)</option>
+            <option value="5160">Avery 5160 — 3×10 (30/sheet, address size)</option>
+            <option value="5164">Avery 5164 — 2×3 (6/sheet, large)</option>
+        </select>
+        <button class="btn-print" onclick="window.print()">🖨️ Print Labels</button>
+        <button class="btn-secondary" onclick="downloadCSV()">📋 Download CSV</button>
+    </div>
+    <div class="stats" id="stats"></div>
+</div>
+
+<div class="labels-container" id="labelsContainer"></div>
+
+<script>
+// Guest data from your Google Sheet
+const guests = [
+    { code: "B40-ZZZ-TIM", name: "Tim & Kate Stephens", city: "Repulse Bay", country: "HK" },
+    { code: "B40-201-BRI", name: "Brian & Daniela Johnson", city: "Lovettsville", state: "VA" },
+    { code: "B40-331-SAR", name: "Sarah Klugh & Guest", city: "Miami", state: "FL" },
+    { code: "B40-415-PAU", name: "Paul Feuerborn & Mike Burkhalter", city: "Porto", country: "PORTUGAL" },
+    { code: "B40-605-RYA", name: "Ryan & Kelsey Gohl", city: "La Grange Park", state: "IL" },
+    { code: "B40-606-ADA", name: "Adam Beauchamp & Guest", city: "Chicago", state: "IL" },
+    { code: "B40-606-MIK", name: "Mike McGrath & Lindy Triebes", city: "Chicago", state: "IL" },
+    { code: "B40-606-PHI", name: "Phil Kural & Guest", city: "Chicago", state: "IL" },
+    { code: "B40-606-STE", name: "Stephen Chambers & Guest", city: "Chicago", state: "IL" },
+    { code: "B40-606-TIM", name: "Tim Kaatman & Stephen Schofield", city: "Chicago", state: "IL" },
+    { code: "B40-630-JOS", name: "Josh & Shannon Bucholz", city: "Cedar Hill", state: "MO" },
+    { code: "B40-641-ADA", name: "Adam Ralston & Jonathan Richard", city: "Kansas City", state: "MO" },
+    { code: "B40-641-CHR", name: "Chris & Melissa Hawkins", city: "Kansas City", state: "MO" },
+    { code: "B40-641-HAL", name: "Haley Grayless & Guest", city: "Kansas City", state: "MO" },
+    { code: "B40-641-JOE", name: "Joe Tharp & Guest", city: "Kansas City", state: "MO" },
+    { code: "B40-641-LUK", name: "Luke & Allison Armstrong", city: "Kansas City", state: "MO" },
+    { code: "B40-641-MAT", name: "Matthew LaBreche & Guest", city: "Kansas City", state: "MO" },
+    { code: "B40-641-MIT", name: "Mitch Messner & Whit Adams", city: "Kansas City", state: "MO" },
+    { code: "B40-644-JAM", name: "James & Terra Feick", city: "Maryville", state: "MO" },
+    { code: "B40-648-ERI", name: "Erica Espey & Guest", city: "Carthage", state: "MO" },
+    { code: "B40-658-J.", name: "J. & Lori Hill", city: "Springfield", state: "MO" },
+    { code: "B40-658-JAC", name: "Jacob Havens & Lindsey Wheeler", city: "Springfield", state: "MO" },
+    { code: "B40-662-DOU", name: "Doug & Katie Faltermeier", city: "Shawnee", state: "KS" },
+    { code: "B40-662-JER", name: "Jeremy Espey & Nika McDonald", city: "Mission Hills", state: "KS" },
+    { code: "B40-681-DAV", name: "David Lemp & Guest", city: "Omaha", state: "NE" },
+    { code: "B40-681-JED", name: "Jed Sanders & Guest", city: "Omaha", state: "NE" },
+    { code: "B40-708-JEN", name: "Jenny Bräutigam & Guest", city: "Gerlingen", country: "GERMANY" },
+    { code: "B40-752-WES", name: "Weslin Thomas & Guest", city: "Dallas", state: "TX" },
+    { code: "B40-774-CHA", name: "Chakra & Rupali Gopichetty", city: "Missouri City", state: "TX" },
+    { code: "B40-802-MAT", name: "Matt & Amber Andre", city: "Denver", state: "CO" },
+    { code: "B40-805-CAR", name: "Carl & Paige Lorch", city: "Littleton", state: "CO" },
+    { code: "B40-860-JAY", name: "Jaymee Bohannon & Guest", city: "Flagstaff", state: "AZ" },
+    { code: "B40-871-ERI", name: "Eric Cruz & Kevin Schroeder", city: "Albuquerque", state: "NM" },
+    { code: "B40-904-NAS", name: "Nastasia Glaser & Guest", city: "Nürnberg", country: "GERMANY" },
+    { code: "B40-M4E-PAU", name: "Paul & Victoria Mahoney", city: "Toronto", country: "CANADA" },
+    { code: "B40-M6K-GAB", name: "Gabi Pirraglia & Guest", city: "Toronto", country: "CANADA" },
+];
+
+const DOMAIN = "bryans40th.voyageurs.app";
+
+function getQRUrl(code) {
+    const rsvpUrl = `https://${DOMAIN}?code=${encodeURIComponent(code)}`;
+    // Using Google Charts QR API (free, no library needed)
+    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(rsvpUrl)}&color=1B2A4A&bgcolor=FFFFFF&margin=4`;
+}
+
+function renderLabels() {
+    const format = document.getElementById('labelFormat').value;
+    const container = document.getElementById('labelsContainer');
+
+    const gridClass = `labels-grid-${format}`;
+
+    let html = `<div class="${gridClass}">`;
+
+    guests.forEach(guest => {
+        const qrUrl = getQRUrl(guest.code);
+        html += `
+            <div class="label">
+                <div class="label-qr">
+                    <img src="${qrUrl}" alt="QR for ${guest.code}" loading="lazy" />
+                    <div class="label-url">${DOMAIN}</div>
+                </div>
+                <div class="label-text">
+                    <div class="label-name">${guest.name}</div>
+                    <div class="label-divider"></div>
+                    <div class="label-instruction">Please RSVP by the 15th of August<br>Visit the site to confirm your attendance</div>
+                    <div class="label-code-label">Your Code</div>
+                    <div class="label-code">${guest.code}</div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+
+    document.getElementById('stats').textContent =
+        `${guests.length} labels generated for ${format === '5160' ? 'Avery 5160 (30/sheet)' : format === '5163' ? 'Avery 5163 (10/sheet)' : 'Avery 5164 (6/sheet)'}`;
+}
+
+function downloadCSV() {
+    let csv = 'Guest Name,Invitation Code,RSVP URL,QR Image URL\n';
+    guests.forEach(g => {
+        const rsvpUrl = `https://${DOMAIN}?code=${encodeURIComponent(g.code)}`;
+        csv += `"${g.name}","${g.code}","${rsvpUrl}","${getQRUrl(g.code)}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'voyageurs_rsvp_labels.csv';
+    a.click();
+}
+
+// Listen for format changes
+document.getElementById('labelFormat').addEventListener('change', renderLabels);
+
+// Initial render
+renderLabels();
+</script>
+
+</body>
+</html>

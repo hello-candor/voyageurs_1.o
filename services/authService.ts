@@ -5,43 +5,36 @@ import {
   signOut,
   User
 } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
-// Mock guest codes for demonstration
-const GUEST_CODES = ['GUEST123', 'WELCOME', 'PARTY'];
+// Host passcodes for admin access
 const HOST_PASSCODES = ['BRYAN', 'BAXTER', 'QUINCY', '_ADMIN'];
+
+// Event ID for guest lookups
+const EVENT_ID = "voyageurs_2026";
 
 /**
  * Authentication Service
  * 
- * Handles both legacy password-based auth and Firebase Google Auth for hosts.
+ * Handles Firestore-backed guest code verification, legacy host passcode auth,
+ * and Firebase Google Auth for hosts.
  */
 export const authService = {
   /**
-   * Simulates a secure host login using a password.
-   * This is retained for legacy purposes.
+   * Host login using a password/passcode.
    */
   loginHost: async (password: string): Promise<boolean> => {
-    // Simulate network latency
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    // Convert to uppercase for case-insensitive comparison
+    await new Promise(resolve => setTimeout(resolve, 400));
     const upperCasePassword = password.toUpperCase();
-    
-    // Check against the list of valid host passcodes
-    const isValid = HOST_PASSCODES.includes(upperCasePassword);
-
-    return isValid;
+    return HOST_PASSCODES.includes(upperCasePassword);
   },
 
   /**
-   * Simulates creating a new host account with email/password.
+   * Creates a new host account (placeholder).
    */
   createHostAccount: async (email: string, password: string): Promise<boolean> => {
-    // Simulate network latency
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // In a real app, this would create the user record.
     console.log(`Creating host account for ${email}`);
     return true;
   },
@@ -56,11 +49,10 @@ export const authService = {
       return result.user;
     } catch (error) {
       console.error("Error during Google sign-in:", error);
-      // Handle specific errors like popup closed by user
       if ((error as any).code === 'auth/popup-closed-by-user') {
         return null;
       }
-      throw error; // Rethrow other errors
+      throw error;
     }
   },
 
@@ -77,12 +69,52 @@ export const authService = {
   },
   
   /**
-   * Verifies a guest access code.
+   * Verifies a guest access code by looking up the document directly.
+   * Document IDs match invitation codes, so no query needed.
+   * Waits for auth to be ready (anonymous sign-in) before querying.
+   * Returns the guest data if found, null otherwise.
    */
-  verifyGuestCode: async (code: string): Promise<boolean> => {
-    // Simulate network latency
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return GUEST_CODES.includes(code.toUpperCase());
+  verifyGuestCode: async (code: string): Promise<any | null> => {
+    const upperCode = code.trim().toUpperCase();
+    
+    try {
+      const { doc, getDoc } = await import('firebase/firestore');
+      const { signInAnonymously } = await import('firebase/auth');
+
+      // Ensure we have an authenticated user before querying
+      // (Firestore rules require auth != null)
+      if (!auth.currentUser) {
+        console.log('⏳ Waiting for anonymous auth before Firestore query...');
+        try {
+          await signInAnonymously(auth);
+        } catch (authErr) {
+          console.warn('Anonymous sign-in failed:', authErr);
+        }
+      }
+
+      // Attempt the lookup
+      const guestDocRef = doc(db, "events", EVENT_ID, "guests", upperCode);
+      let guestSnap = await getDoc(guestDocRef);
+      
+      if (guestSnap.exists()) {
+        return { id: guestSnap.id, ...guestSnap.data() };
+      }
+
+      // If not found, try one more time after a brief delay
+      // (handles race condition where auth token isn't fully propagated)
+      if (!guestSnap.exists() && auth.currentUser) {
+        await new Promise(r => setTimeout(r, 500));
+        guestSnap = await getDoc(guestDocRef);
+        if (guestSnap.exists()) {
+          return { id: guestSnap.id, ...guestSnap.data() };
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.warn("Firestore guest code lookup failed, falling back to local:", error);
+      return null;
+    }
   },
 
   /**
@@ -92,3 +124,4 @@ export const authService = {
     return authService.logout();
   }
 };
+

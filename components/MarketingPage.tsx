@@ -5,15 +5,15 @@ import {
   Smartphone, Wine, Sun, Umbrella, Landmark, Sparkles, 
   Shield, Sailboat, Lock, Mail, Briefcase, PartyPopper, 
   GraduationCap, Facebook, Twitter, Instagram, DollarSign, 
-  ChevronDown, Compass, Anchor, Send, Bot, Check, Globe, 
-  Binoculars, Loader2, Quote, ExternalLink, Construction,
+  ChevronDown, Compass, Anchor, Send, Bot, Check, 
+  Binoculars, Quote, ExternalLink, Construction,
   RotateCw, RefreshCw, CalendarDays, ScanLine, Award, Network, WifiOff,
   Layout, Zap, CheckCircle,
   Moon, Users
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import { useUser } from '../context/UserContext';
+
 import { useNotification } from '../context/NotificationContext';
 import { useTheme } from '../context/ThemeContext';
 import { PrivacyPolicyModal } from './PrivacyPolicyModal';
@@ -129,121 +129,7 @@ const BentoCard = ({ children, back, className = "", isHero = false }: any) => {
     );
 };
 
-const AuthModal = ({ isOpen, onClose, onGuestLoginSuccess, onHostLoginSuccess }: { isOpen: boolean, onClose: () => void, onGuestLoginSuccess: () => void, onHostLoginSuccess: () => void }) => {
-    const { loginWithCode } = useUser();
-    const { loginHost, loginHostWithGoogle } = useAuth();
-    const [code, setCode] = useState('');
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [authView, setAuthView] = useState<'guest' | 'host'>('guest');
 
-    const handleGoogleLogin = async () => {
-        setIsLoading(true);
-        setError('');
-        try {
-            const googleUser = await (window as any).google.accounts.id.prompt((notification:any) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    setIsLoading(false);
-                }
-            });
-            if (googleUser) {
-                await loginHostWithGoogle(googleUser.credential);
-                onHostLoginSuccess();
-            }
-        } catch (err) {
-            setError("Google sign-in failed. Please try again.");
-            setIsLoading(false);
-        }
-    };
-
-    const handleGuestLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!code) return;
-        setIsLoading(true);
-        setError('');
-        const success = await loginWithCode(code);
-        if (success) {
-            onGuestLoginSuccess();
-        } else {
-            setError("Invalid invite code. Please try again.");
-        }
-        setIsLoading(false);
-    };
-
-    const handleHostLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!code) return;
-        setIsLoading(true);
-        setError('');
-        const success = await loginHost(code);
-        if (success) {
-            onHostLoginSuccess();
-        } else {
-            setError("Invalid host passcode. Please try again.");
-        }
-        setIsLoading(false);
-    };
-
-    if (!isOpen) return null;
-
-    return (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
-            <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-med-blue/60 dark:bg-black/80 backdrop-blur-md"
-                onClick={onClose}
-            />
-            <motion.div 
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-[3rem] shadow-2xl overflow-hidden"
-            >
-                <button onClick={onClose} className="absolute top-6 right-6 p-2 text-slate-400 hover:text-med-blue transition-colors z-10"><X size={24}/></button>
-                <div className="p-12 text-center">
-                    <Logo className="w-16 h-16 mx-auto mb-6" />
-                    <h2 className="text-3xl font-heading italic text-med-blue dark:text-white mb-2">Event Access</h2>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-med-terracotta mb-8">{authView === 'host' ? 'Host Login' : 'Guest Entry'}</p>
-                    
-                    {authView === 'guest' ? (
-                        <div className="space-y-4">
-                            <button onClick={handleGoogleLogin} className="w-full py-4 bg-med-blue text-white rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2" disabled={isLoading}>
-                                {isLoading ? <Loader2 className="animate-spin" /> : <><Globe size={14} /> Sign in with Google</>}
-                            </button>
-                            <div className="my-4 flex items-center">
-                                <div className="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
-                                <span className="flex-shrink mx-4 text-slate-400 dark:text-slate-500 text-xs uppercase">Or</span>
-                                <div className="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
-                            </div>
-                            <form className="space-y-4" onSubmit={handleGuestLogin}>
-                                <input type="text" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} className="w-full p-4 text-center bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none focus:ring-1 focus:ring-med-terracotta transition-all text-med-blue dark:text-white font-serif tracking-widest text-xl" placeholder="ENTER INVITE CODE" />
-                                <button type="submit" className="w-full py-4 bg-med-terracotta dark:bg-[#C25E3E] text-white rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-[#bf6344] dark:hover:bg-[#a84e32] transition-all" disabled={isLoading || !code}>
-                                    Access as Guest
-                                </button>
-                            </form>
-                        </div>
-                    ) : (
-                        <form className="space-y-4" onSubmit={handleHostLogin}>
-                            <input type="password" value={code} onChange={(e) => setCode(e.target.value)} className="w-full p-4 text-center bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none focus:ring-1 focus:ring-med-terracotta transition-all text-med-blue dark:text-white font-serif tracking-widest text-xl" placeholder="ENTER HOST PASSCODE" autoFocus />
-                            <button type="submit" className="w-full py-4 bg-med-blue text-white rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-blue-700 transition-all" disabled={isLoading || !code}>
-                                Login as Host
-                            </button>
-                        </form>
-                    )}
-
-                    {error && <p className="text-red-500 text-xs mt-4">{error}</p>}
-                    <div className="mt-4">
-                        <button onClick={() => setAuthView(authView === 'guest' ? 'host' : 'guest')} className="text-xs text-slate-400 hover:underline">
-                            {authView === 'guest' ? 'Switch to Host Login' : 'Switch to Guest Login'}
-                        </button>
-                    </div>
-                </div>
-            </motion.div>
-        </div>
-    );
-};
 
 export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
     const { theme, toggleTheme } = useTheme();

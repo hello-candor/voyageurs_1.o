@@ -218,18 +218,6 @@ export interface GalleryContent {
 
 // --- USER & SYSTEM TYPES ---
 
-export interface RSVPFormData {
-  name: string;
-  email: string;
-  guests: number;
-  dates: string[];
-  interestedTrips: string[];
-  dietaryRestrictions: string;
-  travelHub: 'CDG' | 'BCN' | 'OTHER' | '';
-  itinerarySummary?: string;
-  plusOneDetails?: string;
-}
-
 export interface ChatSource {
   title: string;
   uri: string;

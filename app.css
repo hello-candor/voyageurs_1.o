@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+/* 
+ * Use @theme inline so that CSS variable references remain dynamic at runtime
+ * (needed for light/dark mode switching via CSS custom properties)
+ */
+@theme inline {
+  --color-med-blue: var(--color-primary);
+  --color-med-lightBlue: var(--color-primary-light);
+  --color-med-sand: var(--color-bg);
+  --color-med-terracotta: var(--color-accent);
+  --color-med-olive: var(--color-success);
+  --font-heading: "Voyage", "Cormorant Garamond", serif;
+  --font-body: "Inter", "Montserrat", sans-serif;
+  --font-serif: "Voyage", "Cormorant Garamond", serif;
+  --font-sans: "Inter", "Montserrat", sans-serif;
+}
+
+/* Custom variant for dark mode using class strategy */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --color-primary: #1E4472;
+  --color-primary-light: #AEC0D8;
+  --color-bg: #F5F2EB;
+  --color-accent: #D67252;
+  --color-success: #8A9A5B;
+}
+
+.dark {
+  --color-primary: #AEC0D8;
+  --color-bg: #111827;
+  --color-accent: #b85a3a;
+  --color-success: #6b7a44;
+}
+
+html {
+  scroll-padding-top: 100px;
+}
+
+body {
+  background-color: var(--color-bg) !important;
+  color: var(--color-primary);
+  transition: background-color 0.3s ease;
+}
+
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Leaflet overrides */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+}
+
+@keyframes subtle-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

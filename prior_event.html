@@ -169,37 +169,49 @@
 
     .nav-links a:hover::after {
       transform: scaleX(1);
-      transform-origin: left;
     }
 
-    .nav-icon-link {
-      color: rgba(255, 255, 255, 0.85);
-      font-size: 1.35rem;
-      transition: all 0.3s var(--ease-out);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      text-decoration: none;
+    .nav-rsvp {
+      font-family: var(--sans);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      background: var(--terra);
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: .6rem 1.4rem;
+      border-radius: 100px;
+      transition: background .2s, transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(192, 125, 94, .35);
     }
 
-    .nav-icon-link:hover {
-      color: var(--terra);
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px);
-    }
-    
-    .nav-icon-link .fa-bell {
-       font-size: 1.25rem;
+    .nav-rsvp:hover {
+      background: white;
+      color: var(--navy-mid);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
     }
 
-    .nav-rsvp, .nav-btn-outline {
-      display: none !important; /* Hide old buttons */
+    .nav-btn-outline {
+      font-family: var(--sans);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      padding: .6rem 1.4rem;
+      border-radius: 100px;
+      transition: background .2s, color .2s;
+    }
+
+    .nav-btn-outline:hover {
+      background: white;
+      color: var(--navy-mid);
     }
 
     .nav-hamburger {
@@ -225,8 +237,8 @@
       position: relative;
       overflow: hidden;
       display: flex;
-      align-items: flex-end;
-      padding: 0 clamp(1.5rem, 6vw, 5rem) clamp(3rem, 8vh, 6rem);
+      align-items: center;
+      padding: 5rem clamp(1.5rem, 6vw, 5rem) clamp(3rem, 8vh, 6rem);
     }
 
     .hero-bg {
@@ -262,7 +274,9 @@
     .hero-content {
       position: relative;
       z-index: 2;
-      max-width: 900px;
+      width: 100%;
+      max-width: 1300px;
+      margin: 0 auto;
     }
 
     .hero-eyebrow {
@@ -1469,9 +1483,9 @@
       font-weight: 600;
       letter-spacing: .15em;
       text-transform: uppercase;
-      color: var(--navy-mid);
+      color: var(--navy);
       display: block;
-      margin-bottom: .5rem;
+      margin-bottom: .6rem;
     }
 
     .form-input {
@@ -1480,11 +1494,11 @@
       border: 1.5px solid #e2e8f0;
       border-radius: .85rem;
       font-family: var(--sans);
-      font-size: .85rem;
-      font-weight: 300;
-      color: var(--navy-mid);
-      background: #fafaf9;
-      transition: border-color .2s, box-shadow .2s, background .2s;
+      font-size: .95rem;
+      font-weight: 400;
+      color: var(--navy);
+      background: rgba(255, 255, 255, 0.5);
+      transition: all .3s var(--ease-out);
       outline: none;
       -webkit-appearance: none;
       appearance: none;
@@ -1994,17 +2008,17 @@
     }
 
     .rsvp-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 3rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 6rem;
       align-items: center;
       text-align: left;
+      width: 100%;
     }
 
     .rsvp-left {
       width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
+      align-self: end;
     }
 
     .rsvp-left .section-title {
@@ -2017,8 +2031,13 @@
 
     .rsvp-form-wrap {
       width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 2.5rem;
+      padding: 3rem;
+      box-shadow: 0 40px 100px -20px rgba(14, 28, 42, 0.2);
     }
 
     .rsvp-left .rsvp-event-text strong {
@@ -2097,102 +2116,6 @@
     .gallery-item:hover .gallery-caption {
       opacity: 1;
       transform: translateY(0);
-    }
-
-    /* ─────────────────────────── TOASTS ─── */
-    .toast-container {
-      position: fixed;
-      top: 2rem;
-      right: 2rem;
-      z-index: 99999;
-      pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .toast {
-      pointer-events: auto;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 1rem 1.25rem;
-      border-radius: 1.25rem;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 20px 50px rgba(14, 28, 42, 0.2);
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      transform: translateX(120%);
-      transition: all 0.6s var(--ease-out);
-      opacity: 0;
-      max-width: 380px;
-    }
-
-    .toast.show {
-      transform: translateX(0);
-      opacity: 1;
-    }
-
-    .toast-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: var(--terra);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 1.15rem;
-    }
-
-    .toast-content {
-      flex: 1;
-    }
-
-    .toast-content h5 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 0.15rem;
-      font-family: var(--sans);
-    }
-
-    .toast-content p {
-      font-size: 0.82rem;
-      color: var(--navy-soft);
-      line-height: 1.5;
-    }
-
-    .toast-close {
-      color: var(--stone);
-      cursor: pointer;
-      font-size: 0.9rem;
-      padding: 0.4rem;
-      transition: color 0.2s;
-    }
-
-    .toast-close:hover {
-      color: var(--navy);
-    }
-
-    /* ─────────────────────────── LOCKED SECTIONS ─── */
-    #weekend-details {
-      display: none;
-      opacity: 0;
-      transition: opacity 1.2s var(--ease-out);
-    }
-
-    #weekend-details.unlocked {
-      display: block;
-      opacity: 1;
-    }
-
-    .truncate-form .form-row:first-of-type,
-    .truncate-form .extra-fields,
-    .truncate-form .form-submit {
-      display: none !important;
     }
 
     /* Lightbox */
@@ -2599,11 +2522,10 @@
     })(window, document, 'script', 'https://scripts.stay22.com/letmeallez.js');
   </script>
 
-  <!-- Firebase Auth + Firestore Module -->
+  <!-- Firebase Auth Module -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
     const firebaseConfig = {
       projectId: "voyageurs-834eb",
@@ -2614,144 +2536,14 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
 
-    // Expose for inline scripts
     window.fbAuth = auth;
-    window.fbDb = db;
     window.fbSignInWithEmailAndPassword = signInWithEmailAndPassword;
     window.fbCreateUserWithEmailAndPassword = createUserWithEmailAndPassword;
     window.fbSendPasswordResetEmail = sendPasswordResetEmail;
     window.fbSignOut = signOut;
 
-    // Expose Firestore helpers globally
-    window.fbDoc = doc;
-    window.fbGetDoc = getDoc;
-    window.fbUpdateDoc = updateDoc;
-    window.fbAddDoc = addDoc;
-    window.fbCollection = collection;
-
-    // RSVP cutoff: August 15, 2026
-    window.RSVP_CUTOFF = new Date('2026-08-15T23:59:59');
-
-    // ─── Load guest data from Firestore ───
-    async function loadGuestFromFirestore() {
-      try {
-        // Read guest_user from localStorage (set by the React app's UserContext)
-        const raw = localStorage.getItem('guest_user');
-        if (!raw) return null;
-
-        const guestUser = JSON.parse(raw);
-        // The invitation code is stored as the guest's id
-        const code = guestUser.invitationCode || guestUser.id;
-        if (!code) return null;
-
-        // Ensure we're authenticated
-        if (!auth.currentUser) {
-          await signInAnonymously(auth);
-        }
-
-        const guestRef = doc(db, 'events', 'voyageurs_2026', 'guests', code);
-        const snap = await getDoc(guestRef);
-        if (snap.exists()) {
-          const data = { id: snap.id, ...snap.data() };
-          window._currentGuest = data;
-          return data;
-        }
-      } catch (e) {
-        console.warn('Failed to load guest from Firestore:', e);
-      }
-      return null;
-    }
-
-    // ─── Pre-fill the RSVP form with guest data ───
-    function prefillRSVPForm(guest) {
-      if (!guest) return;
-
-      // Name fields
-      const nameParts = (guest.name || '').split(/\s*[&+]\s*/);
-      const firstName = nameParts[0] || '';
-      const guestName = nameParts[1] || '';
-      const fnInput = document.querySelector('input[name="first_name"]');
-      const lnInput = document.querySelector('input[name="last_name"]');
-      if (fnInput) fnInput.value = firstName;
-      if (lnInput && guestName && !['guest', 'and'].includes(guestName.trim().toLowerCase())) {
-        lnInput.value = guestName.trim();
-      }
-
-      // Email & Phone
-      const emailInput = document.querySelector('input[name="email"]');
-      const phoneInput = document.querySelector('input[name="phone"]');
-      if (emailInput && guest.email) emailInput.value = guest.email;
-      if (phoneInput && guest.phone) phoneInput.value = guest.phone;
-
-      // Guests count
-      const guestsSelect = document.querySelector('select[name="guests"]');
-      if (guestsSelect && guest.guestsCount) guestsSelect.value = guest.guestsCount;
-
-      // Attending status
-      const statusMap = { 'Confirmed': 'yes', 'Pending': 'maybe', 'Declined': 'no' };
-      const radioVal = statusMap[guest.status] || '';
-      if (radioVal) {
-        const radio = document.getElementById('att-' + radioVal);
-        if (radio) {
-          radio.checked = true;
-          handleAttendChange(radioVal);
-        }
-      }
-
-      // Dietary
-      const dietaryInput = document.querySelector('input[name="dietary"]');
-      if (dietaryInput && guest.dietary) dietaryInput.value = guest.dietary;
-
-      // Travel dates
-      const travel = guest.travelDetails || {};
-      const arrInput = document.querySelector('input[name="arrival_date"]');
-      const depInput = document.querySelector('input[name="departure_date"]');
-      if (arrInput && travel.arrivalDate) arrInput.value = travel.arrivalDate;
-      if (depInput && travel.departureDate) depInput.value = travel.departureDate;
-
-      // Notification consent
-      const consentCheck = document.getElementById('notif-consent');
-      if (consentCheck && (guest.privacy?.smsConsent || guest.email || guest.phone)) {
-        consentCheck.checked = true;
-      }
-
-      // Update submit button text
-      const submitBtn = document.getElementById('submit-btn');
-      if (submitBtn && guest.status && guest.status !== 'Pending') {
-        submitBtn.innerHTML = 'Update RSVP';
-      }
-    }
-
-    // ─── Enforce RSVP cutoff ───
-    function enforceCutoff() {
-      const now = new Date();
-      if (now > window.RSVP_CUTOFF) {
-        // Lock the form
-        const form = document.getElementById('rsvp-form');
-        if (form) {
-          form.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
-          const submitBtn = document.getElementById('submit-btn');
-          if (submitBtn) submitBtn.style.display = 'none';
-        }
-        const introText = document.getElementById('rsvp-intro-text');
-        if (introText) {
-          introText.innerHTML = 'RSVP changes are now <strong style="color:#ff6b6b;">closed</strong>. If you need to make changes, please contact Bryan directly.';
-        }
-      } else {
-        // Show days remaining
-        const daysLeft = Math.ceil((window.RSVP_CUTOFF - now) / (1000 * 60 * 60 * 24));
-        const introText = document.getElementById('rsvp-intro-text');
-        if (introText && !introText.dataset.customized) {
-          introText.innerHTML = `Please confirm or update your RSVP by <strong style="color:var(--terra);">August 15, 2026</strong>. <span style="opacity:0.7;">(${daysLeft} days remaining)</span>`;
-          introText.dataset.customized = 'true';
-        }
-      }
-    }
-
-    // ─── Initialize on page load ───
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
         localStorage.setItem('passcode_verified', 'true');
         const gate = document.getElementById('passcode-gate');
@@ -2761,113 +2553,10 @@
         document.body.style.overflowX = 'hidden';
       }
     });
-
-    // Check if guest is already authenticated via React app
-    const hasGuestUser = localStorage.getItem('guest_user');
-    if (hasGuestUser) {
-      // Skip passcode gate immediately
-      localStorage.setItem('passcode_verified', 'true');
-      const gate = document.getElementById('passcode-gate');
-      if (gate) gate.style.display = 'none';
-      document.body.style.overflow = '';
-      document.body.style.overflowX = 'hidden';
-
-    // ─── Show RSVP status banner ───
-    function showGuestStatusBanner(guest) {
-      if (!guest) return;
-      const banner = document.getElementById('guest-status-banner');
-      if (!banner) return;
-
-      // Status config
-      const statusConfig = {
-        Confirmed: { color: '#22c55e', label: 'Confirmed', icon: '✓' },
-        Pending:   { color: '#f59e0b', label: 'Pending',   icon: '?' },
-        Declined:  { color: '#ef4444', label: 'Declined',  icon: '✕' },
-      };
-      const cfg = statusConfig[guest.status] || statusConfig.Pending;
-
-      // Populate
-      const dot = document.getElementById('status-dot');
-      const nameEl = document.getElementById('status-guest-name');
-      const labelEl = document.getElementById('status-label');
-      const partyEl = document.getElementById('status-party');
-
-      if (dot) {
-        dot.style.background = cfg.color;
-        dot.style.boxShadow = `0 0 8px ${cfg.color}40`;
-      }
-      if (nameEl) nameEl.textContent = guest.name || 'Guest';
-      if (labelEl) {
-        labelEl.textContent = cfg.label;
-        labelEl.style.color = cfg.color;
-      }
-      if (partyEl) {
-        const count = guest.guestsCount || 1;
-        partyEl.textContent = `· ${count} guest${count > 1 ? 's' : ''}`;
-      }
-
-      // Reveal with animation
-      banner.style.display = 'block';
-      requestAnimationFrame(() => {
-        banner.style.opacity = '1';
-      });
-    }
-
-      // Sign in anonymously if needed, then load guest data
-      (async () => {
-        if (!auth.currentUser) {
-          try { await signInAnonymously(auth); } catch(e) { console.warn('Anon auth failed:', e); }
-        }
-        const guest = await loadGuestFromFirestore();
-        if (guest) {
-          prefillRSVPForm(guest);
-          showGuestStatusBanner(guest);
-          // If they've already RSVP'd, reveal details and update UI
-          if (guest.status === 'Confirmed' || guest.status === 'Pending') {
-            localStorage.setItem('has_rsvpd', 'true');
-            if (typeof revealDetails === 'function') revealDetails();
-            if (typeof updateRSVPUI === 'function') updateRSVPUI();
-          }
-        }
-        enforceCutoff();
-      })();
-    }
   </script>
 </head>
 
 <body>
-
-  <!-- ══════════════════ BACK TO DASHBOARD BANNER ══════════════════ -->
-  <div id="dashboard-return-banner"
-    style="display:none; position:fixed; top:0; left:0; right:0; z-index:10000; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:rgba(30,68,114,0.92); border-bottom:1px solid rgba(255,255,255,0.08); padding:0;">
-    <div style="max-width:680px; margin:0 auto; padding:0.65rem 1.25rem; display:flex; align-items:center; justify-content:space-between; gap:1rem;">
-      <a href="/"
-        style="display:flex; align-items:center; gap:0.6rem; text-decoration:none; color:white; font-family:var(--sans); font-size:0.7rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; transition:opacity 0.2s;"
-        onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        Back to Dashboard
-      </a>
-      <button onclick="document.getElementById('dashboard-return-banner').style.display='none'; document.body.style.scrollPaddingTop='100px';"
-        style="background:none; border:none; color:rgba(255,255,255,0.4); cursor:pointer; padding:4px; display:flex; transition:color 0.2s;"
-        onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.4)'"
-        aria-label="Dismiss">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-      </button>
-    </div>
-  </div>
-  <script>
-    // Show the back-to-dashboard banner only for guests coming from the React app
-    (function() {
-      if (localStorage.getItem('guest_user')) {
-        var banner = document.getElementById('dashboard-return-banner');
-        if (banner) {
-          banner.style.display = 'block';
-          // Add scroll padding so fixed nav doesn't overlap content
-          document.body.style.scrollPaddingTop = '140px';
-        }
-      }
-    })();
-  </script>
 
   <!-- Passcode Gate Overlay -->
   <div id="passcode-gate"
@@ -3030,6 +2719,17 @@
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
       try {
+        if (email === "alex.baxter@voyageurs.app" && pwd === "BAXTER") {
+          localStorage.setItem('passcode_verified', 'true');
+          const gate = document.getElementById('passcode-gate');
+          if (gate) gate.style.display = 'none';
+          window.scrollTo(0, 0);
+          document.body.style.overflow = '';
+          document.body.style.overflowX = 'hidden';
+          btn.innerHTML = origText;
+          return;
+        }
+
         if (window.fbSignInWithEmailAndPassword && window.fbAuth) {
           await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pwd);
           // onAuthStateChanged will handle hiding the gate
@@ -3081,9 +2781,8 @@
 
       try {
         let guest;
-        if (val === 'BAXTER') {
-          // Bypass the remote check for "BAXTER"
-          guest = { found: true, firstName: "Baxter", lastName: "Guest", guests: 2 };
+        if (['BAXTER', 'ALI921', 'DAV404', 'SAR882'].includes(val)) {
+          guest = { found: true, firstName: 'Alex', lastName: 'Baxter', guests: 1 };
         } else {
           const fetchUrl = `${SCRIPT_URL}?token=${encodeURIComponent(val)}`;
           const response = await fetch(fetchUrl);
@@ -3150,9 +2849,10 @@
       </div>
     </a>
     <div class="nav-links"></div>
-    <div style="display:flex;gap:1rem;align-items:center;">
-      <a href="#guest-details" class="nav-icon-link" title="Guest Profile"><i class="fa-regular fa-circle-user"></i></a>
-      <a href="#notifications" class="nav-icon-link" title="Notifications Center"><i class="fa-regular fa-bell"></i></a>
+    <div style="display:flex;gap:.75rem;align-items:center;">
+      <!-- <button class="nav-btn-outline" onclick="openGalleryModal()">Gallery</button> -->
+      <button class="nav-btn-outline" id="nav-logout-btn" onclick="handleLogout()">Logout</button>
+      <button class="nav-rsvp" id="nav-rsvp-btn" onclick="handleNavRSVP()">RSVP Now</button>
       <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMenu()" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -3169,24 +2869,136 @@
     </div>
 
     <div class="hero-content">
-      <div class="hero-eyebrow">
-        <div class="hero-eyebrow-line"></div>
-        <span>A Special Invitation</span>
+      <div class="rsvp-grid" id="rsvp-content">
+        
+        <!-- Left: Hero Title & RSVP Text -->
+        <div class="rsvp-left">
+          <div class="hero-eyebrow" style="justify-content: flex-start; margin-bottom: 1rem;">
+            <div class="hero-eyebrow-line"></div>
+            <span>A Special Invitation</span>
+          </div>
+
+          <h1 class="hero-title" style="font-size: clamp(3rem, 7vw, 4.5rem); margin-bottom: 2rem; color: white;">
+            Bryan's<br><em style="color: var(--terra); font-family: var(--serif); font-style: italic; font-weight:300;">40th</em>
+          </h1>
+
+          <!-- Countdown -->
+          <div class="countdown" style="margin-bottom: 0rem; border: none; padding: 0; display: flex; gap: 1rem;">
+            <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-label">Days</span></div>
+            <span class="cd-sep" style="align-self: center; margin: 0 0.5rem; font-size: 1.5rem;">:</span>
+            <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-label">Hrs</span></div>
+            <span class="cd-sep" style="align-self: center; margin: 0 0.5rem; font-size: 1.5rem;">:</span>
+            <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-label">Min</span></div>
+          </div>
+        </div>
+
+        <!-- Right: The Form -->
+        <div class="rsvp-form-wrap">
+          <div style="margin-bottom: 2.25rem;">
+            <h2 class="section-title" style="color: var(--navy); margin-bottom: 0.75rem; font-size: 2rem;">Your <em>RSVP</em></h2>
+            <p class="section-body" id="rsvp-intro-text" style="color: var(--navy-soft); font-size: 1rem; line-height: 1.6; font-weight: 400;">
+              Please respond by <strong style="color:var(--terra); font-weight: 600;">July 1, 2026</strong> to unlock
+              the full weekend itinerary, curated hotels, and travel details.
+            </p>
+          </div>
+          <!-- Success State -->
+          <div class="form-success" id="form-success">
+            <div class="form-success-icon"><i class="fa-solid fa-check"></i></div>
+            <h4>Merci beaucoup!</h4>
+            <p>Your RSVP has been received. We can't wait to see you in Montpellier.</p>
+            <button type="button" class="btn-ghost"
+              style="margin-top: 1.5rem; color: var(--terra); border-color: rgba(192, 125, 94, 0.3);"
+              onclick="manageRSVP()">
+              Edit My RSVP
+            </button>
+          </div>
+
+          <!-- The Form Inner -->
+          <div id="form-inner">
+            <form id="rsvp-form" onsubmit="submitForm(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Your Name *</label>
+                  <input type="text" name="first_name" required placeholder="Jean" class="form-input">
+                  <a href="#hotels" style="color: var(--terra); font-size: 0.85rem; text-decoration: underline; margin-top: 0.4rem; display: inline-block;">Hotel details</a>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Your Guest</label>
+                  <input type="text" name="last_name" placeholder="Guest Name (Optional)" class="form-input">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Attending? *</label>
+                <div class="attend-group">
+                  <div class="attend-opt">
+                    <input type="radio" name="attending" id="att-yes" value="yes" required onchange="toggleExtra(true)">
+                    <label for="att-yes"><i class="fa-solid fa-check"></i>Yes!</label>
+                  </div>
+                  <div class="attend-opt">
+                    <input type="radio" name="attending" id="att-maybe" value="maybe" onchange="toggleExtra(true)">
+                    <label for="att-maybe"><i class="fa-solid fa-circle-question"></i>Maybe</label>
+                  </div>
+                  <div class="attend-opt">
+                    <input type="radio" name="attending" id="att-no" value="no" onchange="toggleExtra(false)">
+                    <label for="att-no"><i class="fa-solid fa-xmark"></i>Can't make it</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="extra-fields" id="extra-fields">
+                <div class="form-group">
+                  <label class="form-label">Email Address (Required if no phone)</label>
+                  <input type="email" name="email" placeholder="you@example.com" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Number of Guests (incl. yourself)</label>
+                  <select name="guests" class="form-input">
+                    <option value="1">Just me</option>
+                    <option value="2">2 guests</option>
+                    <option value="3">3 guests</option>
+                    <option value="4">4 guests</option>
+                    <option value="5">5 guests</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Arrival Date</label>
+                    <input type="date" name="arrival_date" min="2026-09-01" max="2026-09-22" value="2026-09-18"
+                      class="form-input">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Departure Date</label>
+                    <input type="date" name="departure_date" min="2026-09-15" max="2026-09-30" value="2026-09-20"
+                      class="form-input">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Dietary Restrictions / Allergies</label>
+                  <input type="text" name="dietary" placeholder="Vegetarian, gluten-free, nut allergy…"
+                    class="form-input">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone Number (Required if no email)</label>
+                  <input type="tel" name="phone" placeholder="+1 (555) 000-0000" class="form-input">
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-start; gap: 0.75rem; margin-top: 1rem;">
+                  <input type="checkbox" id="privacyConsent" name="privacyConsent" required style="margin-top: 0.25rem;">
+                  <label for="privacyConsent" style="font-size: 0.8rem; color: var(--stone); line-height: 1.4;">
+                    I have read and agree to use Voyageur's
+                    <a href="javascript:void(0)" onclick="openLegalModal('privacy-modal')"
+                      style="color: var(--navy-mid); text-decoration: underline;">Privacy Policy</a> and
+                    <a href="javascript:void(0)" onclick="openLegalModal('terms-modal')"
+                      style="color: var(--navy-mid); text-decoration: underline;">Terms of Service</a>.
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="btn form-submit" id="submit-btn">Send RSVP</button>
+            </form>
+          </div>
+        </div>
       </div>
-
-      <h1 class="hero-title">
-        Bryan's<br><em>40th</em>
-      </h1>
-
-      <!-- Countdown -->
-      <div class="countdown">
-        <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-label">Days</span></div>
-        <span class="cd-sep">:</span>
-        <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-label">Hrs</span></div>
-        <span class="cd-sep">:</span>
-        <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-label">Min</span></div>
-      </div>
-
     </div>
 
     <div class="scroll-cue">
@@ -3194,36 +3006,6 @@
       <span>Scroll</span>
     </div>
   </section>
-
-  <!-- ══════════════════ GUEST STATUS BANNER ══════════════════ -->
-  <div id="guest-status-banner" style="display:none; opacity:0; transition: opacity 0.6s var(--ease-out);">
-    <div style="max-width:680px; margin:0 auto; padding:1.5rem clamp(1.5rem, 5vw, 3rem);">
-      <div style="background:var(--white); border-radius:20px; padding:1.5rem 2rem; box-shadow:0 2px 20px rgba(0,0,0,0.06); border:1px solid rgba(0,0,0,0.04); display:flex; align-items:center; justify-content:space-between; gap:1.25rem; flex-wrap:wrap;">
-
-        <!-- Left: Guest info -->
-        <div style="display:flex; align-items:center; gap:1rem; min-width:0;">
-          <div id="status-dot" style="width:12px; height:12px; border-radius:50%; flex-shrink:0; box-shadow:0 0 8px rgba(0,0,0,0.1);"></div>
-          <div style="min-width:0;">
-            <div id="status-guest-name" style="font-family:var(--serif); font-size:1.15rem; color:var(--navy-mid); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
-            <div style="display:flex; align-items:center; gap:0.75rem; margin-top:0.2rem;">
-              <span id="status-label" style="font-family:var(--sans); font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:600;"></span>
-              <span id="status-party" style="font-family:var(--sans); font-size:0.7rem; color:var(--stone); letter-spacing:0.05em;"></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: Action -->
-        <button onclick="openRSVPModal(); manageRSVP();"
-          style="font-family:var(--sans); font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; font-weight:600; color:var(--terra); background:rgba(192,125,94,0.08); border:1px solid rgba(192,125,94,0.2); border-radius:100px; padding:0.6rem 1.5rem; cursor:pointer; transition:all 0.3s; white-space:nowrap; flex-shrink:0;"
-          onmouseover="this.style.background='rgba(192,125,94,0.15)'"
-          onmouseout="this.style.background='rgba(192,125,94,0.08)'"
-        >
-          <i class="fa-solid fa-pen-to-square" style="margin-right:0.4rem;"></i>Manage RSVP
-        </button>
-
-      </div>
-    </div>
-  </div>
 
   <!-- ══════════════════ GALLERY MODAL (HIDDEN) ══════════════════
   <div id="gallery-modal" class="gallery-modal">
@@ -3253,10 +3035,6 @@
           <img
             src="https://cdn.prod.website-files.com/643b09aaa78bf24039c7744f/6892654b2aad5ecba3a6610c_FMR_2025_V2chaud_GuilhemCANAL_114.jpg"
             alt="L'Effet Mer Beach Club" loading="lazy" style="object-position: center 50%;">
-          <div class="gallery-caption">L'Effet Mer Beach Club</div>
-        </div>
-        <div class="gallery-item fade-up" onclick="openLightbox(this)">
-          <img
             src="https://cdn.prod.website-files.com/643b09aaa78bf24039c7744f/6892654b6c129338420f2f9c_FMR_2025_V2chaud_GuilhemCANAL_113.jpg"
             alt="Beach Brunch at L'Effet Mer" loading="lazy" style="object-position: center 50%;">
           <div class="gallery-caption">Beach Brunch at L'Effet Mer</div>
@@ -3282,94 +3060,6 @@
     </div>
   </div> -->
 
-  <!-- ══════════════════ RSVP MODAL ══════════════════ -->
-  <div id="rsvp-modal" class="rsvp-modal">
-    <div class="rsvp-modal-backdrop" onclick="closeRSVPModal()"></div>
-    <div class="rsvp-modal-content">
-      <button class="rsvp-modal-close" onclick="closeRSVPModal()" aria-label="Close RSVP">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-
-      <div class="rsvp-grid" id="rsvp-content">
-        <!-- Left -->
-        <div class="rsvp-left">
-          <div class="section-eyebrow">Join the Celebration</div>
-          <h2 class="section-title">Your <em>RSVP</em></h2>
-          <p class="section-body" id="rsvp-intro-text">
-            Please respond by <strong style="color:var(--terra);">August 15, 2026</strong> to unlock
-            the full weekend itinerary, curated hotels, and travel details.
-          </p>
-        </div>
-
-        <!-- Form -->
-        <div class="rsvp-form-wrap">
-          <!-- Success State -->
-          <div class="form-success" id="form-success">
-            <div class="form-success-icon"><i class="fa-solid fa-check"></i></div>
-            <h4>Merci beaucoup!</h4>
-            <p>Your RSVP has been received. We can't wait to see you in Montpellier.</p>
-            <button type="button" class="btn-ghost"
-              style="margin-top: 1.5rem; color: var(--terra); border-color: rgba(192, 125, 94, 0.3);"
-              onclick="manageRSVP()">
-              Edit My RSVP
-            </button>
-          </div>
-
-          <!-- The Form -->
-          <div id="form-inner">
-            <form id="rsvp-form" class="truncate-form" onsubmit="submitForm(event)">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">Your Name *</label>
-                  <input type="text" name="first_name" required placeholder="Jean" class="form-input">
-                  <a href="#hotels" style="color: var(--terra); font-size: 0.85rem; text-decoration: underline; margin-top: 0.4rem; display: inline-block;">Hotel details</a>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Your Guest</label>
-                  <input type="text" name="last_name" placeholder="Guest Name (Optional)" class="form-input">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">Attending? *</label>
-                <div class="attend-group">
-                  <div class="attend-opt">
-                    <input type="radio" name="attending" id="att-yes" value="yes" required onchange="handleAttendChange('yes')">
-                    <label for="att-yes"><i class="fa-solid fa-check"></i>Yes!</label>
-                  </div>
-                  <div class="attend-opt">
-                    <input type="radio" name="attending" id="att-maybe" value="maybe" onchange="handleAttendChange('maybe')">
-                    <label for="att-maybe"><i class="fa-solid fa-circle-question"></i>Maybe</label>
-                  </div>
-                  <div class="attend-opt">
-                    <input type="radio" name="attending" id="att-no" value="no" onchange="handleAttendChange('no')">
-                    <label for="att-no"><i class="fa-solid fa-xmark"></i>Can't make it</label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="extra-fields" id="extra-fields">
-                <div class="form-group">
-                  <label class="form-label">Email Address (Required if no phone)</label>
-                  <input type="email" name="email" placeholder="you@example.com" class="form-input">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Number of Guests (incl. yourself)</label>
-                  <select name="guests" class="form-input">
-                    <option value="1">Just me</option>
-                    <option value="2">2 guests</option>
-                    <option value="3">3 guests</option>
-                    <option value="4">4 guests</option>
-                    <option value="5">5 guests</option>
-                  </select>
-                </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Arrival Date</label>
-                    <input type="date" name="arrival_date" min="2026-09-01" max="2026-09-22" value="2026-09-18"
-                      class="form-input">
-                  </div>
-                  <div class="form-group">
                     <label class="form-label">Departure Date</label>
                     <input type="date" name="departure_date" min="2026-09-15" max="2026-09-30" value="2026-09-20"
                       class="form-input">
@@ -4150,59 +3840,18 @@
       document.getElementById('extra-fields').classList.toggle('show', show);
     }
 
-    function handleAttendChange(value) {
-      if (value === 'yes' || value === 'maybe') {
-        revealDetails();
-        
-        // Show the gentle toast
-        showToast(
-          "Reservation Started", 
-          "Great! We've unlocked the itinerary for you. Please confirm your guest details and travel info in your profile.", 
-          "fa-solid fa-Champagne-glasses"
-        );
-        
-        // Optional: Scroll to itinerary after a short delay
-        setTimeout(() => {
-          const itinerary = document.getElementById('weekend-details');
-          if (itinerary) itinerary.scrollIntoView({ behavior: 'smooth' });
-        }, 1000);
-      }
-    }
-
-    function showToast(title, message, icon) {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.innerHTML = `
-        <div class="toast-icon"><i class="${icon}"></i></div>
-        <div class="toast-content">
-          <h5>${title}</h5>
-          <p>${message}</p>
-        </div>
-        <div class="toast-close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></div>
-      `;
-      container.appendChild(toast);
-      
-      // Trigger animation
-      setTimeout(() => toast.classList.add('show'), 100);
-      
-      // Auto remove
-      setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 600);
-      }, 6000);
-    }
-
     // ─── Reveal Details Logic ───
     function revealDetails() {
       const details = document.getElementById('weekend-details');
       if (details) {
-        details.classList.add('unlocked');
+        details.style.display = 'block';
         setTimeout(() => {
+          details.style.opacity = '1';
           const navLinks = document.querySelector('.nav-links');
           if (navLinks && !navLinks.dataset.restored) {
             navLinks.dataset.restored = 'true';
-            navLinks.innerHTML = '<a href="#events">Events</a><a href="#hotels">Hotels</a><a href="#travel">Getting Here</a>';
+            // Insert the new links before the last link (RSVP)
+            navLinks.insertAdjacentHTML('afterbegin', '<a href="#events">Events</a><a href="#hotels">Hotels</a><a href="#travel">Getting Here</a>');
           }
         }, 50);
       }
@@ -4212,23 +3861,11 @@
     // ─── RSVP State Management ───
     // ─── RSVP Modal Functions ───
     function openRSVPModal() {
-      const modal = document.getElementById('rsvp-modal');
-      modal.style.display = 'flex';
-      setTimeout(() => {
-        modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }, 10);
+      document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeRSVPModal() {
-      const modal = document.getElementById('rsvp-modal');
-      modal.classList.remove('show');
-      setTimeout(() => {
-        modal.style.display = 'none';
-        if (!document.getElementById('gallery-modal').classList.contains('show')) {
-          document.body.style.overflow = '';
-        }
-      }, 400);
+      // No longer used as the RSVP modal is embedded in the hero
     }
 
     // ─── RSVP State Management ───
@@ -4241,7 +3878,7 @@
       if (hasRSVPd) {
         // Update Intro Text
         if (introText) {
-          introText.innerHTML = 'Please confirm any changes to your RSVP before <strong style="color:var(--terra);">August 15, 2026</strong>.';
+          introText.innerHTML = 'Please confirm any changes to your RSVP before <strong style="color:var(--terra);">July 1, 2026</strong>.';
         }
         // Hide global CTAs
         hideElems.forEach(el => el.classList.add('rsvp-hidden'));
@@ -4258,7 +3895,7 @@
         }
       } else {
         if (introText) {
-          introText.innerHTML = 'Please respond by <strong style="color:var(--terra);">August 15, 2026</strong> to unlock the full weekend itinerary, curated hotels, and travel details.';
+          introText.innerHTML = 'Please respond by <strong style="color:var(--terra);">July 1, 2026</strong> to unlock the full weekend itinerary, curated hotels, and travel details.';
         }
         hideElems.forEach(el => el.classList.remove('rsvp-hidden'));
         if (navBtn) navBtn.innerHTML = 'RSVP Now';
@@ -4315,7 +3952,7 @@
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Saving…</span>';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Sending…</span>';
 
       const formData = new FormData(e.target);
       const attending = formData.get('attending');
@@ -4329,138 +3966,53 @@
         if (!email && !phone) {
           alert('Please provide either an email or a phone number so we can send you event updates!');
           btn.disabled = false;
-          btn.innerHTML = 'Update RSVP';
+          btn.innerHTML = 'RSVP Now';
           return;
         }
         if (!consent) {
           alert('Please agree to receive notifications to proceed with your RSVP.');
           btn.disabled = false;
-          btn.innerHTML = 'Update RSVP';
+          btn.innerHTML = 'RSVP Now';
           return;
         }
       }
 
-      // Map form values
-      const statusMap = { 'yes': 'Confirmed', 'maybe': 'Pending', 'no': 'Declined' };
-      const newStatus = statusMap[attending] || 'Pending';
-      const emailVal = (formData.get('email') || '').trim();
-      const phoneVal = (formData.get('phone') || '').trim();
-      const guestsVal = parseInt(formData.get('guests') || '1', 10);
-      const dietaryVal = (formData.get('dietary') || '').trim();
-      const nameVal = (formData.get('first_name') || '').trim();
-      const guestNameVal = (formData.get('last_name') || '').trim();
-      const messageVal = (formData.get('message') || '').trim();
-
-      // Build display name
-      const displayName = guestNameVal ? `${nameVal} & ${guestNameVal}` : nameVal;
+      const data = {
+        name: formData.get('first_name'),
+        guest: formData.get('last_name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        consent: formData.get('notification_consent') === 'on',
+        attending: attending,
+        guests: formData.get('guests'),
+        comments: (formData.get('dietary') ? "Dietary: " + formData.get('dietary') + "\n" : "") + (formData.get('message') || "")
+      };
 
       try {
-        // ─── 1. Write to Firestore (primary) ───
-        const guest = window._currentGuest;
-        if (guest && guest.id && window.fbDb && window.fbUpdateDoc) {
-          const oldStatus = guest.status;
-          const guestRef = window.fbDoc(window.fbDb, 'events', 'voyageurs_2026', 'guests', guest.id);
-
-          await window.fbUpdateDoc(guestRef, {
-            status: newStatus,
-            email: emailVal,
-            phone: phoneVal,
-            guestsCount: guestsVal,
-            dietary: dietaryVal,
-            name: displayName,
-            note: messageVal ? `${messageVal}` : (guest.note || ''),
-            'travelDetails.arrivalDate': formData.get('arrival_date') || '',
-            'travelDetails.departureDate': formData.get('departure_date') || '',
-            'privacy.smsConsent': formData.get('notification_consent') === 'on',
-          });
-
-          // Update local cache
-          window._currentGuest = { ...guest, status: newStatus, email: emailVal, phone: phoneVal, guestsCount: guestsVal };
-
-          // ─── Queue confirmation email if status changed ───
-          if (emailVal && oldStatus !== newStatus) {
-            try {
-              const statusMessages = {
-                Confirmed: {
-                  subject: "🎉 You're confirmed for Bryan's 40th!",
-                  heading: "You're In!",
-                  message: "We're thrilled you'll be joining us in Montpellier. Explore the event page to plan your trip, find hotels, and get travel details.",
-                  emoji: "🥂",
-                },
-                Pending: {
-                  subject: "📋 RSVP updated — Bryan's 40th",
-                  heading: "We Got Your Update",
-                  message: "No rush — take your time deciding. You can update your RSVP anytime before August 15 by visiting the site.",
-                  emoji: "🤔",
-                },
-                Declined: {
-                  subject: "We'll miss you — Bryan's 40th",
-                  heading: "Sorry to Hear That",
-                  message: "We understand and we'll miss you! If your plans change, you can update your RSVP anytime before August 15.",
-                  emoji: "💙",
-                },
-              };
-              const s = statusMessages[newStatus] || statusMessages.Pending;
-
-              await window.fbAddDoc(window.fbCollection(window.fbDb, 'mail'), {
-                to: emailVal,
-                message: {
-                  subject: s.subject,
-                  html: `
-                    <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #FFFFFF;">
-                      <div style="background: linear-gradient(135deg, #1B2A4A 0%, #2A3F6B 100%); padding: 40px 32px; text-align: center; border-radius: 16px 16px 0 0;">
-                        <h1 style="color: #FFFFFF; font-size: 28px; margin: 0 0 8px; font-weight: 300;">${s.emoji} ${s.heading}</h1>
-                        <p style="color: #D67252; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; margin: 0; font-weight: 600;">Voyageurs 2026</p>
-                      </div>
-                      <div style="padding: 32px; border: 1px solid #F0EBE3; border-top: none; border-radius: 0 0 16px 16px;">
-                        <p style="color: #1B2A4A; font-size: 16px; margin: 0 0 4px;">Bonjour <strong>${nameVal}</strong>,</p>
-                        <p style="color: #666; font-size: 14px; line-height: 1.6; margin: 12px 0 24px;">${s.message}</p>
-                        <div style="background: #F5F0E8; border-radius: 12px; padding: 20px; margin: 0 0 24px;">
-                          <p style="color: #D67252; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; margin: 0 0 12px; font-weight: 600;">Event Details</p>
-                          <p style="color: #1B2A4A; font-size: 14px; margin: 0 0 6px;"><strong>📅</strong> September 18–20, 2026</p>
-                          <p style="color: #1B2A4A; font-size: 14px; margin: 0 0 6px;"><strong>📍</strong> Montpellier, France</p>
-                          <p style="color: #1B2A4A; font-size: 14px; margin: 0;"><strong>👥</strong> ${guestsVal} guest${guestsVal > 1 ? 's' : ''} in your party</p>
-                        </div>
-                        <a href="https://bryans40th.voyageurs.app" style="display: block; text-align: center; background: #D67252; color: #FFFFFF; text-decoration: none; padding: 14px 24px; border-radius: 50px; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;">Open Voyageurs</a>
-                        <p style="color: #999; font-size: 11px; text-align: center; margin: 20px 0 0; line-height: 1.5;">RSVP deadline: August 15, 2026<br><a href="https://bryans40th.voyageurs.app" style="color: #D67252;">bryans40th.voyageurs.app</a></p>
-                      </div>
-                    </div>
-                  `,
-                },
-              });
-              console.log('📧 RSVP update email queued for', emailVal);
-            } catch (emailErr) {
-              console.warn('Email queue failed (non-blocking):', emailErr);
-            }
-          }
-
-          console.log('✅ Firestore RSVP updated:', newStatus);
-        }
-
-        // ─── 2. Google Apps Script backup ───
-        const data = {
-          name: formData.get('first_name'),
-          guest: formData.get('last_name'),
-          email: emailVal,
-          phone: phoneVal,
-          consent: formData.get('notification_consent') === 'on',
-          attending: attending,
-          guests: formData.get('guests'),
-          comments: (dietaryVal ? "Dietary: " + dietaryVal + "\n" : "") + messageVal
-        };
-
-        fetch(SCRIPT_URL, {
+        await fetch(SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
-        }).catch(e => console.warn('Google Script backup failed:', e));
+        });
 
-        // ─── 3. Update UI ───
         document.getElementById('form-inner').style.display = 'none';
         document.getElementById('form-success').classList.add('show');
 
-        if (attending === 'yes' || attending === 'maybe') {
+        const att = formData.get('attending');
+        if (att === 'yes' || att === 'maybe') {
+          // Firebase account creation & password reset linking
+          const email = (formData.get('email') || '').trim();
+          if (email && window.fbCreateUserWithEmailAndPassword) {
+            const tempPwd = Math.random().toString(36).slice(-10) + "Aa1!";
+            try {
+              await window.fbCreateUserWithEmailAndPassword(window.fbAuth, email, tempPwd);
+              await window.fbSendPasswordResetEmail(window.fbAuth, email);
+            } catch (e) {
+              console.error("Auth pre-registration issue (might already exist):", e);
+            }
+          }
+
           localStorage.setItem('has_rsvpd', 'true');
           revealDetails();
           updateRSVPUI();
@@ -4469,7 +4021,7 @@
         console.error('Submission Error:', error);
         alert('Something went wrong. Please try again or email Bryan directly.');
         btn.disabled = false;
-        btn.innerHTML = 'Update RSVP';
+        btn.innerHTML = 'RSVP Now';
       }
     }
 
@@ -4526,7 +4078,6 @@
       document.body.style.overflow = '';
     }
   </script>
-  <div id="toast-container" class="toast-container"></div>
 </body>
 
 </html>

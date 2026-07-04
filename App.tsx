@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { InstallPrompt } from './components/InstallPrompt';
 import { RSVPPrompt } from './components/RSVPPrompt';
 import { ArrowUp, Lock, Loader2, EyeOff } from 'lucide-react';
@@ -25,11 +26,86 @@ const OnboardingFlow = React.lazy(() => import('./components/OnboardingFlow').th
 const EventLandingPage = React.lazy(() => import('./components/EventLandingPage').then(m => ({ default: m.EventLandingPage })));
 const JournalPage = React.lazy(() => import('./components/JournalPage').then(m => ({ default: m.JournalPage })));
 
-const LoadingScreen = () => (
-  <div className="fixed inset-0 bg-background flex items-center justify-center z-[9999]">
-    <Loader2 className="w-10 h-10 text-primary animate-spin" />
-  </div>
-);
+const LoadingScreen = () => {
+  const [msgIndex, setMsgIndex] = useState(0);
+  const messages = [
+    'Preparing your experience…',
+    'Loading event details…',
+    'Setting the scene…',
+    'Bienvenue, Voyager…',
+    'Almost there…',
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMsgIndex(prev => (prev + 1) % messages.length);
+    }, 2200);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden"
+      style={{ background: 'linear-gradient(160deg, #0e1c2a 0%, #1a2d45 50%, #0e1c2a 100%)' }}>
+
+      {/* Ambient glow */}
+      <div className="absolute w-[500px] h-[500px] rounded-full opacity-20 blur-[120px]"
+        style={{ background: 'radial-gradient(circle, #C07D5E 0%, transparent 70%)', top: '20%', left: '50%', transform: 'translateX(-50%)' }} />
+
+      {/* Logo */}
+      <div className="relative mb-8" style={{ animation: 'loadPulse 3s ease-in-out infinite' }}>
+        <img src="/assets/voyageurs-icon.png" alt="Voyageurs" className="w-20 h-20 object-contain drop-shadow-2xl" />
+        <div className="absolute inset-0 rounded-full blur-xl opacity-30" style={{ background: '#C07D5E' }} />
+      </div>
+
+      {/* Brand name */}
+      <h1 className="text-white text-2xl tracking-[0.3em] uppercase mb-2"
+        style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontWeight: 300, opacity: 0.9 }}>
+        Voyageurs
+      </h1>
+      <p className="text-xs tracking-[0.5em] uppercase mb-12"
+        style={{ color: '#C07D5E', fontFamily: "'Montserrat', system-ui, sans-serif", fontWeight: 600 }}>
+        Bryan's 40th
+      </p>
+
+      {/* Progress bar */}
+      <div className="w-48 h-[2px] rounded-full overflow-hidden mb-8" style={{ background: 'rgba(255,255,255,0.08)' }}>
+        <div className="h-full rounded-full" style={{
+          background: 'linear-gradient(90deg, transparent, #C07D5E, transparent)',
+          animation: 'loadSlide 1.8s ease-in-out infinite',
+          width: '40%',
+        }} />
+      </div>
+
+      {/* Rotating message */}
+      <div className="h-6 relative overflow-hidden">
+        <p key={msgIndex} className="text-sm tracking-wider text-center"
+          style={{
+            color: 'rgba(255,255,255,0.45)',
+            fontFamily: "'Montserrat', system-ui, sans-serif",
+            fontWeight: 400,
+            animation: 'loadFadeIn 0.5s ease-out',
+          }}>
+          {messages[msgIndex]}
+        </p>
+      </div>
+
+      <style>{`
+        @keyframes loadPulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.05); opacity: 0.85; }
+        }
+        @keyframes loadSlide {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(350%); }
+        }
+        @keyframes loadFadeIn {
+          0% { opacity: 0; transform: translateY(8px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>
+  );
+};
 
 const App = () => {
   const { user, isVerified, isProfileOpen, toggleProfile, loading: userLoading } = useUser();
@@ -58,11 +134,22 @@ const App = () => {
     window.addEventListener('scroll', handleScroll);
 
     if (window.location.hostname === 'bryans40th.voyageurs.app') {
-      window.location.replace('https://voyageurs.app/rsvp' + window.location.search);
+      window.location.replace('https://voyageurs.app' + window.location.search);
       return;
     }
 
-    if (window.location.pathname === '/rsvp') {
+    // Auto-open login for /rsvp, /event paths or ?code= parameter
+    const params = new URLSearchParams(window.location.search);
+    const rsvpPaths = ['/rsvp', '/event'];
+    const isRSVPPath = rsvpPaths.includes(window.location.pathname);
+    if (params.has('code')) {
+      // New QR code scanned — clear any existing guest session
+      // so the new code is processed fresh
+      safeStorage.removeItem('guest_user');
+      safeStorage.removeItem('has_rsvpd');
+      safeStorage.removeItem('passcode_verified');
+      setShowLogin(true);
+    } else if (isRSVPPath) {
       setShowLogin(true);
       window.history.replaceState({}, '', '/');
     }
@@ -117,17 +204,18 @@ const App = () => {
     );
   }
 
-  // ── Hub launch gate: set to true when ready to give guests full app access ──
-  const HUB_UNLOCKED = false;
+  // ── Hub launch gate: controlled via AppConfig (Firestore or defaults) ──
+  const hubUnlocked = config.hubUnlocked;
 
   // SCENARIO 2: GUEST LOGGED IN (verified, has completed onboarding)
-  if (user && user.hasCompletedOnboarding && user.status !== 'Declined') {
-    // Hub is not yet open — show the event landing page so guests can
-    // book hotels & travel while we finish preparing the app experience.
-    if (!HUB_UNLOCKED) {
+  if (user && user.hasCompletedOnboarding) {
+    // Hub is not yet open, or guest declined — show the dashboard so they
+    // can manage their RSVP, edit profile, and preview the hub.
+    if (!hubUnlocked || user.status === 'Declined') {
       return (
         <Suspense fallback={<LoadingScreen />}>
           <EventLandingPage />
+          <InstallPrompt />
         </Suspense>
       );
     }
@@ -181,11 +269,13 @@ const App = () => {
       </main>
 
       {/* LoginPage renders as a fixed overlay on top of everything */}
-      {showLogin && (
-        <Suspense fallback={null}>
-          <LoginPage onClose={() => setShowLogin(false)} />
-        </Suspense>
-      )}
+      <AnimatePresence mode="wait">
+        {showLogin && (
+          <Suspense fallback={null}>
+            <LoginPage onClose={() => setShowLogin(false)} />
+          </Suspense>
+        )}
+      </AnimatePresence>
 
 
       {/* Scroll-to-top button */}
@@ -204,7 +294,7 @@ const App = () => {
         <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
       </Suspense>
       {!showGuestOnboarding && <MobileNav />}
-      {/* Archiving RSVPPrompt for now: !showGuestOnboarding && <RSVPPrompt onRSVP={() => setShowLogin(true)} /> */}
+
       <InstallPrompt />
     </div>
   );

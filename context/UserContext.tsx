@@ -57,6 +57,7 @@ export interface UserProfile {
         accommodation: string;
         hub?: string;
     };
+    eventConfirmations?: Record<string, boolean>;
     phone?: string;
     isAdmin?: boolean;
 }
@@ -144,7 +145,7 @@ interface UserContextType {
     logout: () => void;
     toggleProfile: (mode?: 'login' | 'rsvp') => void;
     setAuthMode: (mode: 'login' | 'rsvp') => void;
-    submitRSVP: (data: Partial<Guest>) => void;
+    submitRSVP: (data: Partial<Guest & UserProfile>) => void;
     completeOnboarding: () => void;
     updateTravelDetails: (details: UserProfile['travelDetails']) => void;
     updateProfile: (data: Partial<UserProfile>) => void;
@@ -184,10 +185,26 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     const [isVerified, setIsVerified] = useState(() => {
+        // New QR code? Start fresh
+        if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('code')) {
+          return false;
+        }
         return safeStorage.getItem('is_verified') === 'true';
     });
 
     const [user, setUser] = useState<UserProfile | null>(() => {
+        // If a new invite code is in the URL (QR scan), ignore any cached session
+        // so the new code gets processed fresh
+        if (typeof window !== 'undefined') {
+          const params = new URLSearchParams(window.location.search);
+          if (params.has('code')) {
+            safeStorage.removeItem('guest_user');
+            safeStorage.removeItem('is_verified');
+            safeStorage.removeItem('has_rsvpd');
+            safeStorage.removeItem('passcode_verified');
+            return null;
+          }
+        }
         return safeStorage.getItem('guest_user', null);
     });
 
@@ -422,15 +439,38 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [login, setVerified, isCloudEnabled]);
 
     const loginWithCode = useCallback(async (code: string) => {
-        const uppercaseCode = code.toUpperCase().trim();
+        const normalizedCode = code.trim();
 
-        if (uppercaseCode === 'BAXTER') {
+        if (normalizedCode === 'BAXTER') {
             login('Alex Baxter', 'alex.baxter@voyageurs.app', 1, 'Confirmed', '', '');
             setVerified(true);
             return true;
         }
 
-        const guest = allGuests.find(g => g.invitationCode === uppercaseCode);
+        // 1. Try Firestore direct lookup first (works even before local guests have synced)
+        try {
+            const { authService } = await import('../services/authService');
+            const guestData = await authService.verifyGuestCode(normalizedCode);
+            if (guestData) {
+                login(
+                    guestData.name,
+                    guestData.email,
+                    guestData.guestsCount || 1,
+                    guestData.status || 'Pending',
+                    guestData.dietary || '',
+                    guestData.note || '',
+                    guestData.social,
+                    guestData.privacy
+                );
+                setVerified(true);
+                return true;
+            }
+        } catch (e) {
+            console.warn("Firestore code lookup failed, trying local:", e);
+        }
+
+        // 2. Fallback: check local allGuests array
+        const guest = allGuests.find(g => g.invitationCode === normalizedCode);
         if (guest) {
             login(guest.name, guest.email, guest.guestsCount, guest.status, guest.dietary, guest.note, guest.social, guest.privacy);
             setVerified(true);
@@ -456,7 +496,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsProfileOpen(prev => !prev);
     }, []);
 
-    const submitRSVP = useCallback(async (data: Partial<Guest>) => {
+    const submitRSVP = useCallback(async (data: Partial<Guest & UserProfile>) => {
         if (!user) return;
 
         const updatedUser = {

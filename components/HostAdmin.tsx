@@ -30,12 +30,12 @@ import { EmptyState } from './EmptyState';
 import { SegmentedControl } from './SegmentedControl';
 import { SlidingPaneLayout } from './SlidingPaneLayout';
 import { WelcomeTour } from './WelcomeTour';
+import { GuestsApp } from './GuestsApp';
 import { Hero } from './Hero';
 import { TheCelebration } from './TheCelebration';
 import { Gallery } from './Gallery';
 import { AgendaView } from './AgendaView';
 import { PublicLogistics } from './PublicLogistics';
-import { RSVPForm } from './RSVPForm';
 
 
 interface HostAdminProps {
@@ -289,19 +289,14 @@ const PreviewRouter = ({ tab, page, config, guests }: { tab: string, page: strin
         case 'agenda':
             return <div className="p-4"><AgendaView agenda={content.agenda} isPublicView={true} /></div>;
         case 'logistics':
-            return <div className="p-4"><PublicLogistics logistics={content.logistics} /></div>;
+            return <div className="p-4"><PublicLogistics /></div>;
         case 'rsvp':
             return (
-                <div className="p-6 bg-gray-100 dark:bg-gray-800">
-                    <RSVPForm
-                        guest={guests.length > 0 ? guests[0] : { id: 'preview', name: 'Preview Guest', status: 'Pending', guestsCount: 1, email: '' }}
-                        config={config}
-                        onRSVPSubmit={async () => {
-                            alert("This is a preview. Submission is disabled.");
-                            return true;
-                        }}
-                        isPreview={true}
-                    />
+                <div className="p-6 bg-gray-100 dark:bg-gray-800 flex items-center justify-center h-64">
+                    <div className="text-center">
+                        <p className="text-lg font-semibold text-med-blue dark:text-white mb-2">RSVP Preview</p>
+                        <p className="text-sm text-gray-500">Guest RSVP form is handled via the onboarding flow.</p>
+                    </div>
                 </div>
             );
         default:
@@ -430,10 +425,7 @@ const DashboardApp = ({ allGuests, onLaunch, config }: any) => {
     );
 };
 
-const GuestsApp = ({ allGuests, onAdd, onBulkAdd, onDelete, onUpdateGuest }: any) => {
-    // ... [Guests App Logic Omitted for Brevity - Standard solid white/dark card content] ...
-    return <div className="p-6">Guest List Component Placeholder</div>;
-};
+// GuestsApp is imported from './GuestsApp'
 
 const CommsApp = () => {
     return <div className="p-6">Communications Component Placeholder</div>;

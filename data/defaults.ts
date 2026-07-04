@@ -4,70 +4,17 @@ import { HotelCategory, DiningCategory, AgendaEvent, ExplorationItem, ActivityIt
 // --- HOTELS ---
 export const DEFAULT_HOTEL_DATA: HotelCategory[] = [
   {
-    id: 'romantic',
-    title: 'Romantic',
-    iconName: 'Heart',
-    description: "Charming spots in L'Écusson.",
-    hotels: [
-      {
-        name: "Grand Hôtel du Midi",
-        image: "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?q=80&w=800&auto=format&fit=crop", // Balcony Image
-        gallery: [
-            "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1560185009-dddeb820c7b7?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=800&auto=format&fit=crop"
-        ],
-        stars: 4,
-        tag: "Place de la Comédie",
-        priceLevel: 3,
-        lat: 43.6085,
-        lng: 3.8795,
-        description: "Art Nouveau charm directly on the Place de la Comédie.",
-        link: "https://www.grandhoteldumidi.com/",
-        categoryId: 'romantic',
-        fullDescription: "A historic institution in Montpellier, this Haussmann-style hotel sits proudly on the Place de la Comédie. Recently renovated with a 'Les Trois Graces' theme.",
-        highlights: ["Directly on Place de la Comédie", "Art Nouveau architecture", "Next to the Opera House"],
-        transportDetail: "2 min walk from Tram lines 1 & 2 (Comédie stop).",
-        averageRate: "$175 - $240",
-        baseRate: 200
-      },
-      {
-        name: "Hôtel Oceania Le Métropole",
-        image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=800&auto=format&fit=crop",
-        gallery: [
-            "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=800&auto=format&fit=crop"
-        ],
-        stars: 4,
-        tag: "Near Gare St-Roch",
-        priceLevel: 3,
-        lat: 43.6052,
-        lng: 3.8825,
-        description: "19th-century grandeur with a hidden garden and pool.",
-        link: "https://www.oceaniahotels.com/en/hotel/oceania-le-metropole-",
-        categoryId: 'romantic',
-        fullDescription: "Built in 1898, this prestigious hotel combines the grandeur of the Belle Époque with contemporary luxury. The hidden gem is its exotic garden.",
-        highlights: ["Outdoor swimming pool", "Exotic inner garden", "Historic 19th-century building"],
-        transportDetail: "2 min walk from Gare Saint-Roch.",
-        averageRate: "$185 - $260",
-        baseRate: 220
-      }
-    ]
-  },
-  {
     id: 'luxury',
     title: 'Luxury',
     iconName: 'Shield',
-    description: "Unforgettable service.",
+    description: "The crown jewels of Montpellier.",
     hotels: [
       {
         name: "Hôtel Richer De Belleval",
-        image: "https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?q=80&w=800&auto=format&fit=crop", // Mansion Facade
+        image: "https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?q=80&w=800&auto=format&fit=crop",
         gallery: [
             "https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1512918760513-95f6929562eb?q=80&w=800&auto=format&fit=crop", // Interior Clock
-            "https://images.unsplash.com/photo-1554647286-f365d7defc2d?q=80&w=800&auto=format&fit=crop"
+            "https://images.unsplash.com/photo-1512918760513-95f6929562eb?q=80&w=800&auto=format&fit=crop"
         ],
         stars: 5,
         tag: "Historic Center",
@@ -77,62 +24,87 @@ export const DEFAULT_HOTEL_DATA: HotelCategory[] = [
         description: "Relais & Châteaux in a 17th-century mansion.",
         link: "https://www.hotel-richerdebelleval.com/",
         categoryId: 'luxury',
-        fullDescription: "A masterpiece of heritage restoration. Formerly a 17th-century town hall, now a Relais & Châteaux property where art, history, and gastronomy collide.",
+        fullDescription: "A masterpiece of heritage restoration on the Place de la Canourgue. Michelin-starred dining and pure elegance.",
         highlights: ["Relais & Châteaux", "Michelin-starred dining", "17th-century frescoes"],
         transportDetail: "10 min walk from Gare Saint-Roch.",
         averageRate: "$380 - $600",
         baseRate: 450
       },
       {
-        name: "Domaine de Verchant",
-        image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=800&auto=format&fit=crop", // Pool Image
+        name: "Hôtel Oceania Le Métropole",
+        image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=800&auto=format&fit=crop",
         gallery: [
-            "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1574643156929-51fa59890306?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=800&auto=format&fit=crop"
+            "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=800&auto=format&fit=crop"
         ],
-        tag: "Castelnau-le-Lez",
-        stars: 5,
-        priceLevel: 5,
-        lat: 43.6300,
-        lng: 3.9300,
-        description: "5-star spa and vineyard estate on the outskirts.",
-        link: "https://www.domainedeverchant.com/en/",
+        stars: 4,
+        tag: "Near Gare St-Roch",
+        priceLevel: 4,
+        lat: 43.6052,
+        lng: 3.8825,
+        description: "19th-century grandeur with a hidden garden and pool.",
+        link: "https://www.oceaniahotels.com/en/hotel/oceania-le-metropole-",
         categoryId: 'luxury',
-        fullDescription: "Nestled in 42 acres of vineyards, this 5-star hotel and spa offers the ultimate luxury escape. The design is fiercely modern.",
-        highlights: ["21,500 sq ft Spa", "Michelin-plate dining", "Surrounded by vineyards"],
-        transportDetail: "15 min taxi from City Center.",
-        averageRate: "$330 - $550",
-        baseRate: 400
+        fullDescription: "Built in 1898, this prestigious hotel combines the grandeur of the Belle Époque with contemporary luxury.",
+        highlights: ["Outdoor swimming pool", "Exotic inner garden", "Historic building"],
+        transportDetail: "2 min walk from Gare Saint-Roch.",
+        averageRate: "$185 - $260",
+        baseRate: 220
       }
     ]
   },
   {
-    id: 'budget',
-    title: 'Value',
-    iconName: 'Wallet',
-    description: "Convenience on a budget.",
+    id: 'lifestyle',
+    title: 'Modern',
+    iconName: 'Zap',
+    description: "Vibrant and contemporary stays.",
     hotels: [
       {
-        name: "Best Western Plus Comedie",
-        image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=800&auto=format&fit=crop",
+        name: "JOST Hotel",
+        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop",
         gallery: [
-            "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=800&auto=format&fit=crop"
+            "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop"
         ],
         stars: 4,
-        tag: "Gare Saint-Roch",
+        tag: "Near Station",
+        priceLevel: 3,
+        lat: 43.6025,
+        lng: 3.8845,
+        description: "Hip, modern hotel with a rooftop pool and vibrant social club.",
+        link: "https://jost-hotels.com/montpellier/",
+        categoryId: 'lifestyle',
+        fullDescription: "A lifestyle destination featuring a rooftop pool, food court, and cool events. Perfect for the modern traveler.",
+        highlights: ["Rooftop Pool", "Food Court", "Modern Design"],
+        transportDetail: "5 min walk from the station.",
+        averageRate: "$120 - $180",
+        baseRate: 150
+      }
+    ]
+  },
+  {
+    id: 'value',
+    title: 'Value',
+    iconName: 'Wallet',
+    description: "Comfortable and convenient.",
+    hotels: [
+      {
+        name: "Aparthotel Adagio",
+        image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800&auto=format&fit=crop",
+        gallery: [
+            "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800&auto=format&fit=crop"
+        ],
+        stars: 3,
+        tag: "Antigone",
         priceLevel: 2,
-        lat: 43.6045,
-        lng: 3.8805,
-        description: "Modern comfort and excellent value next to the station.",
-        link: "https://www.bestwestern.fr/fr/hotel--Best-Western-Plus-Comedie-Saint-Roch-93630",
-        categoryId: 'budget',
-        fullDescription: "A stylish and contemporary choice for those prioritizing convenience. Located just steps from Gare Saint-Roch.",
-        highlights: ["Near Gare Saint-Roch", "Modern Design", "Great Value"],
-        transportDetail: "1 min walk from Gare Saint-Roch.",
-        averageRate: "$110 - $160",
-        baseRate: 130
+        lat: 43.6075,
+        lng: 3.8895,
+        description: "Modern serviced apartments in the striking Antigone district.",
+        link: "https://www.adagio-city.com/",
+        categoryId: 'value',
+        fullDescription: "Spacious apartments with kitchens, located in the neoclassical Antigone neighborhood.",
+        highlights: ["Kitchenettes", "Central Location", "Great Value"],
+        transportDetail: "10 min walk to Place de la Comédie.",
+        averageRate: "$90 - $140",
+        baseRate: 110
       }
     ]
   }
@@ -235,30 +207,30 @@ export const DEFAULT_AGENDA_DATA: AgendaEvent[] = [
         id: 'welcome',
         day: "Friday",
         date: "2026-09-18",
-        startTime: "18:00",
+        startTime: "19:30",
         durationHours: 4,
-        time: "6:00 PM",
-        title: "L'Apéro de Bienvenue",
-        subtitle: "Sunset Welcome",
-        location: "Promenade du Peyrou",
-        description: "The weekend kicks off on a rooftop overlooking the Arceaux aqueduct. Think local wines, tapas, and golden hour vibes.",
+        time: "7:30 PM",
+        title: "Welcome Party",
+        subtitle: "L'Arbre Blanc Rooftop",
+        location: "L'Arbre Blanc, Montpellier",
+        description: "Join us for a welcome cocktail as we watch the sunset over the Lez from this architectural masterpiece.",
         iconName: 'GlassWater',
-        image: "https://images.unsplash.com/photo-1512403913063-e380f68288ce?q=80&w=800&auto=format&fit=crop", // Arc de Triomphe Image
+        image: "/assets/images/arbre_blanc_welcome_1775592709000.png",
         isOfficial: true
     },
     {
         id: 'vineyard',
         day: "Saturday",
         date: "2026-09-19",
-        startTime: "11:00",
+        startTime: "10:30",
         durationHours: 5,
-        time: "11:00 AM",
-        title: "Tour du Vin",
-        subtitle: "Vineyard Excursion",
+        time: "10:30 AM",
+        title: "Wine Tour",
+        subtitle: "Pic Saint-Loup Vineyards",
         location: "Pic Saint-Loup",
-        description: "A private shuttle whisks us to the Pic Saint-Loup for a tasting followed by a rustic lunch amongst the vines.",
+        description: "An optional morning tour and tasting in the most beautiful vineyards of the region.",
         iconName: 'Wine',
-        image: "https://images.unsplash.com/photo-1534234828563-02399873494a?q=80&w=800&auto=format&fit=crop",
+        image: "/assets/images/pic_st_loup_wine_1775592728604.png",
         isOfficial: true
     },
     {
@@ -268,27 +240,27 @@ export const DEFAULT_AGENDA_DATA: AgendaEvent[] = [
         startTime: "19:30",
         durationHours: 6,
         time: "7:30 PM",
-        title: "La Grande Fête",
-        subtitle: "The 40th Birthday",
-        location: "Private Chateau",
-        description: "The main event. A black-tie dinner in a private folly followed by dancing under the stars.",
+        title: "The Celebration",
+        subtitle: "MO.CO Montpellier Contemporain",
+        location: "MO.CO, Montpellier",
+        description: "The main event. A night of art, music, and local gastronomy in the heart of the city.",
         iconName: 'Star',
-        image: "https://images.unsplash.com/photo-1519225468359-2996bc017a1d?q=80&w=800&auto=format&fit=crop",
+        image: "/assets/images/moco_main_event_1775592765525.png",
         isOfficial: true
     },
     {
         id: 'brunch',
         day: "Sunday",
         date: "2026-09-20",
-        startTime: "11:30",
+        startTime: "12:00",
         durationHours: 3,
-        time: "11:30 AM",
-        title: "Le Brunch",
-        subtitle: "Recovery & Farewell",
-        location: "L'Écusson Garden",
-        description: "A slow, restorative brunch to share stories from the night before. Fresh pastries and strong coffee.",
+        time: "12:00 PM",
+        title: "Farewell Brunch",
+        subtitle: "Effet Mer Beach Club",
+        location: "La Grande Motte",
+        description: "Recovery brunch on the beach. Feet in the sand, salt in the air. A perfect end to the weekend.",
         iconName: 'Sun',
-        image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=800&auto=format&fit=crop",
+        image: "/assets/images/effet_mer_brunch_1775592776785.png",
         isOfficial: true
     }
 ];
@@ -331,13 +303,13 @@ export const DEFAULT_ACTIVITY_DATA: ActivityItem[] = [
 
 // --- LANDING PAGE INFO ---
 export const DEFAULT_LANDING_CONTENT: LandingContent = {
-    title: "L'Art de Vivre",
-    subtitle: "The Destination",
-    quote: "I selected {config.destination} for its unique blend of charm and energy. A place where the sun shines and the rhythm of life is set by the clinking of glasses.",
+    title: "Voyageurs",
+    subtitle: "September 18-20",
+    quote: "Gathering my favorite people in a city that captures the heart. A weekend of art, wine, and the Mediterranean sun.",
     infoSections: [
       {
         id: 'overview',
-        tabLabel: 'Overview',
+        tabLabel: 'Vibe',
         tabIcon: 'Landmark',
         tabDesc: 'City Roots',
         title: 'A City of Contrasts',
@@ -351,101 +323,39 @@ export const DEFAULT_LANDING_CONTENT: LandingContent = {
             title: "Walking History", 
             iconName: 'Scroll', 
             desc: "We'll be walking on 1,000-year-old stones. The center is a pedestrian maze where getting lost is the whole point.",
-            image: "https://images.unsplash.com/photo-1565099707216-43d939bd9273?q=80&w=800&auto=format&fit=crop" // Street Image
-          },
-          { 
-            title: "Smart & Sexy", 
-            iconName: 'GraduationCap', 
-            desc: "It's home to the world's oldest med school. The vibe is intellectual but incredibly young and alive.",
-            image: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=800&auto=format&fit=crop"
-          },
-          { 
-            title: "Street Art Soul", 
-            iconName: 'Palette', 
-            desc: "Look for the trompe-l'œil murals. The city respects its past but loves modern creativity.",
-            image: "https://images.unsplash.com/photo-1545989253-02cc26577f88?q=80&w=800&auto=format&fit=crop"
-          },
-          { 
-            title: "La Douée", 
-            iconName: 'Gem', 
-            desc: "\"The Gifted One\"—that's the nickname. Beautiful, lucky, and endowed with charm. Fits the occasion, right?",
-            image: "https://images.unsplash.com/photo-1522582324369-2dfc36bd9273?q=80&w=800&auto=format&fit=crop"
+            image: "https://images.unsplash.com/photo-1565099707216-43d939bd9273?q=80&w=800&auto=format&fit=crop"
           }
         ]
       },
       {
-        id: 'atmosphere',
-        tabLabel: 'Atmosphere',
-        tabIcon: 'Sparkles',
-        tabDesc: 'Vibrant Soul',
-        title: 'What to Expect',
-        description: "Montpellier buzzes with student energy while maintaining a slow, deliberate Mediterranean pace of life.",
+        id: 'travel',
+        tabLabel: 'Travel',
+        tabIcon: 'Plane',
+        tabDesc: 'Getting There',
+        title: 'Your Route to MPL',
+        description: "Montpellier is easily accessible via direct flights or high-speed TGV from major European hubs.",
         stats: [
-            { label: "Metro Pop", value: "570k" },
-            { label: "Under 30", value: "50%" }
+            { label: "TGV from Paris", value: "3h 15m" },
+            { label: "Direct Flights", value: "Daily" }
         ],
         items: [
           { 
-            title: "The SF Vibe", 
-            iconName: 'Zap', 
-            desc: "It's the 'San Francisco of France'—progressive, tech-forward, and full of trams. It feels familiar, just better.",
-            image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800&auto=format&fit=crop"
+            title: "Via Paris (CDG)", 
+            iconName: 'Navigation', 
+            desc: "Fly into Paris and take the TGV directly from the airport or Gare de Lyon to Montpellier Saint-Roch.",
+            image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop"
           },
           { 
-            title: "Terrace Culture", 
-            iconName: 'Sun', 
-            desc: "Life happens outside here. 300 days of sun means the plazas are basically living rooms.",
-            image: "https://images.unsplash.com/photo-1555992336-03a23c7b20ee?q=80&w=800&auto=format&fit=crop"
+            title: "Via Barcelona (BCN)", 
+            iconName: 'Navigation', 
+            desc: "A great option for longer trips. Take the Renfe/SNCF train (3h) or a shuttle/bla-bla-car (3.5h).",
+            image: "https://images.unsplash.com/photo-1583997051651-8255c48b7fca?q=80&w=800&auto=format&fit=crop"
           },
           { 
-            title: "The Soundtrack", 
-            iconName: 'Music', 
-            desc: "As the 'Electronic Capital', the beat never stops. Whether we hit a club or a lounge, the music scene is elite.",
-            image: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?q=80&w=800&auto=format&fit=crop"
-          },
-          { 
-            title: "Endless Lunch", 
-            iconName: 'Wine', 
-            desc: "Lunch is sacred. Wine is cheaper than water. We are going to lean all the way into this.",
-            image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800&auto=format&fit=crop"
-          }
-        ]
-      },
-      {
-        id: 'climate',
-        tabLabel: 'Climate',
-        tabIcon: 'ThermometerSun',
-        tabDesc: 'Indian Summer',
-        title: 'The September Vibe',
-        description: "L'Été Indien—summer crowds have vanished, but the sea is warm and vineyards turn gold.",
-        stats: [
-            { label: "Avg High", value: "80°F" },
-            { label: "Avg Low", value: "65°F" }
-        ],
-        items: [
-          { 
-            title: "Beach Days", 
-            iconName: 'Waves', 
-            desc: "The sea is still warm from August. Bring a swimsuit, we might need a dip.",
-            image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop"
-          },
-          { 
-            title: "Golden Hour", 
-            iconName: 'Wine', 
-            desc: "It's harvest season ('vendanges'). The vineyards turn gold and the light is unbelievable.",
-            image: "https://images.unsplash.com/photo-1528823872057-9c018a7a7553?q=80&w=800&auto=format&fit=crop"
-          },
-          { 
-            title: "La Rentrée", 
-            iconName: 'Music', 
-            desc: "The city wakes up in September. Art festivals, open-air cinema, buzzing energy.",
-            image: "https://images.unsplash.com/photo-1514525253440-b393452e8d26?q=80&w=800&auto=format&fit=crop"
-          },
-          { 
-            title: "Room to Breathe", 
-            iconName: 'Sparkles', 
-            desc: "The tourist crush is gone. We get the city to ourselves, like locals.",
-            image: "https://images.unsplash.com/photo-1587574293340-e0011c4e8ecf?q=80&w=800&auto=format&fit=crop"
+            title: "Direct to MPL", 
+            iconName: 'Plane', 
+            desc: "Flights from London, Amsterdam, Berlin, and Paris arrive daily at Montpellier-Méditerranée airport.",
+            image: "https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=800&auto=format&fit=crop"
           }
         ]
       }
@@ -571,13 +481,14 @@ export const DEFAULT_GALLERY_DATA = DEFAULT_GALLERY_CONTENT.collections; // Back
 // --- APP CONFIG ---
 export const DEFAULT_CONFIG = {
   id: 'default',
-  appName: "September 18-20",
+  appName: "Voyageurs",
   destination: "Montpellier, France",
   occasion: "The 40th Birthday",
-  heroImage: "https://images.unsplash.com/photo-1512403913063-e380f68288ce?q=80&w=1920&auto=format&fit=crop", // Arc de Triomphe Background
+  heroImage: "/assets/images/arbre_blanc_welcome_1775592709000.png",
   videoUrl: "https://www.youtube.com/embed/bRbUJZTIcUw?autoplay=1&mute=1&controls=0&loop=1&playlist=bRbUJZTIcUw&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&modestbranding=1&playsinline=1",
   welcomeMessage: "Forty Years In Good Company",
   enableAI: true,
+  hubUnlocked: false,
   modules: [
     { id: 'rsvp', label: 'RSVP Manager', isEnabled: true, description: "Allows guests to confirm attendance and dietary needs." },
     { id: 'messages', label: 'Chat System', isEnabled: true, description: "Group chat and direct messaging between guests." },

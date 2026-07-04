@@ -23,13 +23,12 @@ const getEnvVar = (key: string, defaultValue: string) => {
   return defaultValue;
 };
 
-// Configuration for 'v6yage4rs' project
+// Configuration for 'voyageurs-834eb' project (the project with guest data + hosting)
 const firebaseConfig = {
-  // Update your .env file to use VITE_ prefix (e.g. VITE_FIREBASE_API_KEY)
   apiKey: getEnvVar('VITE_FIREBASE_API_KEY', "AIzaSyAC5sjtZnu9ccHXLVeoiawnjq0w_dwNeq8"),
-  authDomain: "v6yage4rs.firebaseapp.com",
-  projectId: "v6yage4rs",
-  storageBucket: "v6yage4rs.firebasestorage.app",
+  authDomain: "voyageurs-834eb.firebaseapp.com",
+  projectId: "voyageurs-834eb",
+  storageBucket: "voyageurs-834eb.firebasestorage.app",
   messagingSenderId: "435975494588", 
   appId: "1:435975494588:web:2e12eb825a53477ebbe9b9",
   measurementId: "G-QZ1YK6TT3C"

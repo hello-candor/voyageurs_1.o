@@ -33,6 +33,7 @@ export interface AppConfig {
   videoUrl?: string; 
   welcomeMessage: string;
   enableAI: boolean; 
+  hubUnlocked: boolean;
   modules: AppModule[];
   content: AppContent;
   theme: AppTheme;

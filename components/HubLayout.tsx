@@ -10,8 +10,8 @@ import { useAuth } from '../context/AuthContext';
 import { safeStorage } from '../utils/storage';
 import { FloatingHubNav } from './FloatingHubNav';
 import { HubOverview } from './HubOverview';
-import { HubRSVP } from './HubRSVP';
 import { SearchOverlay } from './SearchOverlay';
+import { HubRSVPCard } from './HubRSVPCard';
 import { NotificationCenter } from './NotificationCenter';
 import { WelcomeTour } from './WelcomeTour';
 import { useNotification } from '../context/NotificationContext';
@@ -269,7 +269,11 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
     const renderAppContent = (view: HubView, props?: any) => {
         switch (view) {
             case 'overview': return <JournalPage />;
-            case 'rsvp': return <HubRSVP onComplete={() => launchApp('logistics')} />;
+            case 'rsvp': return (
+                <WithPadding>
+                    <HubRSVPCard onComplete={() => launchApp('logistics')} />
+                </WithPadding>
+            );
             case 'messages': return <ChatSystem onNavigate={(v) => launchApp(v)} />;
             case 'calendar': return <WithPadding><SeptemberCalendar onOpenMap={() => launchApp('map')} /></WithPadding>;
             case 'expenses': return <WithPadding><ExpenseTracker /></WithPadding>;

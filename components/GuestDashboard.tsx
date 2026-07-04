@@ -3,7 +3,7 @@ import React from 'react';
 import { GuestProfile } from './GuestProfile';
 import { HubOverview } from './HubOverview';
 import { HubConnections } from './HubConnections';
-import { HubRSVP } from './HubRSVP';
+import { HubRSVPCard } from './HubRSVPCard';
 import { TripPlanner } from './TripPlanner';
 import { EssentialsToolkit } from './EssentialsToolkit';
 import { SeptemberCalendar } from './SeptemberCalendar';
@@ -59,7 +59,7 @@ export const GuestDashboard: React.FC<GuestDashboardProps> = ({ activeTab = 'ove
 
                 {activeTab === 'overview' && <HubOverview onTabChange={handleTabChange} />}
                 {activeTab === 'calendar' && <SeptemberCalendar />}
-                {activeTab === 'rsvp' && <HubRSVP />}
+                {activeTab === 'rsvp' && <HubRSVPCard />}
                 {activeTab === 'logistics' && <TripPlanner onTabChange={handleTabChange} />}
                 {activeTab === 'activities' && <Activities />}
                 {activeTab === 'expenses' && <ExpenseTracker />}

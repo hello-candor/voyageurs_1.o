@@ -39,11 +39,3 @@ body {
   color: var(--text-primary);
 }
 
-/* Maintain legacy classes for compatibility while transitioning */
-.bg-med-sand {
-  background-color: var(--background-light);
-}
-
-.dark .bg-slate-900 {
-  background-color: var(--background-dark);
-}

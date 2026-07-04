@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { authService } from '../services/authService';
 import { safeStorage } from '../utils/storage';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, signInAnonymously, User } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 
 interface AuthContextType {
@@ -29,9 +29,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setFirebaseUser(user);
       if (user) {
-        setIsHost(true);
-        safeStorage.setItem('host_session', 'active_firebase');
+        // Check if this is a real (non-anonymous) user for host access
+        if (!user.isAnonymous) {
+          setIsHost(true);
+          safeStorage.setItem('host_session', 'active_firebase');
+        } else {
+          // Anonymous user — check for legacy host session
+          const legacySession = safeStorage.getItem('host_session');
+          if (legacySession === 'active') {
+            setIsHost(true);
+          }
+        }
       } else {
+        // No user at all — sign in anonymously so Firestore queries work
         const legacySession = safeStorage.getItem('host_session');
         if (legacySession === 'active') {
           setIsHost(true);
@@ -39,6 +49,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setIsHost(false);
           safeStorage.removeItem('host_session');
         }
+        // Trigger anonymous sign-in (the onAuthStateChanged callback
+        // will fire again once it completes)
+        signInAnonymously(auth).catch((err) => {
+          console.warn('Anonymous sign-in failed:', err);
+          setIsLoading(false);
+        });
+        return; // Don't set isLoading=false yet, wait for the anon sign-in callback
       }
       setIsLoading(false);
     });

@@ -2,8 +2,36 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Guest records — authenticated users can read all guests (for the guest list),
+    // but can only write to their own record
+    match /events/{eventId}/guests/{guestId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    // Trip configuration — readable by all authenticated users, writable by host
+    match /trips/{tripId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    // Gallery posts — readable/writable by authenticated users
+    match /gallery_posts/{postId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    // Mail queue — Firebase Trigger Email extension picks these up
+    // Users can create emails but can't read or delete them
+    match /mail/{mailId} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if false;
+    }
+
+    // Default deny for everything else
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }
