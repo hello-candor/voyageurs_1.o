@@ -17,7 +17,7 @@ import { Button } from './Button';
 
 import { onGuestRegistered } from '../services/registrationOrchestrator';
 
-type Step = 'welcome' | 'details' | 'rsvp';
+type Step = 'welcome' | 'details' | 'attendance' | 'rsvp';
 type RSVPStatus = 'Confirmed' | 'Declined' | 'Pending';
 
 // ─── Shared Decorative Background ───────────────────────────────────────────
@@ -187,6 +187,7 @@ export const OnboardingFlow: React.FC = () => {
     const [isFinishing, setIsFinishing] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [rsvpStatus, setRsvpStatus] = useState<RSVPStatus>('Confirmed');
+    const [eventAttendance, setEventAttendance] = useState<Record<string, boolean>>({});
 
     // Parse compound names like "Paul & Victoria Mahoney" into separate guests
     const parseGuestNames = useCallback((fullName: string): { primary: string; companion: string | null } => {
@@ -259,12 +260,17 @@ export const OnboardingFlow: React.FC = () => {
     const [showEditDetails, setShowEditDetails] = useState(!hasExistingProfile);
 
     useEffect(() => {
-        if (user) setIdentity(prev => ({
-            ...prev,
-            name: prev.name || user.name,
-            email: prev.email || user.email,
-            phone: prev.phone || (user.phone ?? '')
-        }));
+        if (user) {
+            setIdentity(prev => ({
+                ...prev,
+                name: prev.name || user.name,
+                email: prev.email || user.email,
+                phone: prev.phone || (user.phone ?? '')
+            }));
+            if (user.eventConfirmations) {
+                setEventAttendance(user.eventConfirmations);
+            }
+        }
     }, [user]);
 
     const validateDetails = () => {
@@ -276,7 +282,7 @@ export const OnboardingFlow: React.FC = () => {
     };
 
     const addPartyMember = () => {
-        if (!newMemberName.trim()) return;
+        if (!newMemberName.trim() || partyMembers.length >= 5) return;
         setPartyMembers(prev => [...prev, { name: newMemberName.trim(), email: newMemberEmail.trim() }]);
         setNewMemberName('');
         setNewMemberEmail('');
@@ -301,9 +307,13 @@ export const OnboardingFlow: React.FC = () => {
 
         // Persist RSVP — await to prevent race condition with follow-up writes
         if (user) {
-            await submitRSVP({ status, guestsCount, privacy, phone: identity.phone });
+            await submitRSVP({ status, guestsCount, privacy, phone: identity.phone, eventConfirmations: eventAttendance });
         } else {
             login(identity.name, identity.email, guestsCount, status, '', '', {}, privacy, identity.phone);
+            // After login, we might need to update event confirmations if they were set in onboarding
+            if (Object.keys(eventAttendance).length > 0) {
+                setTimeout(() => submitRSVP({ eventConfirmations: eventAttendance }), 500);
+            }
         }
 
         // Send RSVP confirmation email via Firebase Trigger Email extension
@@ -386,7 +396,7 @@ export const OnboardingFlow: React.FC = () => {
                 <Logo className="mb-10 w-24 h-24 sm:w-28 sm:h-28" />
 
                 <div className="text-center mb-8 w-full">
-                    <Eyebrow label="You're Invited" />
+                    <Eyebrow label="You're Invited To" />
                     <h1
                         className="font-heading font-light text-med-blue dark:text-blue-100 leading-[0.9] mb-6 tracking-tight"
                         style={{ fontSize: 'clamp(3.5rem, 13vw, 6rem)' }}
@@ -413,12 +423,7 @@ export const OnboardingFlow: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="mt-6 relative">
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-med-terracotta/40 rounded-full" />
-                        <p className="text-sm font-body text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm mx-auto text-left pl-6">
-                            Join the celebration in the South of France! Confirm your attendance, plan your visit, and learn about the destination.
-                        </p>
-                    </div>
+
                 </div>
 
                 <div className="w-full flex items-center gap-3">
@@ -426,7 +431,7 @@ export const OnboardingFlow: React.FC = () => {
                         RETURN
                     </PillButton>
                     <PillButton onClick={() => setCurrentStep('details')} fullWidth={false} className="flex-[2]">
-                        NEXT &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        CONFIRM &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </PillButton>
                 </div>
             </Shell>
@@ -438,10 +443,9 @@ export const OnboardingFlow: React.FC = () => {
         return (
             <Shell stepIndex={1}>
                 <Logo className="mb-8 w-20 h-20 sm:w-24 sm:h-24" />
-                <ProgressDots step={1} total={3} />
 
                 <div className="text-center mb-10 w-full">
-                    <Eyebrow label="Step 1 of 2" />
+                    <Eyebrow label="Step 1 of 3" />
                     <h2
                         className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight"
                         style={{ fontSize: 'clamp(2.8rem, 10vw, 4.5rem)' }}
@@ -512,7 +516,7 @@ export const OnboardingFlow: React.FC = () => {
                                 autoFocus
                             />
                             <FlatInput
-                                label="Email Address"
+                                label="Email Address (required)"
                                 icon={Mail}
                                 type="email"
                                 value={identity.email}
@@ -605,7 +609,7 @@ export const OnboardingFlow: React.FC = () => {
                                 <Users size={11} /> Your Party
                             </p>
                             <span className="text-[10px] font-body text-slate-400 dark:text-gray-500">
-                                {1 + partyMembers.length} guest{partyMembers.length !== 0 ? 's' : ''}
+                                {1 + partyMembers.length} / 6 guests
                             </span>
                         </div>
 
@@ -709,9 +713,10 @@ export const OnboardingFlow: React.FC = () => {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     onClick={() => setAddingMember(true)}
-                                    className="w-full mt-3 h-12 rounded-[1.5rem] border-2 border-dashed border-slate-200 dark:border-gray-700 hover:border-med-terracotta/40 flex items-center justify-center gap-2 text-[10px] font-body font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-gray-500 hover:text-med-terracotta transition-all"
+                                    disabled={partyMembers.length >= 5}
+                                    className="w-full mt-3 h-12 rounded-[1.5rem] border-2 border-dashed border-slate-200 dark:border-gray-700 hover:border-med-terracotta/40 flex items-center justify-center gap-2 text-[10px] font-body font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-gray-500 hover:text-med-terracotta transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                                 >
-                                    <Plus size={13} /> Add Guest to Party
+                                    <Plus size={13} /> {partyMembers.length >= 5 ? 'Party Limit Reached' : 'Add Guest to Party'}
                                 </motion.button>
                             )}
                         </AnimatePresence>
@@ -723,7 +728,7 @@ export const OnboardingFlow: React.FC = () => {
                         </PillButton>
                         <PillButton
                             onClick={() => {
-                                if (validateDetails()) setCurrentStep('rsvp');
+                                if (validateDetails()) setCurrentStep('attendance');
                             }}
                             fullWidth={false}
                             className="flex-[2]"
@@ -736,14 +741,75 @@ export const OnboardingFlow: React.FC = () => {
         );
     }
 
+    // ── Step 3: Event Attendance (New) ────────────────────────────────────────
+    if (currentStep === 'attendance') {
+        const { DEFAULT_AGENDA_DATA } = require('../data/defaults');
+        const officialEvents = DEFAULT_AGENDA_DATA.filter((e: any) => e.isOfficial);
+
+        return (
+            <Shell stepIndex={1.5}>
+                <Logo className="mb-8 w-20 h-20 sm:w-24 sm:h-24" />
+
+                <div className="text-center mb-8 w-full">
+                    <Eyebrow label="Step 2 of 3" />
+                    <h2
+                        className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-3"
+                        style={{ fontSize: 'clamp(2.5rem, 9vw, 4rem)' }}
+                    >
+                        The<br /><span className="italic text-med-terracotta">Festivities.</span>
+                    </h2>
+                    <p className="text-xs font-body text-slate-400 dark:text-gray-500 max-w-xs mx-auto">
+                        Which events can we expect to see you at? You can update this later in the Hub.
+                    </p>
+                </div>
+
+                <div className="w-full space-y-3 mb-8 max-h-[40vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-med-terracotta/20">
+                    {officialEvents.map((event: any) => (
+                        <button
+                            key={event.id}
+                            onClick={() => setEventAttendance(prev => ({ ...prev, [event.id]: !prev[event.id] }))}
+                            className={`w-full p-4 rounded-2xl border-2 transition-all duration-300 flex items-center gap-4 text-left ${
+                                eventAttendance[event.id]
+                                    ? 'bg-med-terracotta/5 border-med-terracotta shadow-sm'
+                                    : 'bg-white dark:bg-gray-800/40 border-slate-100 dark:border-gray-700 hover:border-slate-200'
+                            }`}
+                        >
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                                eventAttendance[event.id] ? 'bg-med-terracotta text-white' : 'bg-slate-50 dark:bg-gray-700 text-slate-400'
+                            }`}>
+                                {eventAttendance[event.id] ? <Check size={18} /> : <Calendar size={18} />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-body font-bold uppercase tracking-wider ${eventAttendance[event.id] ? 'text-med-terracotta' : 'text-med-blue dark:text-white'}`}>
+                                    {event.title}
+                                </p>
+                                <p className="text-[10px] font-body text-slate-400 dark:text-gray-500 truncate">
+                                    {event.day} • {event.time} @ {event.subtitle}
+                                </p>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+
+                <div className="w-full flex items-center gap-3">
+                    <PillButton variant="ghost" onClick={() => setCurrentStep('details')} fullWidth={false} className="flex-[1]">
+                        ← BACK
+                    </PillButton>
+                    <PillButton onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[2]">
+                        NEXT &nbsp;<ArrowRight size={16} />
+                    </PillButton>
+                </div>
+            </Shell>
+        );
+    }
+
     // ── Step 3: RSVP (Icon-Focused) ───────────────────────────────────────────
     return (
         <Shell stepIndex={2}>
             <Logo className="mb-8 w-20 h-20 sm:w-24 sm:h-24" />
-            <ProgressDots step={2} total={3} />
 
             <div className="text-center mb-8 w-full">
-                <Eyebrow label="Step 2 of 2" />
+                <Eyebrow label="Step 3 of 3" />
                 <h2
                     className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-3"
                     style={{ fontSize: 'clamp(2.8rem, 10vw, 4.5rem)' }}
@@ -814,27 +880,21 @@ export const OnboardingFlow: React.FC = () => {
                 </motion.div>
             )}
 
-            {/* RSVP Deadline Reminder */}
-            <div className="w-full p-5 rounded-[2rem] bg-gradient-to-br from-med-blue/5 to-med-sand/40 dark:from-gray-800/80 dark:to-gray-800/40 border border-med-blue/15 dark:border-gray-700/80">
-                <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-med-blue/10 flex items-center justify-center shrink-0 mt-0.5">
-                        <Calendar size={18} className="text-med-blue" />
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-body font-bold uppercase tracking-[0.3em] text-med-blue dark:text-blue-400 mb-1.5">RSVP Reminder</p>
-                        <p className="text-xs font-body text-slate-500 dark:text-slate-400 leading-relaxed">
-                            Please confirm your RSVP by <span className="font-semibold text-med-blue dark:text-white">August 15th, 2026</span>. Don't worry — you can change your response anytime before that date. Not sure yet? Select <span className="font-semibold text-med-blue dark:text-blue-400">Still Exploring</span> and update when you're ready.
-                        </p>
-                    </div>
+            {/* RSVP Deadline Reminder — Reimagined */}
+            <div className="w-full mt-2 py-4 px-8 rounded-full bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 flex items-center justify-between group">
+                <span className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-slate-400 group-hover:text-med-terracotta transition-colors">RSVP Cutoff</span>
+                <div className="flex items-center gap-2">
+                    <Calendar size={12} className="text-med-terracotta" />
+                    <span className="text-xs font-heading font-semibold text-med-blue dark:text-white italic">August 15, 2026</span>
                 </div>
             </div>
 
-            <div className="w-full pt-5 flex items-center justify-between gap-3">
-                <PillButton variant="ghost" onClick={() => setCurrentStep('details')} fullWidth={false}>
+            <div className="w-full pt-8 flex items-center justify-between gap-3">
+                <PillButton variant="ghost" onClick={() => setCurrentStep('attendance')} fullWidth={false}>
                     ← BACK
                 </PillButton>
-                <PillButton onClick={() => handleFinish('Pending')} fullWidth={false} className="px-8">
-                    Enter Voyageurs <ArrowRight size={14} />
+                <PillButton onClick={() => handleFinish('Pending')} fullWidth={false} className="px-12">
+                    NEXT &nbsp;<ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </PillButton>
             </div>
         </Shell>

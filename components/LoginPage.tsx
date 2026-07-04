@@ -168,7 +168,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
               <div className="flex items-center justify-center gap-6 mb-6">
                   <div className="h-px w-10 bg-med-terracotta/40"></div>
                   <span className="text-[11px] font-body font-bold uppercase tracking-[0.4em] text-med-terracotta">
-                    Join An Event
+                    RSVP for Your Event
                   </span>
                   <div className="h-px w-10 bg-med-terracotta/40"></div>
               </div>
@@ -252,7 +252,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
                 {isLoading ? (
                   <Loader2 className="animate-spin w-6 h-6" />
                 ) : (
-                  "OPEN INVITE"
+                  "RSVP Now"
                 )}
               </button>
             </form>
