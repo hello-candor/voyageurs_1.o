@@ -58,14 +58,10 @@ const LoadingScreen = () => {
       </div>
 
       {/* Brand name */}
-      <h1 className="text-white text-2xl tracking-[0.3em] uppercase mb-2"
+      <h1 className="text-white text-2xl tracking-[0.3em] uppercase mb-12"
         style={{ fontFamily: "'Montserrat', system-ui, sans-serif", fontWeight: 300, opacity: 0.9 }}>
         Voyageurs
       </h1>
-      <p className="text-xs tracking-[0.5em] uppercase mb-12"
-        style={{ color: '#C07D5E', fontFamily: "'Montserrat', system-ui, sans-serif", fontWeight: 600 }}>
-        Bryan's 40th
-      </p>
 
       {/* Progress bar */}
       <div className="w-48 h-[2px] rounded-full overflow-hidden mb-8" style={{ background: 'rgba(255,255,255,0.08)' }}>
@@ -246,7 +242,6 @@ const App = () => {
     );
   }
 
-  const isJournalPage = window.location.pathname === '/journal';
 
   return (
     <div className="min-h-screen font-sans selection:bg-med-terracotta/30 bg-background transition-colors duration-300 flex flex-col overflow-x-hidden">
@@ -255,10 +250,6 @@ const App = () => {
           // Guest Hub is triggered for onboarding or profile view
           <Suspense fallback={<LoadingScreen />}>
             <TravelHub isOpen={true} onClose={toggleProfile} />
-          </Suspense>
-        ) : isJournalPage ? (
-          <Suspense fallback={<LoadingScreen />}>
-            <JournalPage />
           </Suspense>
         ) : (
           // Standard public marketing page
@@ -293,7 +284,7 @@ const App = () => {
         <PrivacyPolicyModal isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />
         <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
       </Suspense>
-      {!showGuestOnboarding && <MobileNav />}
+      {!showGuestOnboarding && <MobileNav onShowLogin={() => setShowLogin(true)} />}
 
       <InstallPrompt />
     </div>

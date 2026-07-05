@@ -16,13 +16,14 @@ import { isValidEmail, isValidName } from '../utils/validation';
 import { Button } from './Button';
 
 import { onGuestRegistered } from '../services/registrationOrchestrator';
+import { DEFAULT_AGENDA_DATA } from '../data/defaults';
 
-type Step = 'welcome' | 'details' | 'attendance' | 'rsvp';
+type Step = 'welcome' | 'details' | 'attendance' | 'rsvp' | 'decline';
 type RSVPStatus = 'Confirmed' | 'Declined' | 'Pending';
 
 // ─── Shared Decorative Background ───────────────────────────────────────────
 const Blobs = () => (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div
             animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
             transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
@@ -52,34 +53,18 @@ const Logo = ({ className = 'w-16 h-16' }) => (
     </div>
 );
 
-// ─── Eyebrow ─────────────────────────────────────────────────────────────────
-const Eyebrow = ({ label }: { label: string }) => (
-    <div className="flex items-center justify-center gap-5 mb-6">
-        <div className="h-px w-10 bg-med-terracotta/40" />
-        <span className="text-[11px] font-body font-bold uppercase tracking-[0.4em] text-med-terracotta">
-            {label}
-        </span>
-        <div className="h-px w-10 bg-med-terracotta/40" />
-    </div>
-);
-
-// ─── Progress ────────────────────────────────────────────────────────────────
-const ProgressDots = ({ step, total }: { step: number; total: number }) => (
-    <div className="flex gap-2 mb-10 justify-center">
+// ─── Progress Bar ──────────────────────────────────────────────────────────────────
+const ProgressBar = ({ step, total }: { step: number; total: number }) => (
+    <div className="w-full max-w-[180px] mx-auto mb-8 flex gap-2">
         {Array.from({ length: total }, (_, i) => (
-            <motion.div
-                key={i}
-                className={`h-2 rounded-full transition-all duration-500 ${
-                    i < step
-                        ? 'w-8 bg-med-terracotta'
-                        : i === step
-                        ? 'w-4 bg-med-terracotta/60'
-                        : 'w-2 bg-slate-200 dark:bg-gray-700'
-                }`}
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
-            />
+            <div key={i} className="flex-1 h-1 rounded-full bg-slate-200 dark:bg-gray-700 overflow-hidden">
+                <motion.div
+                    className="h-full rounded-full bg-med-terracotta"
+                    initial={{ width: 0 }}
+                    animate={{ width: i < step ? '100%' : '0%' }}
+                    transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94], delay: i * 0.1 }}
+                />
+            </div>
         ))}
     </div>
 );
@@ -138,7 +123,7 @@ const PillButton = ({
             type={type}
             onClick={onClick}
             disabled={disabled || isLoading}
-            className={`h-16 bg-[#E2923D] text-white rounded-full text-[11px] font-body font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-[#d17e2b] shadow-[#E2923D]/20 transition-all flex items-center justify-center gap-4 group active:scale-95 disabled:opacity-50 ${fullWidth ? 'w-full' : 'px-10'} ${className}`}
+            className={`h-16 bg-[#E2923D] dark:bg-[#c07030] text-white rounded-full text-[11px] font-body font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-[#d17e2b] dark:hover:bg-[#a86028] shadow-[#E2923D]/20 transition-all flex items-center justify-center gap-4 group active:scale-95 disabled:opacity-50 ${fullWidth ? 'w-full' : 'px-10'} ${className}`}
         >
             {isLoading ? <Loader2 className="animate-spin w-5 h-5" /> : children}
         </button>
@@ -147,12 +132,7 @@ const PillButton = ({
 
 // ─── Shell ────────────────────────────────────────────────────────────────────
 const Shell = ({ children, stepIndex }: { children: React.ReactNode; stepIndex: number }) => (
-    <div className="fixed inset-0 z-[1000] overflow-y-auto bg-med-sand dark:bg-[#111827] transition-colors duration-500">
-        <style>{`
-            @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
-            .font-heading { font-family: 'Cormorant Garamond', serif; }
-            .font-body    { font-family: 'Montserrat', sans-serif; }
-        `}</style>
+    <div className="fixed inset-0 z-[1000] overflow-y-auto bg-med-sand dark:bg-[#1A1A1A] transition-colors duration-500">
 
         <Blobs />
 
@@ -183,10 +163,12 @@ export const OnboardingFlow: React.FC = () => {
     const { addNotification } = useNotification();
     const { logoutHost } = useAuth();
 
-    const [currentStep, setCurrentStep] = useState<Step>('welcome');
+    const [currentStep, setCurrentStep] = useState<Step>('rsvp');
     const [isFinishing, setIsFinishing] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [rsvpStatus, setRsvpStatus] = useState<RSVPStatus>('Confirmed');
+    const [selectedRSVP, setSelectedRSVP] = useState<RSVPStatus | null>(null);
+    const [declineMessage, setDeclineMessage] = useState('');
     const [eventAttendance, setEventAttendance] = useState<Record<string, boolean>>({});
 
     // Parse compound names like "Paul & Victoria Mahoney" into separate guests
@@ -276,7 +258,7 @@ export const OnboardingFlow: React.FC = () => {
     const validateDetails = () => {
         const e: Record<string, string> = {};
         if (!isValidName(identity.name)) e.name = 'Name must be at least 2 characters.';
-        if (!isValidEmail(identity.email)) e.email = 'Please enter a valid email.';
+        if (identity.email && !isValidEmail(identity.email)) e.email = 'Please enter a valid email.';
         setErrors(e);
         return Object.keys(e).length === 0;
     };
@@ -389,68 +371,19 @@ export const OnboardingFlow: React.FC = () => {
         completeOnboarding();
     };
 
-    // ── Step 1: Welcome ──────────────────────────────────────────────────────
-    if (currentStep === 'welcome') {
-        return (
-            <Shell stepIndex={0}>
-                <Logo className="mb-10 w-24 h-24 sm:w-28 sm:h-28" />
-
-                <div className="text-center mb-8 w-full">
-                    <Eyebrow label="You're Invited To" />
-                    <h1
-                        className="font-heading font-light text-med-blue dark:text-blue-100 leading-[0.9] mb-6 tracking-tight"
-                        style={{ fontSize: 'clamp(3.5rem, 13vw, 6rem)' }}
-                    >
-                        Bryan's <br />
-                        <span className="italic text-med-terracotta dark:text-[#C25E3E]">40th.</span>
-                    </h1>
-
-                    {/* Event Details Block */}
-                    <div className="mt-6 grid grid-cols-2 gap-3 w-full">
-                        <div className="flex flex-col items-center gap-2 p-4 rounded-[1.5rem] bg-med-sand/60 dark:bg-gray-800/60 border border-slate-100 dark:border-gray-700">
-                            <Calendar size={18} className="text-med-terracotta" />
-                            <div>
-                                <p className="text-[9px] font-body font-bold uppercase tracking-[0.3em] text-slate-400 dark:text-gray-500 mb-0.5">Date</p>
-                                <p className="text-sm font-heading font-medium text-med-blue dark:text-white">Sep 18–20, 2026</p>
-                            </div>
-                        </div>
-                        <div className="flex flex-col items-center gap-2 p-4 rounded-[1.5rem] bg-med-sand/60 dark:bg-gray-800/60 border border-slate-100 dark:border-gray-700">
-                            <MapPin size={18} className="text-med-terracotta" />
-                            <div>
-                                <p className="text-[9px] font-body font-bold uppercase tracking-[0.3em] text-slate-400 dark:text-gray-500 mb-0.5">Location</p>
-                                <p className="text-sm font-heading font-medium text-med-blue dark:text-white">Montpellier, France</p>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-                <div className="w-full flex items-center gap-3">
-                    <PillButton variant="ghost" onClick={logoutHost} fullWidth={false} className="flex-[1]">
-                        RETURN
-                    </PillButton>
-                    <PillButton onClick={() => setCurrentStep('details')} fullWidth={false} className="flex-[2]">
-                        CONFIRM &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                    </PillButton>
-                </div>
-            </Shell>
-        );
-    }
-
-    // ── Step 2: Personal Details + Party ──────────────────────────────────────
+    // ── Step 2: Personal Details + Party (only if attending) ──────────────────
     if (currentStep === 'details') {
         return (
             <Shell stepIndex={1}>
                 <Logo className="mb-8 w-20 h-20 sm:w-24 sm:h-24" />
 
-                <div className="text-center mb-10 w-full">
-                    <Eyebrow label="Step 1 of 3" />
+                <div className="text-center mb-8 w-full">
+                    <ProgressBar step={2} total={2} />
                     <h2
-                        className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight"
+                        className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-3"
                         style={{ fontSize: 'clamp(2.8rem, 10vw, 4.5rem)' }}
                     >
-                        Your<br /><span className="italic text-med-terracotta">Details.</span>
+                        Confirm Your<br /><span className="italic text-med-terracotta">{partyMembers.length > 0 ? 'Party.' : 'Details.'}</span>
                     </h2>
                 </div>
 
@@ -516,7 +449,7 @@ export const OnboardingFlow: React.FC = () => {
                                 autoFocus
                             />
                             <FlatInput
-                                label="Email Address (required)"
+                                label="Email Address"
                                 icon={Mail}
                                 type="email"
                                 value={identity.email}
@@ -527,7 +460,7 @@ export const OnboardingFlow: React.FC = () => {
                             {/* Phone with country code dropdown */}
                             <div className="space-y-1">
                                 <label className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta flex items-center gap-2">
-                                    <Phone size={11} /> Phone / WhatsApp (Optional)
+                                    <Phone size={11} /> Phone / WhatsApp
                                 </label>
                                 <div className="relative group flex items-center border-b-2 border-slate-100 dark:border-gray-800 focus-within:border-med-terracotta dark:focus-within:border-med-terracotta transition-all">
                                     <select
@@ -722,18 +655,18 @@ export const OnboardingFlow: React.FC = () => {
                         </AnimatePresence>
                     </div>
 
-                    <div className="pt-6 flex items-center gap-3 w-full">
-                        <PillButton variant="ghost" onClick={() => setCurrentStep('welcome')} fullWidth={false} className="flex-[1]">
+                    <div className="pt-8 flex items-center gap-3 w-full">
+                        <PillButton variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
                             ← BACK
                         </PillButton>
                         <PillButton
                             onClick={() => {
-                                if (validateDetails()) setCurrentStep('attendance');
+                                if (validateDetails()) handleFinish('Confirmed');
                             }}
                             fullWidth={false}
                             className="flex-[2]"
                         >
-                            NEXT &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            FINISH &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                         </PillButton>
                     </div>
                 </div>
@@ -741,130 +674,154 @@ export const OnboardingFlow: React.FC = () => {
         );
     }
 
-    // ── Step 3: Event Attendance (New) ────────────────────────────────────────
-    if (currentStep === 'attendance') {
-        const { DEFAULT_AGENDA_DATA } = require('../data/defaults');
-        const officialEvents = DEFAULT_AGENDA_DATA.filter((e: any) => e.isOfficial);
-
+    // ── Decline Confirmation ──────────────────────────────────────────────────
+    if (currentStep === 'decline') {
         return (
-            <Shell stepIndex={1.5}>
+            <Shell stepIndex={0}>
                 <Logo className="mb-8 w-20 h-20 sm:w-24 sm:h-24" />
 
                 <div className="text-center mb-8 w-full">
-                    <Eyebrow label="Step 2 of 3" />
                     <h2
                         className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-3"
                         style={{ fontSize: 'clamp(2.5rem, 9vw, 4rem)' }}
                     >
-                        The<br /><span className="italic text-med-terracotta">Festivities.</span>
+                        We'll miss<br /><span className="italic text-med-terracotta">you.</span>
                     </h2>
-                    <p className="text-xs font-body text-slate-400 dark:text-gray-500 max-w-xs mx-auto">
-                        Which events can we expect to see you at? You can update this later in the Hub.
+                    <p className="text-xs font-body text-slate-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
+                        Want to let the host know why? This is completely optional.
                     </p>
                 </div>
 
-                <div className="w-full space-y-3 mb-8 max-h-[40vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-med-terracotta/20">
-                    {officialEvents.map((event: any) => (
-                        <button
-                            key={event.id}
-                            onClick={() => setEventAttendance(prev => ({ ...prev, [event.id]: !prev[event.id] }))}
-                            className={`w-full p-4 rounded-2xl border-2 transition-all duration-300 flex items-center gap-4 text-left ${
-                                eventAttendance[event.id]
-                                    ? 'bg-med-terracotta/5 border-med-terracotta shadow-sm'
-                                    : 'bg-white dark:bg-gray-800/40 border-slate-100 dark:border-gray-700 hover:border-slate-200'
-                            }`}
-                        >
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                                eventAttendance[event.id] ? 'bg-med-terracotta text-white' : 'bg-slate-50 dark:bg-gray-700 text-slate-400'
-                            }`}>
-                                {eventAttendance[event.id] ? <Check size={18} /> : <Calendar size={18} />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className={`text-sm font-body font-bold uppercase tracking-wider ${eventAttendance[event.id] ? 'text-med-terracotta' : 'text-med-blue dark:text-white'}`}>
-                                    {event.title}
-                                </p>
-                                <p className="text-[10px] font-body text-slate-400 dark:text-gray-500 truncate">
-                                    {event.day} • {event.time} @ {event.subtitle}
-                                </p>
-                            </div>
-                        </button>
-                    ))}
+                <div className="w-full space-y-4 mb-6">
+                    <textarea
+                        value={declineMessage}
+                        onChange={(e) => setDeclineMessage(e.target.value)}
+                        placeholder="Send a quick note to the host (optional)..."
+                        rows={3}
+                        className="w-full bg-white/80 dark:bg-gray-800/60 border-2 border-slate-100 dark:border-gray-700 rounded-[1.5rem] px-6 py-4 text-sm font-body text-med-blue dark:text-white placeholder:text-slate-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-med-terracotta/50 focus:ring-0 transition-colors resize-none"
+                    />
+                </div>
+
+                {/* Cutoff reminder */}
+                <div className="w-full py-5 px-8 rounded-[2rem] bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 text-center mb-6">
+                    <div className="flex items-center justify-center gap-2.5 mb-2">
+                        <Calendar size={18} className="text-med-terracotta" />
+                        <span className="text-lg font-heading font-semibold text-med-blue dark:text-white italic">Changed your mind?</span>
+                    </div>
+                    <p className="text-[11px] font-body text-slate-400 dark:text-gray-500 leading-relaxed">
+                        No worries — you can update your RSVP anytime before <span className="font-bold text-med-terracotta">August 15, 2026</span>.
+                    </p>
                 </div>
 
                 <div className="w-full flex items-center gap-3">
-                    <PillButton variant="ghost" onClick={() => setCurrentStep('details')} fullWidth={false} className="flex-[1]">
+                    <PillButton variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
                         ← BACK
                     </PillButton>
-                    <PillButton onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[2]">
-                        NEXT &nbsp;<ArrowRight size={16} />
+                    <PillButton
+                        onClick={() => handleFinish('Declined')}
+                        fullWidth={false}
+                        className="flex-[2]"
+                        isLoading={isFinishing}
+                    >
+                        {declineMessage.trim() ? 'SEND & FINISH' : 'FINISH'} &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </PillButton>
                 </div>
             </Shell>
         );
     }
 
-    // ── Step 3: RSVP (Icon-Focused) ───────────────────────────────────────────
+    // ── Step 1: RSVP (Icon-Focused) ───────────────────────────────────────────
     return (
-        <Shell stepIndex={2}>
+        <Shell stepIndex={0}>
             <Logo className="mb-8 w-20 h-20 sm:w-24 sm:h-24" />
 
             <div className="text-center mb-8 w-full">
-                <Eyebrow label="Step 3 of 3" />
+                <ProgressBar step={1} total={2} />
                 <h2
                     className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-3"
                     style={{ fontSize: 'clamp(2.8rem, 10vw, 4.5rem)' }}
                 >
-                    Will you<br /><span className="italic text-med-terracotta">join us?</span>
+                    Say<br /><span className="italic text-med-terracotta">the word.</span>
                 </h2>
             </div>
 
             {/* RSVP Options — Icon-Focused */}
             <div className="w-full grid grid-cols-3 gap-3 mb-8">
-                {/* I'll Be There */}
+                {/* Yes */}
                 <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => handleFinish('Confirmed')}
+                    onClick={() => setSelectedRSVP('Confirmed')}
                     disabled={isFinishing}
-                    className="flex flex-col items-center gap-3 p-5 rounded-[2rem] border-2 border-slate-100 dark:border-gray-700 hover:border-med-terracotta/50 bg-white/60 dark:bg-gray-800/50 backdrop-blur-sm transition-all duration-300 group hover:shadow-lg hover:shadow-med-terracotta/10 hover:bg-med-terracotta/5"
+                    className={`flex flex-col items-center gap-3 p-5 rounded-[2rem] border-2 backdrop-blur-sm transition-all duration-300 group hover:shadow-lg ${
+                        selectedRSVP === 'Confirmed'
+                            ? 'border-med-terracotta bg-med-terracotta/10 shadow-md shadow-med-terracotta/10'
+                            : 'border-slate-100 dark:border-gray-700 hover:border-med-terracotta/50 bg-white/60 dark:bg-gray-800/50 hover:shadow-med-terracotta/10 hover:bg-med-terracotta/5'
+                    }`}
                 >
-                    <div className="w-14 h-14 rounded-full bg-med-terracotta/10 flex items-center justify-center group-hover:bg-med-terracotta group-hover:text-white transition-all duration-300">
-                        <PartyPopper size={24} className="text-med-terracotta group-hover:text-white transition-colors" />
+                    <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        selectedRSVP === 'Confirmed'
+                            ? 'bg-med-terracotta text-white'
+                            : 'bg-med-terracotta/10 group-hover:bg-med-terracotta group-hover:text-white'
+                    }`}>
+                        <PartyPopper size={24} className={`transition-colors ${selectedRSVP === 'Confirmed' ? 'text-white' : 'text-med-terracotta group-hover:text-white'}`} />
                     </div>
-                    <span className="text-[9px] font-body font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-gray-400 group-hover:text-med-terracotta transition-colors leading-tight text-center">
-                        I'll Be<br />There
+                    <span className={`text-[9px] font-body font-bold uppercase tracking-[0.2em] transition-colors leading-tight text-center ${
+                        selectedRSVP === 'Confirmed' ? 'text-med-terracotta' : 'text-slate-500 dark:text-gray-400 group-hover:text-med-terracotta'
+                    }`}>
+                        Yes
                     </span>
                 </motion.button>
 
-                {/* Still Exploring — highlighted as default */}
+                {/* Maybe */}
                 <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => handleFinish('Pending')}
+                    onClick={() => setSelectedRSVP('Pending')}
                     disabled={isFinishing}
-                    className="flex flex-col items-center gap-3 p-5 rounded-[2rem] border-2 border-med-blue/40 bg-med-blue/5 dark:bg-med-blue/10 dark:border-blue-500/40 backdrop-blur-sm transition-all duration-300 group hover:shadow-lg hover:shadow-med-blue/10 shadow-sm shadow-med-blue/5"
+                    className={`flex flex-col items-center gap-3 p-5 rounded-[2rem] border-2 backdrop-blur-sm transition-all duration-300 group hover:shadow-lg ${
+                        selectedRSVP === 'Pending'
+                            ? 'border-med-blue bg-med-blue/10 shadow-md shadow-med-blue/10'
+                            : 'border-slate-100 dark:border-gray-700 hover:border-med-blue/40 bg-white/60 dark:bg-gray-800/50 hover:shadow-med-blue/10'
+                    }`}
                 >
-                    <div className="w-14 h-14 rounded-full bg-med-blue/15 flex items-center justify-center group-hover:bg-med-blue group-hover:text-white transition-all duration-300">
-                        <Compass size={24} className="text-med-blue/70 dark:text-blue-400 group-hover:text-white transition-colors" />
+                    <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        selectedRSVP === 'Pending'
+                            ? 'bg-med-blue text-white'
+                            : 'bg-med-blue/15 group-hover:bg-med-blue group-hover:text-white'
+                    }`}>
+                        <Compass size={24} className={`transition-colors ${selectedRSVP === 'Pending' ? 'text-white' : 'text-med-blue/70 dark:text-blue-400 group-hover:text-white'}`} />
                     </div>
-                    <span className="text-[9px] font-body font-bold uppercase tracking-[0.2em] text-med-blue/70 dark:text-blue-400 group-hover:text-med-blue transition-colors leading-tight text-center">
-                        Still<br />Exploring
+                    <span className={`text-[9px] font-body font-bold uppercase tracking-[0.2em] transition-colors leading-tight text-center ${
+                        selectedRSVP === 'Pending' ? 'text-med-blue' : 'text-slate-500 dark:text-gray-400 group-hover:text-med-blue'
+                    }`}>
+                        Maybe
                     </span>
                 </motion.button>
 
-                {/* Can't Make It */}
+                {/* No */}
                 <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => handleFinish('Declined')}
+                    onClick={() => setSelectedRSVP('Declined')}
                     disabled={isFinishing}
-                    className="flex flex-col items-center gap-3 p-5 rounded-[2rem] border-2 border-slate-100 dark:border-gray-700 hover:border-slate-300 dark:hover:border-gray-500 bg-white/60 dark:bg-gray-800/50 backdrop-blur-sm transition-all duration-300 group hover:shadow-lg hover:bg-slate-50 dark:hover:bg-gray-800"
+                    className={`flex flex-col items-center gap-3 p-5 rounded-[2rem] border-2 backdrop-blur-sm transition-all duration-300 group hover:shadow-lg ${
+                        selectedRSVP === 'Declined'
+                            ? 'border-slate-400 bg-slate-100 dark:bg-gray-700 shadow-md'
+                            : 'border-slate-100 dark:border-gray-700 hover:border-slate-300 dark:hover:border-gray-500 bg-white/60 dark:bg-gray-800/50 hover:bg-slate-50 dark:hover:bg-gray-800'
+                    }`}
                 >
-                    <div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-gray-700/80 flex items-center justify-center group-hover:bg-slate-200 dark:group-hover:bg-gray-600 transition-all duration-300">
-                        <X size={24} className="text-slate-400 dark:text-gray-500 transition-colors" />
+                    <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        selectedRSVP === 'Declined'
+                            ? 'bg-slate-400 text-white'
+                            : 'bg-slate-100 dark:bg-gray-700/80 group-hover:bg-slate-200 dark:group-hover:bg-gray-600'
+                    }`}>
+                        <X size={24} className={`transition-colors ${selectedRSVP === 'Declined' ? 'text-white' : 'text-slate-400 dark:text-gray-500'}`} />
                     </div>
-                    <span className="text-[9px] font-body font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-gray-500 leading-tight text-center">
-                        Can't<br />Make It
+                    <span className={`text-[9px] font-body font-bold uppercase tracking-[0.2em] leading-tight text-center ${
+                        selectedRSVP === 'Declined' ? 'text-slate-600 dark:text-white' : 'text-slate-400 dark:text-gray-500'
+                    }`}>
+                        No
                     </span>
                 </motion.button>
             </div>
@@ -880,22 +837,61 @@ export const OnboardingFlow: React.FC = () => {
                 </motion.div>
             )}
 
-            {/* RSVP Deadline Reminder — Reimagined */}
-            <div className="w-full mt-2 py-4 px-8 rounded-full bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 flex items-center justify-between group">
-                <span className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-slate-400 group-hover:text-med-terracotta transition-colors">RSVP Cutoff</span>
-                <div className="flex items-center gap-2">
-                    <Calendar size={12} className="text-med-terracotta" />
-                    <span className="text-xs font-heading font-semibold text-med-blue dark:text-white italic">August 15, 2026</span>
+            {/* Event Info Boxes */}
+            <div className="w-full mt-2 grid grid-cols-3 gap-3">
+                <div className="py-5 px-4 rounded-[2rem] bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 text-center">
+                    <span className="text-[10px] font-body font-bold uppercase tracking-[0.3em] text-slate-400">Event</span>
+                    <div className="flex items-center justify-center gap-2 mt-2 mb-1">
+                        <PartyPopper size={16} className="text-med-terracotta shrink-0" />
+                        <span className="text-sm font-heading font-semibold text-med-blue dark:text-white italic leading-tight">Bryan's 40th</span>
+                    </div>
+                </div>
+                <div className="py-5 px-4 rounded-[2rem] bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 text-center">
+                    <span className="text-[10px] font-body font-bold uppercase tracking-[0.3em] text-slate-400">Date</span>
+                    <div className="flex items-center justify-center gap-2 mt-2 mb-1">
+                        <Calendar size={16} className="text-med-terracotta shrink-0" />
+                        <span className="text-sm font-heading font-semibold text-med-blue dark:text-white italic leading-tight">Sep 18–20, 2026</span>
+                    </div>
+                </div>
+                <div className="py-5 px-4 rounded-[2rem] bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 text-center">
+                    <span className="text-[10px] font-body font-bold uppercase tracking-[0.3em] text-slate-400">RSVP Cutoff</span>
+                    <div className="flex items-center justify-center gap-2 mt-2 mb-1">
+                        <Clock size={16} className="text-med-terracotta shrink-0" />
+                        <span className="text-sm font-heading font-semibold text-med-blue dark:text-white italic leading-tight">Aug 15, 2026</span>
+                    </div>
                 </div>
             </div>
 
-            <div className="w-full pt-8 flex items-center justify-between gap-3">
-                <PillButton variant="ghost" onClick={() => setCurrentStep('attendance')} fullWidth={false}>
+            <div className="w-full pt-8 flex items-center gap-3">
+                <PillButton variant="ghost" onClick={logoutHost} fullWidth={false} className="flex-[1]">
                     ← BACK
                 </PillButton>
-                <PillButton onClick={() => handleFinish('Pending')} fullWidth={false} className="px-12">
-                    NEXT &nbsp;<ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                </PillButton>
+                <AnimatePresence>
+                    {selectedRSVP && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            className="flex-[2]"
+                        >
+                            <PillButton
+                                onClick={() => {
+                                    if (selectedRSVP === 'Confirmed') {
+                                        setCurrentStep('details');
+                                    } else if (selectedRSVP === 'Pending') {
+                                        handleFinish('Pending');
+                                    } else {
+                                        setCurrentStep('decline');
+                                    }
+                                }}
+                                fullWidth
+                                isLoading={isFinishing}
+                            >
+                                CONTINUE &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            </PillButton>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </Shell>
     );

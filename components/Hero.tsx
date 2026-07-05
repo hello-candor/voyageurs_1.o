@@ -52,8 +52,7 @@ export const Hero: React.FC = () => {
 
       {/* 2. CONTENT LAYER */}
       <div className="relative z-20 h-full flex flex-col justify-center md:justify-end pb-32 md:pb-24 px-6 md:px-16 w-full max-w-[1800px] mx-auto pointer-events-none">
-        
-        <div className="max-w-5xl animate-in slide-in-from-bottom-10 duration-1000 delay-300 pointer-events-auto">
+          <div className="max-w-5xl animate-in slide-in-from-bottom-10 duration-1000 delay-300 pointer-events-auto">
             <div className="flex items-center gap-4 text-med-terracotta mb-6 md:mb-8 font-bold uppercase tracking-[0.3em] text-[10px] md:text-sm opacity-90">
                 <span className="w-8 md:w-16 h-[2px] bg-med-terracotta shadow-lg"></span>
                 <span className="drop-shadow-lg text-white md:text-med-terracotta">Une Invitation Spéciale</span>
@@ -98,7 +97,7 @@ export const Hero: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </div>
+          </div>
       </div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce pointer-events-auto cursor-pointer" onClick={handleScrollDown}>

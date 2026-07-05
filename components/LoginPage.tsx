@@ -9,6 +9,8 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext';
 import { authService } from '../services/authService';
+import { PrivacyPolicyModal } from './PrivacyPolicyModal';
+import { TermsModal } from './TermsModal';
 
 const Logo = ({ className = "w-20 h-20" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
@@ -42,6 +44,8 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
   const [error, setError] = useState('');
   const [showConsentInfo, setShowConsentInfo] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const [guestName, setGuestName] = useState('');
   const hasAutoSubmitted = useRef(false);
 
@@ -154,7 +158,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
               className="absolute top-10 left-10 flex items-center gap-2 text-slate-400 hover:text-med-blue transition-colors group z-20"
             >
               <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="text-xs font-bold uppercase tracking-[0.2em] font-body">Return</span>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] font-body">Go Back</span>
             </button>
           )}
 
@@ -168,7 +172,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
               <div className="flex items-center justify-center gap-6 mb-6">
                   <div className="h-px w-10 bg-med-terracotta/40"></div>
                   <span className="text-[11px] font-body font-bold uppercase tracking-[0.4em] text-med-terracotta">
-                    RSVP for Your Event
+                    Access Your Invite
                   </span>
                   <div className="h-px w-10 bg-med-terracotta/40"></div>
               </div>
@@ -223,7 +227,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
                       className="mt-0.5 w-4 h-4 rounded border-slate-300 text-med-terracotta focus:ring-med-terracotta shrink-0 accent-[#E2923D]"
                     />
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-body font-medium text-left">
-                        I agree to the Voyageurs <button type="button" className="underline hover:text-med-blue decoration-med-terracotta/30">Terms</button> and <button type="button" className="underline hover:text-med-blue decoration-med-terracotta/30">Privacy Policy</button>.
+                        I agree to the Voyageurs <button type="button" onClick={() => setShowTerms(true)} className="underline hover:text-med-blue decoration-med-terracotta/30">Terms</button> and <button type="button" onClick={() => setShowPrivacy(true)} className="underline hover:text-med-blue decoration-med-terracotta/30">Privacy Policy</button>.
                     </p>
                 </label>
                 
@@ -252,7 +256,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
                 {isLoading ? (
                   <Loader2 className="animate-spin w-6 h-6" />
                 ) : (
-                  "RSVP Now"
+                  "RSVP"
                 )}
               </button>
             </form>
@@ -269,6 +273,8 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
           </div>
         </motion.div>
       </div>
+      <PrivacyPolicyModal isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />
+      <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
     </motion.div>
   );
 };

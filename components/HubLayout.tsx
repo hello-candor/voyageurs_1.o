@@ -326,7 +326,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
             faq: "Find answers to frequently asked questions."
         };
 
-        const desc = metaDescriptions[currentActiveView] || "The official companion app for Bryan's 40th Birthday celebration.";
+        const desc = metaDescriptions[currentActiveView] || "Voyageurs - Elevated Group Travel. Plan and experience unforgettable trips together.";
         
         let metaDescriptionTag = document.querySelector('meta[name="description"]');
         if (!metaDescriptionTag) {
@@ -384,8 +384,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
 
             <div className={`fixed top-0 left-0 right-0 h-12 flex items-center justify-between px-4 md:px-6 z-[110] transition-all duration-700 pointer-events-none ${isFullScreenActive ? 'opacity-0 -translate-y-full' : 'opacity-100'}`}>
                 <div className="flex items-center gap-3 text-white/90 pointer-events-auto h-full py-1">
-                    <span className={`flex items-center h-full font-serif text-xl md:text-2xl italic tracking-tight whitespace-nowrap transition-colors duration-500 drop-shadow-md ${theme === 'light' ? 'text-med-terracotta' : 'text-white'}`}>Bryan's 40th</span>
-                    <div className={`h-full w-px transition-colors duration-500 ${theme === 'light' ? 'bg-med-blue/20' : 'bg-white/20'}`}></div>
                     <div className="flex flex-col justify-center leading-tight h-full">
                         <span className={`font-serif font-bold text-sm md:text-base tracking-tight whitespace-nowrap transition-colors duration-500 drop-shadow-md ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{config.appName}</span>
                         <span className={`text-[8px] uppercase tracking-[0.2em] opacity-70 font-sans hidden md:block ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{config.destination}</span>

@@ -28,10 +28,10 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ isOpen, onClose }) =
           <div className="px-8 pt-10 pb-4 bg-white dark:bg-gray-900 z-20 shrink-0 border-b border-gray-100 dark:border-gray-700">
               <div className="flex items-center gap-3 mb-2 text-med-terracotta font-bold uppercase tracking-[0.2em] text-xs">
                 <Info size={14} />
-                <span>Company</span>
+                <span>Why We Exist</span>
               </div>
               <h2 className="font-serif text-3xl text-med-blue dark:text-white leading-tight">
-                 About Voyageurs
+                 Our Manifesto
               </h2>
           </div>
 
@@ -40,34 +40,28 @@ export const AboutUsModal: React.FC<AboutUsModalProps> = ({ isOpen, onClose }) =
               <section>
                 <h3 className="text-lg font-bold text-med-blue dark:text-white mb-2">The Art of Shared Discovery</h3>
                 <p>
-                  We believe that travel is an art form best practiced in good company. Voyageurs was born from a simple yet ambitious desire: to strip away the friction of group coordination so you can focus entirely on the connection.
+                  Travel is more than the movement between places; it is a fundamental human language. It is a catalyst for discovery that strengthens our bonds, challenges our perspectives, and returns us home with a renewed sense of empathy and joy. When we explore together, we are not just witnessing the world—we are building a collective history.
                 </p>
               </section>
 
               <section>
-                <h3 className="text-lg font-bold text-med-blue dark:text-white mb-2">Our Philosophy: L'Art de Vivre</h3>
-                <p className="mb-4">
-                  Too often, the magic of a reunion, a wedding, or a getaway is diluted by the chaos of logistics—endless spreadsheets, fragmented group chats, and awkward expense splitting.
-                </p>
+                <h3 className="text-lg font-bold text-med-blue dark:text-white mb-2">The Friction of Modern Travel</h3>
                 <p>
-                  We built Voyageurs to be the antidote to that chaos. Inspired by the slow, deliberate pace of the Mediterranean lifestyle, our technology works quietly in the background. We are the digital concierge that handles the "how" so you can immerse yourself in the "now." We believe software should be elegant, unobtrusive, and centered around the human experience.
+                  Yet, the beauty of these moments is often fractured by the reality of coordinating them. We find ourselves drowning in a sea of disconnected group chats, endless spreadsheet tabs, and the persistent, low-level anxiety of logistics. This administrative noise acts as a barrier, pulling our attention away from the people beside us and toward the burden of keeping plans afloat.
                 </p>
               </section>
 
               <section>
-                <h3 className="text-lg font-bold text-med-blue dark:text-white mb-2">Who We Are</h3>
-                <p className="mb-4">
-                  Voyageurs is the flagship product of Candor Digital Group, a design-forward technology studio based in Chicago, Illinois.
-                </p>
+                <h3 className="text-lg font-bold text-med-blue dark:text-white mb-2">The Invisible Infrastructure</h3>
                 <p>
-                  We combine Midwestern pragmatism with a global perspective. Our team consists of travelers, designers, and engineers who understand that the best journeys are defined not just by the destination, but by the people you share them with. We craft digital tools that feel as human as the experiences they support.
+                  Voyageurs exists to dissolve that friction. We have engineered an ecosystem designed to operate entirely in the background, serving as a silent, intuitive partner in your journey. By unifying your plans, shared ledgers, and communication into one fluid hub, we remove the "how" of travel entirely. Our technology is not meant to be a destination—it is meant to be the invisible thread that holds your experiences together.
                 </p>
               </section>
 
               <section>
-                <h3 className="text-lg font-bold text-med-blue dark:text-white mb-2">The Experience</h3>
+                <h3 className="text-lg font-bold text-med-blue dark:text-white mb-2">Crafted for Connection</h3>
                 <p>
-                  From our AI concierge, Céleste, to our seamless collaborative ledgers, every feature is designed to foster harmony. Whether you are planning a 40th birthday in , a corporate retreat in Tuscany, or a family reunion in the States, we are honored to be the invisible thread connecting your journey.
+                  By automating the logistics, we reclaim the space for what truly matters: presence. When the weight of coordination is lifted, you are free to exist fully in the moment with your group. Whether you are navigating a milestone reunion or orchestrating a quiet escape, Voyageurs provides the foundation upon which your shared story unfolds. We don’t just build tools for travel; we create the conditions for deeper connection.
                 </p>
               </section>
 

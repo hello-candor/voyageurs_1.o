@@ -82,3 +82,17 @@ body {
 .animate-subtle-pulse {
   animation: subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+@layer components {
+  .btn-terracotta {
+    @apply inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body rounded-full active:scale-95 bg-med-terracotta text-white hover:bg-[#bf6344] dark:bg-[#C25E3E] dark:hover:bg-[#a84e32] shadow-lg disabled:opacity-50;
+  }
+  
+  .btn-glass {
+    @apply inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden rounded-full active:scale-95 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/30 cursor-pointer text-center;
+  }
+  
+  .btn-glass-adaptive {
+    @apply inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden rounded-full active:scale-95 bg-slate-900/5 text-slate-800 hover:bg-slate-900/10 backdrop-blur-sm border border-slate-900/20 cursor-pointer text-center dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:border-white/30;
+  }
+}

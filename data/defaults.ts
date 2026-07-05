@@ -219,21 +219,6 @@ export const DEFAULT_AGENDA_DATA: AgendaEvent[] = [
         isOfficial: true
     },
     {
-        id: 'vineyard',
-        day: "Saturday",
-        date: "2026-09-19",
-        startTime: "10:30",
-        durationHours: 5,
-        time: "10:30 AM",
-        title: "Wine Tour",
-        subtitle: "Pic Saint-Loup Vineyards",
-        location: "Pic Saint-Loup",
-        description: "An optional morning tour and tasting in the most beautiful vineyards of the region.",
-        iconName: 'Wine',
-        image: "/assets/images/pic_st_loup_wine_1775592728604.png",
-        isOfficial: true
-    },
-    {
         id: 'gala',
         day: "Saturday",
         date: "2026-09-19",
@@ -249,6 +234,21 @@ export const DEFAULT_AGENDA_DATA: AgendaEvent[] = [
         isOfficial: true
     },
     {
+        id: 'vineyard',
+        day: "Sunday",
+        date: "2026-09-20",
+        startTime: "10:30",
+        durationHours: 5,
+        time: "10:30 AM",
+        title: "Wine Tour",
+        subtitle: "Pic Saint-Loup Vineyards",
+        location: "Pic Saint-Loup",
+        description: "An optional morning tour and tasting in the most beautiful vineyards of the region.",
+        iconName: 'Wine',
+        image: "/assets/images/pic_st_loup_wine_1775592728604.png",
+        isOfficial: true
+    },
+    {
         id: 'brunch',
         day: "Sunday",
         date: "2026-09-20",
@@ -261,7 +261,7 @@ export const DEFAULT_AGENDA_DATA: AgendaEvent[] = [
         description: "Recovery brunch on the beach. Feet in the sand, salt in the air. A perfect end to the weekend.",
         iconName: 'Sun',
         image: "/assets/images/effet_mer_brunch_1775592776785.png",
-        isOfficial: true
+        isOfficial: false
     }
 ];
 

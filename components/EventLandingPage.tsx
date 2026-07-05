@@ -694,7 +694,6 @@ export const EventLandingPage: React.FC = () => {
                         <img src="/assets/voyageurs-icon.png" alt="Voyageurs" className="w-8 h-8 object-contain" />
                         <div>
                             <p className="text-[10px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta">Voyageurs</p>
-                            <p className="text-sm font-heading text-med-blue dark:text-white font-medium">Bryan's 40th</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -742,19 +741,25 @@ export const EventLandingPage: React.FC = () => {
                         <span className="italic text-med-terracotta dark:text-[#C25E3E]">{displayPrimary?.split(' ')[0] || 'Voyager'}.</span>
                     </h1>
 
-                    {/* Event mini-info pills */}
-                    <div className="flex items-center justify-center gap-3 mt-6 flex-wrap">
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 dark:bg-gray-800/60 border border-slate-100 dark:border-gray-700">
-                            <PartyPopper size={12} className="text-med-terracotta" />
-                            <span className="text-[11px] font-body font-semibold text-med-blue dark:text-white">Bryan's 40th</span>
+                    {/* Event mini-info cards */}
+                    <div className="grid grid-cols-3 gap-3 mt-8 w-full max-w-sm mx-auto">
+                        <div className="flex flex-col items-center gap-2.5 p-4 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm">
+                            <div className="w-10 h-10 rounded-full bg-med-terracotta/10 flex items-center justify-center">
+                                <PartyPopper size={18} className="text-med-terracotta" />
+                            </div>
+                            <span className="text-[9px] font-body font-bold uppercase tracking-[0.15em] text-med-blue dark:text-white text-center leading-tight">Bryan's 40th</span>
                         </div>
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 dark:bg-gray-800/60 border border-slate-100 dark:border-gray-700">
-                            <Calendar size={12} className="text-med-terracotta" />
-                            <span className="text-[11px] font-body font-semibold text-med-blue dark:text-white">Sep 18–20, 2026</span>
+                        <div className="flex flex-col items-center gap-2.5 p-4 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm">
+                            <div className="w-10 h-10 rounded-full bg-med-terracotta/10 flex items-center justify-center">
+                                <Calendar size={18} className="text-med-terracotta" />
+                            </div>
+                            <span className="text-[9px] font-body font-bold uppercase tracking-[0.15em] text-med-blue dark:text-white text-center leading-tight">Sep 18–20, 2026</span>
                         </div>
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 dark:bg-gray-800/60 border border-slate-100 dark:border-gray-700">
-                            <MapPin size={12} className="text-med-terracotta" />
-                            <span className="text-[11px] font-body font-semibold text-med-blue dark:text-white">Montpellier, France</span>
+                        <div className="flex flex-col items-center gap-2.5 p-4 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm">
+                            <div className="w-10 h-10 rounded-full bg-med-terracotta/10 flex items-center justify-center">
+                                <MapPin size={18} className="text-med-terracotta" />
+                            </div>
+                            <span className="text-[9px] font-body font-bold uppercase tracking-[0.15em] text-med-blue dark:text-white text-center leading-tight">Montpellier, France</span>
                         </div>
                     </div>
 

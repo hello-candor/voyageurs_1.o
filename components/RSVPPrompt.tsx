@@ -55,16 +55,15 @@ export const RSVPPrompt: React.FC<{ onRSVP?: () => void }> = ({ onRSVP }) => {
                     </div>
 
                     <div>
-                        <h3 className="font-heading font-bold text-2xl leading-tight text-med-blue dark:text-white">Join A Trip</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Enter your code to begin.</p>
+                        <h3 className="font-heading font-bold text-2xl leading-tight text-med-blue dark:text-white">Got An Invite?</h3>
                     </div>
 
                     <div className="flex flex-col w-full gap-2 pt-2">
                         <button 
                             onClick={handleRSVP}
-                            className="w-full bg-med-terracotta dark:bg-[#C25E3E] text-white hover:bg-[#bf6344] dark:hover:bg-[#a84e32] py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+                            className="btn-terracotta w-full py-3.5 text-xs gap-2"
                         >
-                            RSVP Now <ArrowRight size={14} />
+                            RSVP
                         </button>
                     </div>
                 </div>
