@@ -253,11 +253,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     safeStorage.setItem('local_guests', guests);
 
                     // Sync current user if they exist in remote
-                    if (user) {
-                        const myGuestDoc = guests.find(g => 
-                            (user.invitationCode && g.invitationCode === user.invitationCode) ||
-                            (user.email && g.email === user.email)
-                        );
+                    if (user && user.invitationCode) {
+                        const myGuestDoc = guests.find(g => g.invitationCode === user.invitationCode);
                         if (myGuestDoc) {
                             setUser(prev => prev ? {
                                 ...prev,
@@ -353,13 +350,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=D67252&color=fff`;
         const isAdmin = HOST_EMAILS.includes(normalizedEmail);
 
-        // Find existing guest by email or invitation code
-        const existingGuest = allGuests.find(g => 
-            (invitationCode && g.invitationCode === invitationCode) ||
-            (normalizedEmail && g.email === normalizedEmail)
-        );
+        // Find existing guest by invitation code only
+        const existingGuest = invitationCode ? allGuests.find(g => g.invitationCode === invitationCode) : undefined;
 
-        const finalCode = invitationCode || existingGuest?.invitationCode || '';
+        const finalCode = invitationCode || '';
 
         const newUser: UserProfile = {
             name,
