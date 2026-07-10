@@ -254,7 +254,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
                     // Sync current user if they exist in remote
                     if (user) {
-                        const myGuestDoc = guests.find(g => g.email === user.email);
+                        const myGuestDoc = guests.find(g => 
+                            (user.invitationCode && g.invitationCode === user.invitationCode) ||
+                            (user.email && g.email === user.email)
+                        );
                         if (myGuestDoc) {
                             setUser(prev => prev ? {
                                 ...prev,
@@ -550,8 +553,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             isConfirmed: data.status === 'Confirmed' || user.isConfirmed
         } as UserProfile;
 
+        const docId = user.invitationCode || user.email;
         setUser(updatedUser);
-        setAllGuests(prev => prev.map(g => g.email === user.email ? { ...g, ...data } : g));
+        setAllGuests(prev => prev.map(g => g.id === docId ? { ...g, ...data } : g));
 
         if (isCloudEnabled && auth.currentUser) {
             try {
