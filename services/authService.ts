@@ -75,7 +75,12 @@ export const authService = {
    * Returns the guest data if found, null otherwise.
    */
   verifyGuestCode: async (code: string): Promise<any | null> => {
-    const upperCode = code.trim().toUpperCase();
+    const clean = code.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    const upperCode = [
+      clean.slice(0, 3),
+      clean.slice(3, 6),
+      clean.slice(6)
+    ].filter(Boolean).join('-');
     
     try {
       const { doc, getDoc } = await import('firebase/firestore');

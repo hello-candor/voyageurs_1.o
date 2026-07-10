@@ -77,9 +77,9 @@ const FlatInput = ({
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder: string; error?: string; autoFocus?: boolean; disabled?: boolean;
 }) => (
-    <div className="space-y-1">
-        <label className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta flex items-center gap-2">
-            <Icon size={11} /> {label}
+    <div className="space-y-0.5">
+        <label className="text-[10px] font-body font-bold uppercase tracking-[0.25em] text-med-terracotta flex items-center gap-1.5">
+            <Icon size={10} /> {label}
         </label>
         <div className="relative group">
             <input
@@ -89,11 +89,11 @@ const FlatInput = ({
                 placeholder={placeholder}
                 autoFocus={autoFocus}
                 disabled={disabled}
-                className={`w-full bg-transparent border-b-2 ${error ? 'border-red-400' : 'border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta'} px-1 py-4 text-xl font-body font-medium text-med-blue dark:text-white outline-none transition-all placeholder:text-slate-300 dark:placeholder:text-gray-700 placeholder:font-normal placeholder:text-base`}
+                className={`w-full bg-transparent border-b-2 ${error ? 'border-red-400' : 'border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta'} px-1 py-2 text-sm font-body font-medium text-med-blue dark:text-white outline-none transition-all placeholder:text-slate-300 dark:placeholder:text-gray-700 placeholder:font-normal placeholder:text-xs`}
             />
         </div>
         {error && (
-            <p className="text-red-400 text-[10px] font-body font-bold uppercase tracking-wider pt-1">{error}</p>
+            <p className="text-red-400 text-[9px] font-body font-bold uppercase tracking-wider pt-0.5">{error}</p>
         )}
     </div>
 );
@@ -112,7 +112,7 @@ const PillButton = ({
                 type={type}
                 onClick={onClick}
                 disabled={disabled}
-                className={`h-16 px-6 text-slate-500 hover:text-med-blue dark:text-gray-400 dark:hover:text-white text-[11px] font-body font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 border-2 border-transparent hover:border-slate-200 dark:hover:border-gray-800 rounded-full ${fullWidth ? 'w-full' : ''} ${className}`}
+                className={`h-12 px-6 text-slate-500 hover:text-med-blue dark:text-gray-400 dark:hover:text-white text-[10px] font-body font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 border-2 border-transparent hover:border-slate-200 dark:hover:border-gray-800 rounded-full ${fullWidth ? 'w-full' : ''} ${className}`}
             >
                 {children}
             </button>
@@ -123,9 +123,9 @@ const PillButton = ({
             type={type}
             onClick={onClick}
             disabled={disabled || isLoading}
-            className={`h-16 bg-[#E2923D] dark:bg-[#c07030] text-white rounded-full text-[11px] font-body font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-[#d17e2b] dark:hover:bg-[#a86028] shadow-[#E2923D]/20 transition-all flex items-center justify-center gap-4 group active:scale-95 disabled:opacity-50 ${fullWidth ? 'w-full' : 'px-10'} ${className}`}
+            className={`h-12 bg-[#E2923D] dark:bg-[#c07030] text-white rounded-full text-[10px] font-body font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-[#d17e2b] dark:hover:bg-[#a86028] shadow-[#E2923D]/20 transition-all flex items-center justify-center gap-4 group active:scale-95 disabled:opacity-50 ${fullWidth ? 'w-full' : 'px-10'} ${className}`}
         >
-            {isLoading ? <Loader2 className="animate-spin w-5 h-5" /> : children}
+            {isLoading ? <Loader2 className="animate-spin w-4 h-4" /> : children}
         </button>
     );
 };
@@ -136,7 +136,7 @@ const Shell = ({ children, stepIndex }: { children: React.ReactNode; stepIndex: 
 
         <Blobs />
 
-        <div className="relative w-full max-w-2xl px-5 sm:px-8 py-8 min-h-screen flex items-center justify-center mx-auto">
+        <div className="relative w-full max-w-xl px-5 py-4 min-h-screen flex items-center justify-center mx-auto">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={stepIndex}
@@ -144,10 +144,10 @@ const Shell = ({ children, stepIndex }: { children: React.ReactNode; stepIndex: 
                     animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
                     exit={{ opacity: 0, scale: 0.98, y: -8, filter: 'blur(4px)' }}
                     transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[3.5rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] dark:shadow-[0_32px_128px_-32px_rgba(0,0,0,0.5)] border border-white dark:border-gray-700 px-8 py-12 sm:px-14 sm:py-16 md:px-20 md:py-20 relative flex flex-col justify-center min-h-[88vh] sm:min-h-0 my-auto"
+                    className="w-full max-h-[90vh] bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] dark:shadow-[0_32px_128px_-32px_rgba(0,0,0,0.5)] border border-white dark:border-gray-700 px-6 py-6 md:px-10 md:py-8 relative flex flex-col justify-start overflow-y-auto"
                 >
                     <div className="absolute top-0 right-0 w-72 h-72 bg-med-terracotta/10 dark:bg-med-terracotta/20 rounded-full blur-[120px] opacity-60 dark:opacity-80 pointer-events-none" />
-                    <div className="relative z-10 flex flex-col items-center w-full max-w-lg mx-auto">
+                    <div className="relative z-10 flex flex-col items-center w-full max-w-md mx-auto">
                         {children}
                     </div>
                 </motion.div>
@@ -207,6 +207,11 @@ export const OnboardingFlow: React.FC = () => {
     }, []);
 
     const parsedNames = parseGuestNames(user?.name || '');
+
+    const guestName = React.useMemo(() => {
+        if (!parsedNames.primary) return 'Voyager';
+        return parsedNames.primary.split(' ')[0];
+    }, [parsedNames.primary]);
 
     const [identity, setIdentity] = useState({
         name: parsedNames.primary || user?.name || '',
@@ -375,64 +380,53 @@ export const OnboardingFlow: React.FC = () => {
     if (currentStep === 'details') {
         return (
             <Shell stepIndex={1}>
-                <Logo className="mb-8 w-20 h-20 sm:w-24 sm:h-24" />
+                <Logo className="mb-2 w-14 h-14" />
 
-                <div className="text-center mb-8 w-full">
+                <div className="text-center mb-3 w-full">
                     <ProgressBar step={2} total={2} />
                     <h2
-                        className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-3"
-                        style={{ fontSize: 'clamp(2.8rem, 10vw, 4.5rem)' }}
+                        className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-1"
+                        style={{ fontSize: 'clamp(1.8rem, 6vw, 2.4rem)' }}
                     >
                         Confirm Your<br /><span className="italic text-med-terracotta">{partyMembers.length > 0 ? 'Party.' : 'Details.'}</span>
                     </h2>
                 </div>
 
-                <div className="w-full space-y-6">
+                <div className="w-full space-y-3">
                     {/* Compact confirmation when profile data exists */}
                     {hasExistingProfile && !showEditDetails ? (
-                        <div className="space-y-4">
-                            <div className="p-5 rounded-[2rem] bg-white dark:bg-gray-800/50 border-2 border-slate-100 dark:border-gray-700">
-                                <div className="flex items-center justify-between mb-4">
-                                    <p className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta flex items-center gap-2">
-                                        <Check size={11} /> Confirmed Details
+                        <div className="space-y-3">
+                            <div className="p-4 rounded-[1.5rem] bg-white dark:bg-gray-800/50 border-2 border-slate-100 dark:border-gray-700">
+                                <div className="flex items-center justify-between mb-3">
+                                    <p className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-med-terracotta flex items-center gap-1.5">
+                                        <Check size={10} /> Confirmed Details
                                     </p>
                                     <button
                                         onClick={() => setShowEditDetails(true)}
-                                        className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-med-blue dark:text-gray-500 dark:hover:text-white transition-colors"
+                                        className="text-[9px] font-body font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-med-blue dark:text-gray-500 dark:hover:text-white transition-colors"
                                     >
                                         Edit
                                     </button>
                                 </div>
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-med-terracotta/10 flex items-center justify-center shrink-0">
-                                            <User size={14} className="text-med-terracotta" />
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-med-terracotta/10 flex items-center justify-center shrink-0">
+                                            <User size={12} className="text-med-terracotta" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-body text-slate-400 dark:text-gray-500">Name</p>
-                                            <p className="text-sm font-body font-semibold text-med-blue dark:text-white">{identity.name}</p>
+                                            <p className="text-[9px] font-body text-slate-400 dark:text-gray-500">Name</p>
+                                            <p className="text-xs font-body font-semibold text-med-blue dark:text-white">{identity.name}</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-med-terracotta/10 flex items-center justify-center shrink-0">
-                                            <Mail size={14} className="text-med-terracotta" />
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-med-terracotta/10 flex items-center justify-center shrink-0">
+                                            <Mail size={12} className="text-med-terracotta" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-body text-slate-400 dark:text-gray-500">Email</p>
-                                            <p className="text-sm font-body font-semibold text-med-blue dark:text-white">{identity.email}</p>
+                                            <p className="text-[9px] font-body text-slate-400 dark:text-gray-500">Email</p>
+                                            <p className="text-xs font-body font-semibold text-med-blue dark:text-white">{identity.email}</p>
                                         </div>
                                     </div>
-                                    {identity.phone && (
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-med-terracotta/10 flex items-center justify-center shrink-0">
-                                                <Phone size={14} className="text-med-terracotta" />
-                                            </div>
-                                            <div>
-                                                <p className="text-xs font-body text-slate-400 dark:text-gray-500">Phone</p>
-                                                <p className="text-sm font-body font-semibold text-med-blue dark:text-white">{identity.phone}</p>
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         </div>
@@ -457,105 +451,30 @@ export const OnboardingFlow: React.FC = () => {
                                 placeholder="email@example.com"
                                 error={errors.email}
                             />
-                            {/* Phone with country code dropdown */}
-                            <div className="space-y-1">
-                                <label className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta flex items-center gap-2">
-                                    <Phone size={11} /> Phone / WhatsApp
-                                </label>
-                                <div className="relative group flex items-center border-b-2 border-slate-100 dark:border-gray-800 focus-within:border-med-terracotta dark:focus-within:border-med-terracotta transition-all">
-                                    <select
-                                        value={phoneCountryCode}
-                                        onChange={e => setPhoneCountryCode(e.target.value)}
-                                        className="bg-transparent text-med-blue dark:text-white text-xl font-body font-medium outline-none py-4 pr-1 appearance-none cursor-pointer"
-                                        style={{ width: `${phoneCountryCode.length + 2}ch` }}
-                                    >
-                                        <option value="+1">+1</option>
-                                        <option value="+44">+44</option>
-                                        <option value="+33">+33</option>
-                                        <option value="+34">+34</option>
-                                        <option value="+49">+49</option>
-                                        <option value="+31">+31</option>
-                                        <option value="+39">+39</option>
-                                        <option value="+90">+90</option>
-                                        <option value="+61">+61</option>
-                                        <option value="+81">+81</option>
-                                        <option value="+86">+86</option>
-                                        <option value="+91">+91</option>
-                                        <option value="+52">+52</option>
-                                        <option value="+55">+55</option>
-                                        <option value="+7">+7</option>
-                                        <option value="+82">+82</option>
-                                        <option value="+351">+351</option>
-                                        <option value="+41">+41</option>
-                                        <option value="+46">+46</option>
-                                        <option value="+47">+47</option>
-                                        <option value="+48">+48</option>
-                                        <option value="+32">+32</option>
-                                        <option value="+43">+43</option>
-                                        <option value="+353">+353</option>
-                                        <option value="+62">+62</option>
-                                        <option value="+66">+66</option>
-                                        <option value="+64">+64</option>
-                                        <option value="+27">+27</option>
-                                        <option value="+20">+20</option>
-                                        <option value="+234">+234</option>
-                                        <option value="+254">+254</option>
-                                        <option value="+971">+971</option>
-                                        <option value="+972">+972</option>
-                                    </select>
-                                    <span className="text-slate-300 dark:text-gray-600 text-xl mx-1 select-none">|</span>
-                                    <input
-                                        type="tel"
-                                        value={phoneLocal}
-                                        onChange={e => {
-                                            const raw = e.target.value.replace(/\D/g, '');
-                                            let formatted = raw;
-                                            if (phoneCountryCode === '+1') {
-                                                if (raw.length <= 3) formatted = raw;
-                                                else if (raw.length <= 6) formatted = `(${raw.slice(0, 3)}) ${raw.slice(3)}`;
-                                                else formatted = `(${raw.slice(0, 3)}) ${raw.slice(3, 6)}-${raw.slice(6, 10)}`;
-                                            } else if (['+44', '+33', '+34', '+49', '+39', '+31'].includes(phoneCountryCode)) {
-                                                if (raw.length <= 4) formatted = raw;
-                                                else if (raw.length <= 7) formatted = `${raw.slice(0, 4)} ${raw.slice(4)}`;
-                                                else formatted = `${raw.slice(0, 4)} ${raw.slice(4, 7)} ${raw.slice(7, 11)}`;
-                                            } else {
-                                                if (raw.length <= 3) formatted = raw;
-                                                else if (raw.length <= 7) formatted = `${raw.slice(0, 3)} ${raw.slice(3)}`;
-                                                else formatted = `${raw.slice(0, 3)} ${raw.slice(3, 7)} ${raw.slice(7, 11)}`;
-                                            }
-                                            setPhoneLocal(formatted);
-                                            const fullNumber = formatted ? `${phoneCountryCode} ${formatted}` : '';
-                                            setIdentity(prev => ({ ...prev, phone: fullNumber }));
-                                        }}
-                                        placeholder={phoneCountryCode === '+1' ? '(555) 000-0000' : '0000 000 0000'}
-                                        className="flex-1 bg-transparent px-1 py-4 text-xl font-body font-medium text-med-blue dark:text-white outline-none placeholder:text-slate-300 dark:placeholder:text-gray-700 placeholder:font-normal placeholder:text-base"
-                                    />
-                                </div>
-                            </div>
                         </>
                     )}
 
                     {/* ── Party Members ── */}
-                    <div className="pt-4">
-                        <div className="flex items-center justify-between mb-3">
-                            <p className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta flex items-center gap-2">
-                                <Users size={11} /> Your Party
+                    <div className="pt-2">
+                        <div className="flex items-center justify-between mb-2">
+                            <p className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-med-terracotta flex items-center gap-1.5">
+                                <Users size={10} /> Your Party
                             </p>
-                            <span className="text-[10px] font-body text-slate-400 dark:text-gray-500">
+                            <span className="text-[9px] font-body text-slate-400 dark:text-gray-500">
                                 {1 + partyMembers.length} / 6 guests
                             </span>
                         </div>
 
                         {/* Primary guest pill */}
-                        <div className="flex items-center gap-3 py-3 px-4 rounded-[1.5rem] bg-med-terracotta/8 dark:bg-med-terracotta/10 border border-med-terracotta/20 mb-2">
-                            <div className="w-8 h-8 rounded-full bg-med-terracotta/20 flex items-center justify-center shrink-0">
-                                <User size={14} className="text-med-terracotta" />
+                        <div className="flex items-center gap-2 py-2 px-3 rounded-[1rem] bg-med-terracotta/5 border border-med-terracotta/10 mb-1.5">
+                            <div className="w-6 h-6 rounded-full bg-med-terracotta/20 flex items-center justify-center shrink-0">
+                                <User size={12} className="text-med-terracotta" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-body font-semibold text-med-blue dark:text-white truncate">
-                                    {identity.name || 'You'} <span className="font-normal text-med-terracotta text-xs">(primary)</span>
+                                <p className="text-xs font-body font-semibold text-med-blue dark:text-white truncate">
+                                    {identity.name || 'You'}
                                 </p>
-                                <p className="text-[9px] font-body text-slate-400 dark:text-gray-500 mt-0.5">Main contact for updates & emails</p>
+                                <p className="text-[9px] font-body text-med-terracotta">Primary Guest</p>
                             </div>
                         </div>
 
@@ -567,32 +486,17 @@ export const OnboardingFlow: React.FC = () => {
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
-                                    className="flex items-center gap-3 py-3 px-4 rounded-[1.5rem] bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 mb-2 overflow-hidden"
+                                    className="flex items-center gap-2 py-2 px-3 rounded-[1rem] bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 mb-1.5"
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-med-blue/10 flex items-center justify-center shrink-0">
-                                        <User size={14} className="text-med-blue/60 dark:text-blue-300" />
+                                    <div className="w-6 h-6 rounded-full bg-med-blue/10 flex items-center justify-center shrink-0">
+                                        <User size={12} className="text-med-blue/60 dark:text-blue-300" />
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-body font-medium text-med-blue dark:text-white truncate">{m.name}</p>
-                                        {m.email && <p className="text-[10px] font-body text-slate-400 dark:text-gray-500 truncate">{m.email}</p>}
-                                    </div>
-                                    <button
-                                        onClick={() => {
-                                            // Swap: move this member to primary, move current primary to party
-                                            const currentPrimary = { name: identity.name, email: identity.email };
-                                            setIdentity(prev => ({ ...prev, name: m.name, email: m.email || prev.email }));
-                                            setPartyMembers(prev => prev.map((p, idx) => idx === i ? currentPrimary : p));
-                                        }}
-                                        title="Make primary guest"
-                                        className="w-7 h-7 rounded-full hover:bg-med-terracotta/10 flex items-center justify-center text-slate-300 hover:text-med-terracotta transition-colors"
-                                    >
-                                        <ArrowUpDown size={13} />
-                                    </button>
+                                    <p className="flex-1 text-xs font-body font-medium text-med-blue dark:text-white truncate">{m.name}</p>
                                     <button
                                         onClick={() => setPartyMembers(prev => prev.filter((_, idx) => idx !== i))}
-                                        className="w-7 h-7 rounded-full hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center justify-center text-slate-300 hover:text-red-400 transition-colors"
+                                        className="w-6 h-6 rounded-full hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center justify-center text-slate-300 hover:text-red-400 transition-colors"
                                     >
-                                        <X size={13} />
+                                        <X size={12} />
                                     </button>
                                 </motion.div>
                             ))}
@@ -605,40 +509,24 @@ export const OnboardingFlow: React.FC = () => {
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
-                                    className="overflow-hidden mt-3"
+                                    className="overflow-hidden mt-2"
                                 >
-                                    <div className="p-4 rounded-[1.5rem] bg-white dark:bg-gray-800 border-2 border-med-terracotta/20 space-y-3">
-                                        <p className="text-[10px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta">Add Guest</p>
+                                    <div className="p-3 rounded-[1rem] bg-white dark:bg-gray-800 border-2 border-med-terracotta/20 space-y-2">
                                         <input
                                             type="text"
                                             placeholder="Full name"
                                             value={newMemberName}
                                             onChange={e => setNewMemberName(e.target.value)}
                                             autoFocus
-                                            className="w-full bg-transparent border-b border-slate-100 dark:border-gray-700 py-2 text-sm font-body text-med-blue dark:text-white outline-none placeholder:text-slate-300 dark:placeholder:text-gray-600"
+                                            className="w-full bg-transparent border-b border-slate-100 dark:border-gray-700 py-1.5 text-xs font-body text-med-blue dark:text-white outline-none placeholder:text-slate-300"
                                         />
-                                        <input
-                                            type="email"
-                                            placeholder="Email (optional)"
-                                            value={newMemberEmail}
-                                            onChange={e => setNewMemberEmail(e.target.value)}
-                                            className="w-full bg-transparent border-b border-slate-100 dark:border-gray-700 py-2 text-sm font-body text-med-blue dark:text-white outline-none placeholder:text-slate-300 dark:placeholder:text-gray-600"
-                                        />
-                                        <div className="flex gap-2 pt-1">
-                                            <button
-                                                onClick={() => { setAddingMember(false); setNewMemberName(''); setNewMemberEmail(''); }}
-                                                className="flex-1 h-10 rounded-full border border-slate-200 dark:border-gray-700 text-[10px] font-body font-bold uppercase tracking-wider text-slate-400 hover:text-med-blue transition-colors"
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                onClick={addPartyMember}
-                                                disabled={!newMemberName.trim()}
-                                                className="flex-1 h-10 rounded-full bg-med-terracotta text-white text-[10px] font-body font-bold uppercase tracking-wider disabled:opacity-40 transition-all active:scale-95"
-                                            >
-                                                Add
-                                            </button>
-                                        </div>
+                                        <button
+                                            onClick={addPartyMember}
+                                            disabled={!newMemberName.trim()}
+                                            className="w-full h-8 rounded-full bg-med-terracotta text-white text-[9px] font-body font-bold uppercase tracking-wider disabled:opacity-40"
+                                        >
+                                            Add Guest
+                                        </button>
                                     </div>
                                 </motion.div>
                             ) : (
@@ -647,15 +535,15 @@ export const OnboardingFlow: React.FC = () => {
                                     animate={{ opacity: 1 }}
                                     onClick={() => setAddingMember(true)}
                                     disabled={partyMembers.length >= 5}
-                                    className="w-full mt-3 h-12 rounded-[1.5rem] border-2 border-dashed border-slate-200 dark:border-gray-700 hover:border-med-terracotta/40 flex items-center justify-center gap-2 text-[10px] font-body font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-gray-500 hover:text-med-terracotta transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                    className="w-full mt-1.5 h-9 rounded-[1rem] border border-dashed border-slate-200 dark:border-gray-700 hover:border-med-terracotta/40 flex items-center justify-center gap-1.5 text-[9px] font-body font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-med-terracotta transition-all disabled:opacity-30"
                                 >
-                                    <Plus size={13} /> {partyMembers.length >= 5 ? 'Party Limit Reached' : 'Add Guest to Party'}
+                                    <Plus size={12} /> Add Guest
                                 </motion.button>
                             )}
                         </AnimatePresence>
                     </div>
 
-                    <div className="pt-8 flex items-center gap-3 w-full">
+                    <div className="pt-2 flex items-center gap-2 w-full">
                         <PillButton variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
                             ← BACK
                         </PillButton>
@@ -666,7 +554,7 @@ export const OnboardingFlow: React.FC = () => {
                             fullWidth={false}
                             className="flex-[2]"
                         >
-                            FINISH &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            FINISH &nbsp;<ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </PillButton>
                     </div>
                 </div>
@@ -678,42 +566,28 @@ export const OnboardingFlow: React.FC = () => {
     if (currentStep === 'decline') {
         return (
             <Shell stepIndex={0}>
-                <Logo className="mb-8 w-20 h-20 sm:w-24 sm:h-24" />
+                <Logo className="mb-2 w-14 h-14" />
 
-                <div className="text-center mb-8 w-full">
+                <div className="text-center mb-3 w-full">
                     <h2
-                        className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-3"
-                        style={{ fontSize: 'clamp(2.5rem, 9vw, 4rem)' }}
+                        className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-1"
+                        style={{ fontSize: 'clamp(1.6rem, 6vw, 2.2rem)' }}
                     >
                         We'll miss<br /><span className="italic text-med-terracotta">you.</span>
                     </h2>
-                    <p className="text-xs font-body text-slate-400 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
-                        Want to let the host know why? This is completely optional.
-                    </p>
                 </div>
 
-                <div className="w-full space-y-4 mb-6">
+                <div className="w-full space-y-2 mb-3">
                     <textarea
                         value={declineMessage}
                         onChange={(e) => setDeclineMessage(e.target.value)}
-                        placeholder="Send a quick note to the host (optional)..."
-                        rows={3}
-                        className="w-full bg-white/80 dark:bg-gray-800/60 border-2 border-slate-100 dark:border-gray-700 rounded-[1.5rem] px-6 py-4 text-sm font-body text-med-blue dark:text-white placeholder:text-slate-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-med-terracotta/50 focus:ring-0 transition-colors resize-none"
+                        placeholder="Optional note to the host..."
+                        rows={2}
+                        className="w-full bg-white/80 dark:bg-gray-800/60 border-2 border-slate-100 dark:border-gray-700 rounded-[1rem] px-3 py-2 text-xs font-body text-med-blue dark:text-white focus:outline-none focus:border-med-terracotta/50 resize-none"
                     />
                 </div>
 
-                {/* Cutoff reminder */}
-                <div className="w-full py-5 px-8 rounded-[2rem] bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 text-center mb-6">
-                    <div className="flex items-center justify-center gap-2.5 mb-2">
-                        <Calendar size={18} className="text-med-terracotta" />
-                        <span className="text-lg font-heading font-semibold text-med-blue dark:text-white italic">Changed your mind?</span>
-                    </div>
-                    <p className="text-[11px] font-body text-slate-400 dark:text-gray-500 leading-relaxed">
-                        No worries — you can update your RSVP anytime before <span className="font-bold text-med-terracotta">August 15, 2026</span>.
-                    </p>
-                </div>
-
-                <div className="w-full flex items-center gap-3">
+                <div className="w-full flex items-center gap-2">
                     <PillButton variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
                         ← BACK
                     </PillButton>
@@ -723,7 +597,7 @@ export const OnboardingFlow: React.FC = () => {
                         className="flex-[2]"
                         isLoading={isFinishing}
                     >
-                        {declineMessage.trim() ? 'SEND & FINISH' : 'FINISH'} &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        {declineMessage.trim() ? 'SEND & FINISH' : 'FINISH'}
                     </PillButton>
                 </div>
             </Shell>
@@ -733,136 +607,89 @@ export const OnboardingFlow: React.FC = () => {
     // ── Step 1: RSVP (Icon-Focused) ───────────────────────────────────────────
     return (
         <Shell stepIndex={0}>
-            <Logo className="mb-8 w-20 h-20 sm:w-24 sm:h-24" />
+            <Logo className="mb-2 w-14 h-14" />
 
-            <div className="text-center mb-8 w-full">
+            <div className="text-center mb-3 w-full">
                 <ProgressBar step={1} total={2} />
                 <h2
-                    className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-3"
-                    style={{ fontSize: 'clamp(2.8rem, 10vw, 4.5rem)' }}
+                    className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-1"
+                    style={{ fontSize: 'clamp(1.8rem, 6vw, 2.4rem)' }}
                 >
-                    Say<br /><span className="italic text-med-terracotta">the word.</span>
+                    Will you join us,<br /><span className="italic text-med-terracotta">{guestName}?</span>
                 </h2>
             </div>
 
+            {/* Event Info Box */}
+            <div className="w-full py-4 px-5 rounded-[1.5rem] bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 text-center mb-3">
+                <p className="text-[11px] leading-relaxed font-body text-slate-500 dark:text-gray-400">
+                    You're invited to celebrate <span className="font-semibold text-med-blue dark:text-white">Bryan's 40th</span> in Montpellier <span className="font-semibold text-med-blue dark:text-white">September 18-20</span>. Please RSVP before <span className="font-semibold text-med-terracotta">August 15</span> so we can finalize headcounts. We hope to see you in France!
+                </p>
+            </div>
+
             {/* RSVP Options — Icon-Focused */}
-            <div className="w-full grid grid-cols-3 gap-3 mb-8">
+            <div className="w-full grid grid-cols-3 gap-2 mb-3">
                 {/* Yes */}
                 <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => setSelectedRSVP('Confirmed')}
                     disabled={isFinishing}
-                    className={`flex flex-col items-center gap-3 p-5 rounded-[2rem] border-2 backdrop-blur-sm transition-all duration-300 group hover:shadow-lg ${
+                    className={`flex flex-col items-center gap-1.5 p-2 rounded-[1.2rem] border-2 transition-all group ${
                         selectedRSVP === 'Confirmed'
-                            ? 'border-med-terracotta bg-med-terracotta/10 shadow-md shadow-med-terracotta/10'
-                            : 'border-slate-100 dark:border-gray-700 hover:border-med-terracotta/50 bg-white/60 dark:bg-gray-800/50 hover:shadow-med-terracotta/10 hover:bg-med-terracotta/5'
+                            ? 'border-med-terracotta bg-med-terracotta/10'
+                            : 'border-slate-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/50'
                     }`}
                 >
-                    <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        selectedRSVP === 'Confirmed'
-                            ? 'bg-med-terracotta text-white'
-                            : 'bg-med-terracotta/10 group-hover:bg-med-terracotta group-hover:text-white'
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                        selectedRSVP === 'Confirmed' ? 'bg-med-terracotta text-white' : 'bg-med-terracotta/10 text-med-terracotta'
                     }`}>
-                        <PartyPopper size={24} className={`transition-colors ${selectedRSVP === 'Confirmed' ? 'text-white' : 'text-med-terracotta group-hover:text-white'}`} />
+                        <PartyPopper size={16} />
                     </div>
-                    <span className={`text-[9px] font-body font-bold uppercase tracking-[0.2em] transition-colors leading-tight text-center ${
-                        selectedRSVP === 'Confirmed' ? 'text-med-terracotta' : 'text-slate-500 dark:text-gray-400 group-hover:text-med-terracotta'
-                    }`}>
-                        Yes
-                    </span>
+                    <span className="text-[8px] font-body font-bold uppercase tracking-[0.2em] text-slate-500">Yes</span>
                 </motion.button>
 
                 {/* Maybe */}
                 <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => setSelectedRSVP('Pending')}
                     disabled={isFinishing}
-                    className={`flex flex-col items-center gap-3 p-5 rounded-[2rem] border-2 backdrop-blur-sm transition-all duration-300 group hover:shadow-lg ${
+                    className={`flex flex-col items-center gap-1.5 p-2 rounded-[1.2rem] border-2 transition-all group ${
                         selectedRSVP === 'Pending'
-                            ? 'border-med-blue bg-med-blue/10 shadow-md shadow-med-blue/10'
-                            : 'border-slate-100 dark:border-gray-700 hover:border-med-blue/40 bg-white/60 dark:bg-gray-800/50 hover:shadow-med-blue/10'
+                            ? 'border-med-blue bg-med-blue/10'
+                            : 'border-slate-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/50'
                     }`}
                 >
-                    <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        selectedRSVP === 'Pending'
-                            ? 'bg-med-blue text-white'
-                            : 'bg-med-blue/15 group-hover:bg-med-blue group-hover:text-white'
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                        selectedRSVP === 'Pending' ? 'bg-med-blue text-white' : 'bg-med-blue/10 text-med-blue'
                     }`}>
-                        <Compass size={24} className={`transition-colors ${selectedRSVP === 'Pending' ? 'text-white' : 'text-med-blue/70 dark:text-blue-400 group-hover:text-white'}`} />
+                        <Compass size={16} />
                     </div>
-                    <span className={`text-[9px] font-body font-bold uppercase tracking-[0.2em] transition-colors leading-tight text-center ${
-                        selectedRSVP === 'Pending' ? 'text-med-blue' : 'text-slate-500 dark:text-gray-400 group-hover:text-med-blue'
-                    }`}>
-                        Maybe
-                    </span>
+                    <span className="text-[8px] font-body font-bold uppercase tracking-[0.2em] text-slate-500">Maybe</span>
                 </motion.button>
 
                 {/* No */}
                 <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => setSelectedRSVP('Declined')}
                     disabled={isFinishing}
-                    className={`flex flex-col items-center gap-3 p-5 rounded-[2rem] border-2 backdrop-blur-sm transition-all duration-300 group hover:shadow-lg ${
+                    className={`flex flex-col items-center gap-1.5 p-2 rounded-[1.2rem] border-2 transition-all group ${
                         selectedRSVP === 'Declined'
-                            ? 'border-slate-400 bg-slate-100 dark:bg-gray-700 shadow-md'
-                            : 'border-slate-100 dark:border-gray-700 hover:border-slate-300 dark:hover:border-gray-500 bg-white/60 dark:bg-gray-800/50 hover:bg-slate-50 dark:hover:bg-gray-800'
+                            ? 'border-slate-400 bg-slate-100 dark:bg-gray-700'
+                            : 'border-slate-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/50'
                     }`}
                 >
-                    <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        selectedRSVP === 'Declined'
-                            ? 'bg-slate-400 text-white'
-                            : 'bg-slate-100 dark:bg-gray-700/80 group-hover:bg-slate-200 dark:group-hover:bg-gray-600'
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                        selectedRSVP === 'Declined' ? 'bg-slate-400 text-white' : 'bg-slate-100 dark:bg-gray-700 text-slate-400'
                     }`}>
-                        <X size={24} className={`transition-colors ${selectedRSVP === 'Declined' ? 'text-white' : 'text-slate-400 dark:text-gray-500'}`} />
+                        <X size={16} />
                     </div>
-                    <span className={`text-[9px] font-body font-bold uppercase tracking-[0.2em] leading-tight text-center ${
-                        selectedRSVP === 'Declined' ? 'text-slate-600 dark:text-white' : 'text-slate-400 dark:text-gray-500'
-                    }`}>
-                        No
-                    </span>
+                    <span className="text-[8px] font-body font-bold uppercase tracking-[0.2em] text-slate-400">No</span>
                 </motion.button>
             </div>
 
-            {isFinishing && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center justify-center gap-3 mb-6"
-                >
-                    <Loader2 size={18} className="animate-spin text-med-terracotta" />
-                    <span className="text-sm font-body text-slate-400 dark:text-gray-500">Entering the hub…</span>
-                </motion.div>
-            )}
-
-            {/* Event Info Boxes */}
-            <div className="w-full mt-2 grid grid-cols-3 gap-3">
-                <div className="py-5 px-4 rounded-[2rem] bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 text-center">
-                    <span className="text-[10px] font-body font-bold uppercase tracking-[0.3em] text-slate-400">Event</span>
-                    <div className="flex items-center justify-center gap-2 mt-2 mb-1">
-                        <PartyPopper size={16} className="text-med-terracotta shrink-0" />
-                        <span className="text-sm font-heading font-semibold text-med-blue dark:text-white italic leading-tight">Bryan's 40th</span>
-                    </div>
-                </div>
-                <div className="py-5 px-4 rounded-[2rem] bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 text-center">
-                    <span className="text-[10px] font-body font-bold uppercase tracking-[0.3em] text-slate-400">Date</span>
-                    <div className="flex items-center justify-center gap-2 mt-2 mb-1">
-                        <Calendar size={16} className="text-med-terracotta shrink-0" />
-                        <span className="text-sm font-heading font-semibold text-med-blue dark:text-white italic leading-tight">Sep 18–20, 2026</span>
-                    </div>
-                </div>
-                <div className="py-5 px-4 rounded-[2rem] bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 text-center">
-                    <span className="text-[10px] font-body font-bold uppercase tracking-[0.3em] text-slate-400">RSVP Cutoff</span>
-                    <div className="flex items-center justify-center gap-2 mt-2 mb-1">
-                        <Clock size={16} className="text-med-terracotta shrink-0" />
-                        <span className="text-sm font-heading font-semibold text-med-blue dark:text-white italic leading-tight">Aug 15, 2026</span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="w-full pt-8 flex items-center gap-3">
+            <div className="w-full pt-4 flex items-center gap-3">
                 <PillButton variant="ghost" onClick={logoutHost} fullWidth={false} className="flex-[1]">
                     ← BACK
                 </PillButton>

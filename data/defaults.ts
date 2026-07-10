@@ -485,7 +485,7 @@ export const DEFAULT_CONFIG = {
   destination: "Montpellier, France",
   occasion: "The 40th Birthday",
   heroImage: "/assets/images/arbre_blanc_welcome_1775592709000.png",
-  videoUrl: "https://www.youtube.com/embed/bRbUJZTIcUw?autoplay=1&mute=1&controls=0&loop=1&playlist=bRbUJZTIcUw&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&modestbranding=1&playsinline=1",
+  videoUrl: "/Montpellier Street Life.mp4",
   welcomeMessage: "Forty Years In Good Company",
   enableAI: true,
   hubUnlocked: false,

@@ -25,12 +25,17 @@ export const Hero: React.FC = () => {
         {config.videoUrl && (
             <div className="hidden md:block absolute inset-0 z-0 overflow-hidden">
                 <div className="absolute inset-0 bg-black/10 z-10" />
-                <iframe 
-                    className="absolute top-1/2 left-1/2 w-[300%] h-[300%] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-80"
+                <video 
+                    className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover pointer-events-none opacity-80 [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden [&::-webkit-media-controls-panel]:hidden"
                     src={config.videoUrl}
-                    allow="autoplay; encrypted-media"
-                    title="Cinematic Background"
-                    loading="lazy"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    disablePictureInPicture
+                    controlsList="nodownload nofullscreen noremoteplayback"
+                    aria-hidden="true"
+                    tabIndex={-1}
                 />
             </div>
         )}

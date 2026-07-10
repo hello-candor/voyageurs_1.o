@@ -492,6 +492,7 @@ export const EventLandingPage: React.FC = () => {
     const [helpRequested, setHelpRequested] = useState(false);
     const [showHelpModal, setShowHelpModal] = useState(false);
     const [expandedRoute, setExpandedRoute] = useState<string | null>(null);
+    const [activeModal, setActiveModal] = useState<'Event' | 'RSVP' | 'Destination' | null>(null);
     const toggleDarkMode = () => {
         const next = !isDark;
         setIsDark(next);
@@ -741,30 +742,65 @@ export const EventLandingPage: React.FC = () => {
                         <span className="italic text-med-terracotta dark:text-[#C25E3E]">{displayPrimary?.split(' ')[0] || 'Voyager'}.</span>
                     </h1>
 
-                    {/* Event mini-info cards */}
-                    <div className="grid grid-cols-3 gap-3 mt-8 w-full max-w-sm mx-auto">
-                        <div className="flex flex-col items-center gap-2.5 p-4 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm">
-                            <div className="w-10 h-10 rounded-full bg-med-terracotta/10 flex items-center justify-center">
-                                <PartyPopper size={18} className="text-med-terracotta" />
+                    {/* Dashboard Tiles */}
+                    <div className="flex flex-col gap-4 mt-8 w-full max-w-lg mx-auto">
+                        <button onClick={() => setActiveModal('RSVP')} className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
+                            <div className={`w-14 h-14 rounded-full ${statusConfig.bg} border ${statusConfig.border} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
+                                <StatusIcon size={24} className={statusConfig.color} />
                             </div>
-                            <span className="text-[9px] font-body font-bold uppercase tracking-[0.15em] text-med-blue dark:text-white text-center leading-tight">Bryan's 40th</span>
-                        </div>
-                        <div className="flex flex-col items-center gap-2.5 p-4 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm">
-                            <div className="w-10 h-10 rounded-full bg-med-terracotta/10 flex items-center justify-center">
-                                <Calendar size={18} className="text-med-terracotta" />
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white">Your RSVP</h3>
+                                <p className="text-sm font-body text-slate-500 dark:text-gray-400 mt-0.5">{statusConfig.label}</p>
+                                <p className="text-[11px] font-body font-bold text-med-terracotta mt-1">Party of {parsedCouple.isCouple ? 2 + nonPrimaryMembers.length : 1 + nonPrimaryMembers.length}</p>
                             </div>
-                            <span className="text-[9px] font-body font-bold uppercase tracking-[0.15em] text-med-blue dark:text-white text-center leading-tight">Sep 18–20, 2026</span>
-                        </div>
-                        <div className="flex flex-col items-center gap-2.5 p-4 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm">
-                            <div className="w-10 h-10 rounded-full bg-med-terracotta/10 flex items-center justify-center">
-                                <MapPin size={18} className="text-med-terracotta" />
-                            </div>
-                            <span className="text-[9px] font-body font-bold uppercase tracking-[0.15em] text-med-blue dark:text-white text-center leading-tight">Montpellier, France</span>
-                        </div>
-                    </div>
+                            <ChevronRight size={20} className="text-slate-300 dark:text-gray-600 group-hover:text-med-terracotta transition-colors" />
+                        </button>
 
+                        <button onClick={() => setActiveModal('Event')} className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
+                            <div className="w-14 h-14 rounded-full bg-med-terracotta/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                <Calendar size={24} className="text-med-terracotta" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white">The Event</h3>
+                                <p className="text-sm font-body text-slate-500 dark:text-gray-400 mt-0.5">Bryan's 40th • Sep 18–20, 2026</p>
+                                <p className="text-[11px] font-body font-bold text-med-terracotta mt-1">{attendingCount} events attending</p>
+                            </div>
+                            <ChevronRight size={20} className="text-slate-300 dark:text-gray-600 group-hover:text-med-terracotta transition-colors" />
+                        </button>
+
+                        <button onClick={() => setActiveModal('Destination')} className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
+                            <div className="w-14 h-14 rounded-full bg-med-blue/10 dark:bg-blue-900/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                <MapPin size={24} className="text-med-blue dark:text-blue-400" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white">The Destination</h3>
+                                <p className="text-sm font-body text-slate-500 dark:text-gray-400 mt-0.5">Montpellier, France</p>
+                                <p className="text-[11px] font-body font-bold text-med-blue dark:text-blue-400 mt-1">Travel & Accommodation</p>
+                            </div>
+                            <ChevronRight size={20} className="text-slate-300 dark:text-gray-600 group-hover:text-med-terracotta transition-colors" />
+                        </button>
+                    </div>
                 </motion.div>
 
+
+                {/* ── Modals Wrapper ── */}
+                <AnimatePresence>
+                    {activeModal && (
+                        <div className="fixed inset-0 z-[200] flex justify-center items-end sm:items-center p-0 sm:p-6 isolate">
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-med-blue/60 dark:bg-black/80 backdrop-blur-md" onClick={() => setActiveModal(null)} />
+                            <motion.div initial={{ opacity: 0, y: '100%', scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: '100%', scale: 0.95 }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="relative w-full max-w-2xl bg-med-sand dark:bg-gray-900 shadow-2xl flex flex-col rounded-t-[2.5rem] sm:rounded-[2.5rem] overflow-hidden border border-white/20 h-[90vh]">
+                                <div className="sticky top-0 z-20 bg-med-sand/90 dark:bg-gray-900/90 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-slate-200/50 dark:border-gray-800/50">
+                                    <h2 className="font-heading text-2xl font-bold text-med-blue dark:text-white">
+                                        {activeModal === 'RSVP' && 'Your RSVP & Party'}
+                                        {activeModal === 'Event' && 'The Event'}
+                                        {activeModal === 'Destination' && 'The Destination'}
+                                    </h2>
+                                    <button onClick={() => setActiveModal(null)} className="w-8 h-8 rounded-full bg-slate-200/50 dark:bg-gray-800 flex items-center justify-center text-slate-500 hover:text-med-terracotta hover:bg-slate-200 transition-all"><X size={16} /></button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 pb-20 space-y-6">
+
+                {activeModal === 'RSVP' && (
+                <>
                 {/* ══════════════════════════════════════════════════════════════
                     SECTION 1: RSVP STATUS + CHANGE TOOL
                 ══════════════════════════════════════════════════════════════ */}
@@ -1150,8 +1186,15 @@ export const EventLandingPage: React.FC = () => {
                         )}
                     </AnimatePresence>
 
-                    {/* ── Events Divider ── */}
-                    <div className="mt-6 pt-6 border-t border-slate-100 dark:border-gray-800" />
+
+                </SectionCard>
+                </>
+                )}
+
+                {activeModal === 'Event' && (
+                <>
+                <SectionCard>
+
 
                     <Eyebrow label="Events You're Attending" onEdit={() => setIsEditingEvents(!isEditingEvents)} isEditing={isEditingEvents} editLabel="Update Attendance" />
 
@@ -1520,7 +1563,11 @@ export const EventLandingPage: React.FC = () => {
                 </SectionCard>
                 </>)}
                 {/* END HIDDEN: Your Travel section */}
+                </>
+                )}
 
+                {activeModal === 'Destination' && (
+                <>
                 {currentStatus !== 'Declined' && (<>
                 <SectionCard>
                     <Eyebrow label="Getting There" rightContent={
@@ -1851,6 +1898,14 @@ export const EventLandingPage: React.FC = () => {
                 </>)}
 
 
+
+                </>
+                )}
+                                </div>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
                 {/* Footer spacer */}
                 <div className="py-6" />
             </div>

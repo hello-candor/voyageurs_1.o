@@ -60,6 +60,7 @@ export interface UserProfile {
     eventConfirmations?: Record<string, boolean>;
     phone?: string;
     isAdmin?: boolean;
+    invitationCode?: string;
 }
 
 export interface Guest {
@@ -139,7 +140,7 @@ interface UserContextType {
     coordinatedGroups: CoordinatedGroup[];
     galleryPosts: GalleryPost[];
     setVerified: (val: boolean) => void;
-    login: (name: string, email: string, guestsCount: number, status?: Guest['status'], dietary?: string, note?: string, social?: SocialLinks, privacy?: PrivacySettings, phone?: string) => void;
+    login: (name: string, email: string, guestsCount: number, status?: Guest['status'], dietary?: string, note?: string, social?: SocialLinks, privacy?: PrivacySettings, phone?: string, invitationCode?: string) => void;
     loginWithGoogle: (credential: string) => Promise<void>;
     loginWithCode: (code: string) => Promise<boolean>;
     logout: () => void;
@@ -333,10 +334,29 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [coordinatedGroups]);
 
     // Actions
-    const login = useCallback(async (name: string, email: string, guestsCount: number, status: Guest['status'] = 'Pending', dietary: string = '', note: string = '', social?: SocialLinks, privacy?: PrivacySettings, phone?: string) => {
-        const normalizedEmail = email.toLowerCase().trim();
+    const login = useCallback(async (
+        name: string,
+        email: string = '',
+        guestsCount: number,
+        status: Guest['status'] = 'Pending',
+        dietary: string = '',
+        note: string = '',
+        social?: SocialLinks,
+        privacy?: PrivacySettings,
+        phone?: string,
+        invitationCode?: string
+    ) => {
+        const normalizedEmail = (email || '').toLowerCase().trim();
         const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=D67252&color=fff`;
         const isAdmin = HOST_EMAILS.includes(normalizedEmail);
+
+        // Find existing guest by email or invitation code
+        const existingGuest = allGuests.find(g => 
+            (invitationCode && g.invitationCode === invitationCode) ||
+            (normalizedEmail && g.email === normalizedEmail)
+        );
+
+        const finalCode = invitationCode || existingGuest?.invitationCode || '';
 
         const newUser: UserProfile = {
             name,
@@ -354,6 +374,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             privacy: privacy || DEFAULT_PRIVACY,
             phone: phone || '',
             isAdmin,
+            invitationCode: finalCode,
             partyMembers: [{
                 id: 'primary',
                 name,
@@ -364,7 +385,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }],
         };
 
-        const existingGuest = allGuests.find(g => g.email === normalizedEmail);
         setUser(newUser);
         setVerified(true);
 
@@ -375,9 +395,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (isCloudEnabled && auth.currentUser) {
             try {
-                const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", normalizedEmail);
+                const docId = finalCode || normalizedEmail || `guest-${Date.now()}`;
+                const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", docId);
                 const guestData: Partial<Guest> = {
-                    id: normalizedEmail,
+                    id: docId,
                     name,
                     email: normalizedEmail,
                     status,
@@ -387,7 +408,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     img: existingGuest?.img || avatar,
                     social: social || {},
                     privacy: privacy || DEFAULT_PRIVACY,
-                    invitationCode: existingGuest?.invitationCode || Math.random().toString(36).substring(7).toUpperCase(),
+                    invitationCode: finalCode,
                 };
                 await setDoc(guestDocRef, guestData, { merge: true });
             } catch (e: any) {
@@ -411,18 +432,35 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const normalizedEmail = email.toLowerCase().trim();
 
             if (isCloudEnabled && auth.currentUser) {
-                const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", normalizedEmail);
                 try {
-                    const guestSnap = await getDoc(guestDocRef);
-                    if (guestSnap.exists()) {
-                        const data = guestSnap.data() as Guest;
-                        login(data.name, data.email, data.guestsCount, data.status, data.dietary, data.note, data.social, data.privacy);
+                    const { collection, query, where, getDocs } = await import('firebase/firestore');
+                    const guestsRef = collection(db, "events", CURRENT_EVENT_ID, "guests");
+                    const q = query(guestsRef, where("email", "==", normalizedEmail));
+                    const querySnap = await getDocs(q);
+
+                    if (!querySnap.empty) {
+                        const guestDoc = querySnap.docs[0];
+                        const data = guestDoc.data() as Guest;
+                        const docId = guestDoc.id;
+                        login(data.name, data.email, data.guestsCount, data.status, data.dietary, data.note, data.social, data.privacy, undefined, docId);
                         if (picture && !data.img.includes('firebase')) {
-                            await updateDoc(guestDocRef, { img: picture });
+                            const docRef = doc(db, "events", CURRENT_EVENT_ID, "guests", docId);
+                            await updateDoc(docRef, { img: picture });
                         }
                     } else {
                         login(name, normalizedEmail, 1, 'Pending', '', '');
-                        await updateDoc(guestDocRef, { img: picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=D67252&color=fff` });
+                        const fallbackDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", normalizedEmail);
+                        await setDoc(fallbackDocRef, {
+                            id: normalizedEmail,
+                            name,
+                            email: normalizedEmail,
+                            status: 'Pending',
+                            guestsCount: 1,
+                            dietary: '',
+                            note: '',
+                            img: picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=D67252&color=fff`,
+                            privacy: DEFAULT_PRIVACY
+                        }, { merge: true });
                     }
                 } catch (e: any) {
                     if (e.code === 'permission-denied') setIsCloudEnabled(false);
@@ -439,7 +477,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [login, setVerified, isCloudEnabled]);
 
     const loginWithCode = useCallback(async (code: string) => {
-        const normalizedCode = code.trim();
+        const clean = code.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+        const normalizedCode = [
+            clean.slice(0, 3),
+            clean.slice(3, 6),
+            clean.slice(6)
+        ].filter(Boolean).join('-');
 
         if (normalizedCode === 'BAXTER') {
             login('Alex Baxter', 'alex.baxter@voyageurs.app', 1, 'Confirmed', '', '');
@@ -460,7 +503,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     guestData.dietary || '',
                     guestData.note || '',
                     guestData.social,
-                    guestData.privacy
+                    guestData.privacy,
+                    undefined,
+                    normalizedCode
                 );
                 setVerified(true);
                 return true;
@@ -472,7 +517,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // 2. Fallback: check local allGuests array
         const guest = allGuests.find(g => g.invitationCode === normalizedCode);
         if (guest) {
-            login(guest.name, guest.email, guest.guestsCount, guest.status, guest.dietary, guest.note, guest.social, guest.privacy);
+            login(guest.name, guest.email, guest.guestsCount, guest.status, guest.dietary, guest.note, guest.social, guest.privacy, undefined, normalizedCode);
             setVerified(true);
             return true;
         }
@@ -510,8 +555,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (isCloudEnabled && auth.currentUser) {
             try {
-                const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", user.email);
-                await updateDoc(guestDocRef, data);
+                const docId = user.invitationCode || user.email;
+                if (docId) {
+                    const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", docId);
+                    await updateDoc(guestDocRef, data);
+                }
             } catch (e: any) {
                 if (e.code === 'permission-denied') setIsCloudEnabled(false);
             }

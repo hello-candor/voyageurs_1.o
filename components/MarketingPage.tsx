@@ -476,14 +476,14 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                             maskImage: "url('/assets/voyageurs-icon.png')", maskSize: "contain", maskRepeat: "no-repeat", maskPosition: "center"
                           }}
                         />
-                        <span className="text-[16px] font-body font-bold uppercase tracking-[0.3em] text-med-blue dark:text-white group-hover:!text-med-terracotta transition-colors duration-300">Voyageurs</span>
+                        <span className="text-[16px] font-body font-bold uppercase tracking-[0.3em] text-med-blue dark:text-white group-hover:!text-med-terracotta transition-colors duration-300 flex items-center gap-2">
+                            Voyageurs
+                            <span className="text-[10px] tracking-normal font-sans normal-case px-2.5 py-0.5 rounded-full bg-med-terracotta/10 dark:bg-[#C25E3E]/20 text-med-terracotta dark:text-[#C25E3E] font-semibold border border-med-terracotta/20 dark:border-[#C25E3E]/30 shrink-0">
+                                Coming Soon
+                            </span>
+                        </span>
                     </div>
-                    
-                    <div className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-                        <button onClick={() => setShowAbout(true)} className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 hover:text-med-blue dark:hover:text-white transition-colors">The Vision</button>
-                        <a href="#features" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 hover:text-med-blue dark:hover:text-white transition-colors">The Platform</a>
-                        <a href="#ecosystem" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 hover:text-med-blue dark:hover:text-white transition-colors">The Ecosystem</a>
-                    </div>
+                    {/* Links hidden for now */}
 
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2">
@@ -495,34 +495,51 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                             </button>
 
                         </div>
+
+                        <button 
+                            onClick={onShowLogin} 
+                            className="hidden lg:block text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-med-blue dark:text-white hover:text-med-terracotta dark:hover:text-[#C25E3E] transition-all duration-300 px-4 py-2.5 rounded-full hover:bg-slate-50 dark:hover:bg-white/5 active:scale-95 cursor-pointer mr-1"
+                        >
+                            Login
+                        </button>
+
                         <div className="relative hidden lg:block">
                             <div className="absolute inset-[-4px] bg-med-terracotta rounded-full blur-md opacity-80 animate-pulse"></div>
                             <button onClick={onShowLogin} className="relative btn-terracotta px-6 py-2.5 text-[10px] sm:px-6 sm:py-2.5 sm:text-xs">
-                                RSVP
+                                RSVP Now
                             </button>
                         </div>
                     </div>
                 </nav>
             </div>
 
-            <section className="relative pt-48 pb-20 overflow-hidden min-h-screen flex flex-col justify-center md:justify-end md:pb-32">
-                {/* YouTube Video Background */}
+            <section className="relative overflow-hidden h-[100dvh] flex flex-col justify-center md:justify-end">
+                {/* Local Video Background */}
                 <div className="absolute inset-0 z-0 overflow-hidden bg-med-blue dark:bg-gray-950">
-                    <div className="absolute inset-[-50%] w-[200%] h-[200%]">
-                        <div id="yt-bg-player" className="w-full h-full" />
-                    </div>
-                    {/* Overlay hides play button & controls */}
+                    <video 
+                        className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover pointer-events-none [&::-webkit-media-controls]:hidden [&::-webkit-media-controls-enclosure]:hidden [&::-webkit-media-controls-panel]:hidden"
+                        src="/Montpellier Street Life.mp4"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        disablePictureInPicture
+                        controlsList="nodownload nofullscreen noremoteplayback"
+                        aria-hidden="true"
+                        tabIndex={-1}
+                    />
+                    {/* Cinematic overlay */}
                     <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/60 to-black/80 z-[1]" />
                 </div>
 
                 {/* Ambient glow behind hero */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-med-terracotta/20 rounded-full blur-[120px] opacity-40 mix-blend-screen pointer-events-none z-0" />
 
-                <div className="w-[90%] mx-auto px-4 relative z-10">
-                    <div className="flex flex-col items-center md:items-start justify-center min-h-screen pb-24 md:pb-32 pt-20">
+                <div className="w-[90%] mx-auto px-4 relative z-10 h-full flex flex-col justify-center md:justify-end">
+                    <div className="flex flex-col items-center md:items-start justify-center md:justify-end h-full pb-16 md:pb-24 pt-24">
                         <div className="max-w-5xl w-full text-center md:text-left animate-in slide-in-from-bottom-8 duration-1000 relative">
                             <div className="flex items-center justify-center md:justify-start gap-3 mb-6">
-                                <Compass size={14} className="text-med-terracotta" />
+                                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-med-terracotta dark:text-[#C25E3E]">A Better Way to Travel Together</span>
                                 <div className="h-px w-12 bg-med-terracotta"></div>
                             </div>
                             
@@ -531,16 +548,13 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                                 <span className="italic text-med-terracotta">more connecting.</span>
                             </h1>
                             <p className="text-base sm:text-lg text-white/90 mb-10 max-w-2xl mx-auto md:mx-0 font-light leading-relaxed drop-shadow-md">
-                                Everything you need to research, plan, book, and host your next event—<br/>
-                                all-in-one place.
+                                Everything you need to plan, book, and host your next destination event—<br/>
+                                all-in-one place, without the chaos, or the app download.
                             </p>
 
-                            <div className="hidden md:flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                                <a href="#features" className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-white/10 text-white hover:bg-white/20 border border-white/20 px-8 py-3.5 text-xs shadow-xl backdrop-blur-md">
-                                    Learn More
-                                </a>
-                                <a href="#waitlist" className="btn-terracotta px-8 py-3.5 text-xs shadow-xl">
-                                    Start Planning
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                                <a href="#waitlist" className="inline-flex items-center justify-center font-bold tracking-[0.2em] uppercase transition-all duration-300 font-body relative overflow-hidden group rounded-full active:scale-95 bg-white/10 text-white hover:bg-white/20 border border-white/20 px-8 py-3.5 text-xs shadow-xl backdrop-blur-md">
+                                    Request Early Access
                                 </a>
                             </div>
                         </div>
@@ -548,12 +562,10 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                 </div>
 
                 {/* Scroll Indicator */}
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60 animate-bounce">
-                    <span className="text-[9px] uppercase tracking-[0.3em] text-white font-medium">Scroll</span>
-                    <div className="w-px h-10 bg-gradient-to-b from-white to-transparent"></div>
-                </div>
             </section>
 
+            {false && (
+            <div id="hidden-marketing-sections">
             <section id="philosophy" className="py-24 bg-white dark:bg-[#1e293b] relative overflow-hidden">
                 <div className="w-[90%] mx-auto px-4 relative z-10">
                     <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
@@ -1169,6 +1181,8 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                     </div>
                 </div>
             </section>
+            </div>
+            )}
 
             <section id="waitlist" className="py-24 bg-med-sand dark:bg-gray-950 relative overflow-hidden">
                 <div className="w-[90%] mx-auto px-4 flex flex-col items-center relative z-10">
@@ -1185,89 +1199,16 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
                             We're almost ready to welcome you on board! Join our early access list to be the first to experience a stress-free way to explore the world together.
                         </p>
                         <button onClick={() => { setShowWaitlist(true); setWaitlistSubmitted(false); setWaitlistEmail(''); setWaitlistName(''); setWaitlistConsent(false); }} className="btn-glass-adaptive px-10 py-4 text-[10px] sm:text-xs">
-                            Unlock Early Access
+                            Request Early Access
                         </button>
                     </div>
                 </div>
             </section>
 
-            <footer className="bg-med-blue dark:bg-gray-950 pt-20 pb-10 border-t border-med-blue dark:border-slate-800 font-body">
+            <footer className="bg-black pt-10 pb-10 font-body">
                 <div className="w-[90%] mx-auto px-4">
-                    <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 mb-16">
-                        <div className="flex flex-col items-center md:items-start">
-                            <div className="flex items-center gap-3 group cursor-pointer mb-4" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                                <div 
-                                  className="h-10 w-10 bg-white dark:bg-white group-hover:!bg-med-terracotta transition-colors duration-300" 
-                                  style={{ 
-                                    WebkitMaskImage: "url('/assets/voyageurs-icon.png')", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center",
-                                    maskImage: "url('/assets/voyageurs-icon.png')", maskSize: "contain", maskRepeat: "no-repeat", maskPosition: "center"
-                                  }}
-                                />
-                                <span className="text-[16px] font-body font-bold uppercase tracking-[0.3em] text-white group-hover:!text-med-terracotta transition-colors duration-300">Voyageurs</span>
-                            </div>
-                            <div className="flex gap-4">
-                                <button onClick={(e) => { e.preventDefault(); handleComingSoon('instagram'); }} className="relative w-10 h-10 rounded-full bg-white/10 dark:bg-gray-900 flex items-center justify-center text-white/60 hover:text-white dark:hover:text-white transition-colors border border-white/20 dark:border-slate-800">
-                                    <Instagram size={18} />
-                                    <AnimatePresence>
-                                        {comingSoonLink === 'instagram' && (
-                                            <motion.span initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white dark:bg-slate-700 text-med-blue dark:text-white text-[9px] uppercase tracking-wider font-bold py-1 px-2.5 rounded whitespace-nowrap pointer-events-none shadow-lg">Coming Soon</motion.span>
-                                        )}
-                                    </AnimatePresence>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 md:gap-16 text-center sm:text-left w-full md:w-auto pt-4 md:pt-0">
-                            <div className="flex flex-col gap-4">
-                                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white dark:text-white">Discover</div>
-                                <div className="flex flex-col gap-3 text-sm font-light text-white/50 dark:text-slate-400">
-                                    <button onClick={() => setShowAbout(true)} className="hover:text-med-terracotta transition-colors sm:text-left">The Vision</button>
-                                    <a href="#features" className="hover:text-med-terracotta transition-colors sm:text-left">The Platform</a>
-                                    <a href="#ecosystem" className="hover:text-med-terracotta transition-colors sm:text-left">The Ecosystem</a>
-                                </div>
-                            </div>
-                            
-                            <div className="flex flex-col gap-4">
-                                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white dark:text-white">Explore</div>
-                                <div className="flex flex-col gap-3 text-sm font-light text-white/50 dark:text-slate-400">
-                                    <button onClick={() => handleComingSoon('journals')} className="relative hover:text-med-terracotta transition-colors sm:text-left">
-                                        Travel Journals
-                                        <AnimatePresence>
-                                            {comingSoonLink === 'journals' && (
-                                                <motion.span initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute bottom-full left-1/2 sm:left-0 -translate-x-1/2 sm:-translate-x-0 mb-1 bg-white dark:bg-slate-700 text-med-blue dark:text-white text-[9px] uppercase tracking-wider font-bold py-1 px-2 rounded whitespace-nowrap pointer-events-none shadow-lg">Coming Soon</motion.span>
-                                            )}
-                                        </AnimatePresence>
-                                    </button>
-                                    <button onClick={() => handleComingSoon('guides')} className="relative hover:text-med-terracotta transition-colors sm:text-left">
-                                        Curated Guides
-                                        <AnimatePresence>
-                                            {comingSoonLink === 'guides' && (
-                                                <motion.span initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute bottom-full left-1/2 sm:left-0 -translate-x-1/2 sm:-translate-x-0 mb-1 bg-med-blue dark:bg-slate-700 text-white text-[9px] uppercase tracking-wider py-1 px-2 rounded whitespace-nowrap pointer-events-none">Coming Soon</motion.span>
-                                            )}
-                                        </AnimatePresence>
-                                    </button>
-                                    <button onClick={() => handleComingSoon('knowledge')} className="relative hover:text-med-terracotta transition-colors sm:text-left">
-                                        Knowledge Base
-                                        <AnimatePresence>
-                                            {comingSoonLink === 'knowledge' && (
-                                                <motion.span initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute bottom-full left-1/2 sm:left-0 -translate-x-1/2 sm:-translate-x-0 mb-1 bg-med-blue dark:bg-slate-700 text-white text-[9px] uppercase tracking-wider py-1 px-2 rounded whitespace-nowrap pointer-events-none">Coming Soon</motion.span>
-                                            )}
-                                        </AnimatePresence>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col gap-4">
-                                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white dark:text-white">Connect</div>
-                                <div className="flex flex-col gap-3 text-sm font-light text-white/50 dark:text-slate-400">
-                                    <button onClick={onShowLogin} className="hover:text-med-terracotta transition-colors sm:text-left">RSVP</button>
-                                    <button onClick={onShowLogin} className="hover:text-med-terracotta transition-colors sm:text-left">Login</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div className="border-t border-white/15 dark:border-slate-800 pt-8 flex flex-col items-center gap-4 text-[10px] text-white/40 dark:text-slate-400 font-bold uppercase tracking-widest">
+                    <div className="pt-8 flex flex-col items-center gap-4 text-[10px] text-white/40 dark:text-slate-400 font-bold uppercase tracking-widest">
+                        <Logo className="w-8 h-8 mb-2" />
                         <div className="flex items-center gap-6">
                             <button onClick={() => setShowPrivacy(true)} className="hover:text-med-terracotta transition-colors">Privacy</button>
                             <button onClick={() => setShowTerms(true)} className="hover:text-med-terracotta transition-colors">Terms</button>

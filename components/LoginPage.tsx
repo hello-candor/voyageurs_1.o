@@ -144,21 +144,21 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
         />
       </div>
 
-      <div className="relative w-full max-w-2xl px-5 sm:px-8 py-8 my-auto mx-auto flex items-center justify-center">
+      <div className="relative w-full max-w-2xl px-5 sm:px-8 py-4 my-auto mx-auto flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.98, y: 16, filter: 'blur(4px)' }}
           animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
           transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.1 }}
-          className="w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[3rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] border border-white dark:border-gray-800 px-6 py-10 sm:px-14 sm:py-16 md:px-20 md:py-16 relative flex flex-col justify-center"
+          className="w-full max-h-[calc(100vh-3rem)] bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[3rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] border border-white dark:border-gray-800 px-6 py-8 sm:px-10 sm:py-10 md:px-16 md:py-12 relative flex flex-col justify-start overflow-y-auto"
         >
           {/* Back button MOVED INSIDE card */}
           {onClose && (
             <button 
               onClick={onClose}
-              className="absolute top-10 left-10 flex items-center gap-2 text-slate-400 hover:text-med-blue transition-colors group z-20"
+              className="absolute top-6 left-6 sm:top-10 sm:left-10 flex items-center gap-2 text-slate-400 hover:text-med-blue transition-colors group z-20"
             >
-              <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="text-xs font-bold uppercase tracking-[0.2em] font-body">Go Back</span>
+              <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] font-body">Go Back</span>
             </button>
           )}
 
@@ -166,19 +166,12 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
           <div className="absolute top-0 right-0 w-72 h-72 bg-med-terracotta/10 rounded-full blur-[120px] opacity-60 pointer-events-none" />
           
           <div className="relative z-10 flex flex-col items-center w-full max-w-lg mx-auto">
-            <Logo className="mb-6 sm:mb-10 w-20 h-20 sm:w-28 sm:h-28" />
+            <Logo className="mb-4 sm:mb-6 w-16 h-16 sm:w-20 sm:h-20" />
             
-            <div className="text-center mb-8 sm:mb-14">
-              <div className="flex items-center justify-center gap-6 mb-6">
-                  <div className="h-px w-10 bg-med-terracotta/40"></div>
-                  <span className="text-[11px] font-body font-bold uppercase tracking-[0.4em] text-med-terracotta">
-                    Access Your Invite
-                  </span>
-                  <div className="h-px w-10 bg-med-terracotta/40"></div>
-              </div>
+            <div className="text-center mb-4 sm:mb-8">
               <h1 
-                className="font-heading font-light text-med-blue dark:text-blue-100 leading-[0.9] mb-4 tracking-tight"
-                style={{ fontSize: guestName ? 'clamp(2.2rem, 8vw, 4rem)' : 'clamp(3.5rem, 13vw, 6rem)' }}
+                className="font-heading font-light text-med-blue dark:text-blue-100 leading-[0.9] mb-3 tracking-tight"
+                style={{ fontSize: guestName ? 'clamp(1.8rem, 6vw, 3rem)' : 'clamp(2.5rem, 9vw, 4.5rem)' }}
               >
                 Welcome, <br/>
                 <AnimatePresence mode="wait">
@@ -196,30 +189,30 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
               </h1>
             </div>
 
-            <form onSubmit={handleAuth} className="w-full space-y-5 sm:space-y-8">
+            <form onSubmit={handleAuth} className="w-full space-y-4 sm:space-y-6">
               <div className="relative group">
-                <p className="text-xs font-body text-slate-400 dark:text-gray-500 text-center mb-3 tracking-wide">Enter Your Unique Invite Code</p>
+                <p className="text-xs font-body text-slate-400 dark:text-gray-500 text-center mb-2 tracking-wide">Enter Your Unique Invite Code</p>
                 <input 
                   type="text" 
                   value={inputValue}
                   onChange={(e) => setInputValue(formatCode(e.target.value))}
                   placeholder="XXX-XXX-XXX" 
                   maxLength={11}
-                  className="w-full h-24 sm:h-32 bg-slate-50/50 dark:bg-[#1a1f2e] border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta rounded-none px-4 text-center font-body font-bold text-med-blue dark:text-white outline-none transition-all flex items-center justify-center leading-none placeholder:text-sm placeholder:tracking-[0.5em] placeholder:font-body placeholder:opacity-30 placeholder:font-normal"
+                  className="w-full h-16 sm:h-20 bg-slate-50/50 dark:bg-[#1a1f2e] border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta rounded-none px-4 text-center font-body font-bold text-med-blue dark:text-white outline-none transition-all flex items-center justify-center leading-none placeholder:text-sm placeholder:tracking-[0.5em] placeholder:font-body placeholder:opacity-30 placeholder:font-normal"
                   style={{ 
-                    fontSize: 'clamp(1.4rem, 5.5vw, 2.8rem)',
+                    fontSize: 'clamp(1.2rem, 5vw, 2rem)',
                     letterSpacing: '0.08em',
                   }}
                   disabled={isLoading}
                   autoFocus
                 />
-                <div className="absolute right-0 bottom-4 text-slate-300 dark:text-gray-700 opacity-0 group-focus-within:opacity-100 transition-opacity">
-                   <Key size={24} />
+                <div className="absolute right-0 bottom-3 text-slate-300 dark:text-gray-700 opacity-0 group-focus-within:opacity-100 transition-opacity">
+                   <Key size={20} />
                 </div>
               </div>
 
-              <div className="px-2 space-y-4">
-                <label className="flex items-start gap-3 p-5 sm:p-6 bg-med-sand/40 dark:bg-[#1a1f2e]/40 rounded-[2rem] border border-med-blue/5 cursor-pointer">
+              <div className="px-1 space-y-3">
+                <label className="flex items-start gap-3 p-4 sm:p-4 bg-med-sand/40 dark:bg-[#1a1f2e]/40 rounded-[1.5rem] border border-med-blue/5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={agreedToTerms}
@@ -239,8 +232,8 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="p-5 bg-slate-50/50 dark:bg-black/10 rounded-2xl text-[10px] text-slate-400 italic font-body flex items-center gap-4">
-                        <Sparkles size={16} className="text-med-terracotta shrink-0" />
+                      <div className="p-4 bg-slate-50/50 dark:bg-black/10 rounded-xl text-[10px] text-slate-400 italic font-body flex items-center gap-4">
+                        <Sparkles size={14} className="text-med-terracotta shrink-0" />
                         <span>AI-enhanced logistics coordination via Candor Digital Group, LLC, Chicago.</span>
                       </div>
                     </motion.div>
@@ -251,7 +244,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
               <button 
                 type="submit"
                 disabled={isLoading || !inputValue || !agreedToTerms}
-                className="w-full h-16 sm:h-20 bg-[#E2923D] text-white rounded-full text-xs font-bold uppercase tracking-[0.3em] shadow-2xl hover:bg-[#d17e2b] shadow-[#E2923D]/30 transition-all flex items-center justify-center gap-4 group active:scale-95 disabled:opacity-50 font-body"
+                className="w-full h-14 sm:h-16 bg-[#E2923D] text-white rounded-full text-xs font-bold uppercase tracking-[0.3em] shadow-2xl hover:bg-[#d17e2b] shadow-[#E2923D]/30 transition-all flex items-center justify-center gap-4 group active:scale-95 disabled:opacity-50 font-body"
               >
                 {isLoading ? (
                   <Loader2 className="animate-spin w-6 h-6" />
@@ -265,7 +258,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
               <motion.p 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-8 text-red-500 text-xs font-bold uppercase tracking-widest px-8 py-4 bg-red-50 dark:bg-red-500/10 rounded-2xl text-center font-body border border-red-100 dark:border-red-500/20"
+                className="mt-6 w-full text-red-500 text-xs font-bold uppercase tracking-widest px-6 py-3 bg-red-50 dark:bg-red-500/10 rounded-xl text-center font-body border border-red-100 dark:border-red-500/20"
               >
                 {error}
               </motion.p>

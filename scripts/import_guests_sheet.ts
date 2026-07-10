@@ -12,7 +12,7 @@
  *   npx tsx scripts/import_guests_sheet.ts --csv path/to/file.csv
  */
 
-import * as admin from 'firebase-admin';
+import admin from 'firebase-admin';
 import * as fs from 'fs';
 import * as path from 'path';
 import { parse } from 'csv-parse/sync';
@@ -29,10 +29,10 @@ const EVENT_ID = 'voyageurs_2026';
 function mapToGuest(row: any) {
     // RSVP Status
     let status = 'Pending';
-    const rsvpValue = String(row['RSVP '] || row['RSVP'] || '').trim();
-    if (rsvpValue === 'Attending') status = 'Confirmed';
-    else if (rsvpValue === 'Not Attending') status = 'Declined';
-    else if (rsvpValue === 'Waiting') status = 'Pending';
+    const rsvpValue = String(row['RSVP '] || row['RSVP'] || '').trim().toLowerCase();
+    if (rsvpValue === 'attending' || rsvpValue === 'confirmed') status = 'Confirmed';
+    else if (rsvpValue === 'not attending' || rsvpValue === 'declined') status = 'Declined';
+    else if (rsvpValue === 'waiting' || rsvpValue === 'pending') status = 'Pending';
 
     // Transport
     let arrivalMode = 'Plane';
@@ -48,7 +48,7 @@ function mapToGuest(row: any) {
     // Identity
     const email = String(row['Email'] || '').trim();
     const name = String(row['AddressTO'] || row['First Guest'] || '').trim();
-    const invitationCode = String(row['Invitation Code'] || '').trim().toUpperCase();
+    const invitationCode = String(row['Invite Code'] || row['Invitation Code'] || '').trim().toUpperCase();
 
     // Use invitation code as doc ID (more reliable than email for this guest list)
     const docId = invitationCode || (email ? email.toLowerCase() : `guest-${Date.now()}`);
@@ -57,6 +57,13 @@ function mapToGuest(row: any) {
     const partyInfo = String(row['Party'] || '').trim();
     const likelihood = String(row['Likelihood'] || '').trim();
     const note = partyInfo || likelihood ? `Party: ${partyInfo} | Likelihood: ${likelihood}` : '';
+
+    // Event Confirmations
+    const eventConfirmations: Record<string, boolean> = {};
+    if (row['Event Friday']) eventConfirmations['friday'] = String(row['Event Friday']).trim().toLowerCase() === 'yes';
+    if (row['Event Excursion']) eventConfirmations['excursion'] = String(row['Event Excursion']).trim().toLowerCase() === 'yes';
+    if (row['Event Saturday']) eventConfirmations['saturday'] = String(row['Event Saturday']).trim().toLowerCase() === 'yes';
+    if (row['Event Sunday']) eventConfirmations['sunday'] = String(row['Event Sunday']).trim().toLowerCase() === 'yes';
 
     return {
         id: docId,
@@ -81,7 +88,8 @@ function mapToGuest(row: any) {
             arrivalMode: arrivalMode,
             arrivalNumber: arrivalNumber,
             accommodation: String(row['Lodging '] || row['Lodging'] || '').trim()
-        }
+        },
+        eventConfirmations: eventConfirmations
     };
 }
 
