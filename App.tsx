@@ -271,7 +271,7 @@ const App = () => {
         ) : (
           // Standard public marketing page
           <Suspense fallback={<LoadingScreen />}>
-            <MarketingPage onShowLogin={() => setShowLogin(true)} />
+            <MarketingPage onShowLogin={() => setIsHostRoute(true)} onRSVP={() => setShowLogin(true)} />
           </Suspense>
         )}
       </main>

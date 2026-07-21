@@ -129,7 +129,7 @@ const BentoCard = ({ children, className = "", isHero = false }: any) => {
 
 
 
-export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
+export const MarketingPage = ({ onHostLoginSuccess, onShowLogin, onRSVP }: any) => {
     const { theme, toggleTheme } = useTheme();
     const [isAnnual, setIsAnnual] = useState(false);
     const [showPrivacy, setShowPrivacy] = useState(false);
@@ -505,7 +505,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
 
                         <div className="relative hidden lg:block">
                             <div className="absolute inset-[-4px] bg-med-terracotta rounded-full blur-md opacity-80 animate-pulse"></div>
-                            <button onClick={() => setShowOnboarding(true)} className="relative btn-terracotta px-6 py-2.5 text-[10px] sm:px-6 sm:py-2.5 sm:text-xs">
+                            <button onClick={onRSVP || onShowLogin} className="relative btn-terracotta px-6 py-2.5 text-[10px] sm:px-6 sm:py-2.5 sm:text-xs">
                                 RSVP Now
                             </button>
                         </div>
