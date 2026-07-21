@@ -11,6 +11,7 @@ import { useUser } from '../context/UserContext';
 import { authService } from '../services/authService';
 import { PrivacyPolicyModal } from './PrivacyPolicyModal';
 import { TermsModal } from './TermsModal';
+import { WebOSCard } from './WebOSCard';
 
 const Logo = ({ className = "w-20 h-20" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
@@ -47,6 +48,7 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [guestName, setGuestName] = useState('');
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const hasAutoSubmitted = useRef(false);
 
   useEffect(() => {
@@ -121,7 +123,8 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
-      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-med-sand dark:bg-[#111827] transition-colors duration-500 overflow-y-auto"
+      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center overflow-hidden"
+      style={{ background: 'radial-gradient(circle at center, #1b263b 0%, #0d1b2a 100%)' }}
     >
       {/* Styles Injection */}
       <style>{`
@@ -130,43 +133,27 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
         .font-body { font-family: 'Montserrat', sans-serif; }
       `}</style>
 
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div 
-          animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-24 -right-24 w-[600px] h-[600px] bg-med-terracotta/10 rounded-full blur-[140px]"
-        />
-        <motion.div 
-          animate={{ x: [0, -40, 0], y: [0, 60, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-24 -left-24 w-[700px] h-[700px] bg-med-blue/10 rounded-full blur-[160px]"
-        />
-      </div>
-
-      <div className="relative w-full max-w-2xl px-5 sm:px-8 py-4 my-auto mx-auto flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98, y: 16, filter: 'blur(4px)' }}
-          animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.1 }}
-          className="w-full max-h-[calc(100vh-3rem)] bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[3rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] border border-white dark:border-gray-800 px-6 py-8 sm:px-10 sm:py-10 md:px-16 md:py-12 relative flex flex-col justify-start overflow-y-auto"
+      <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[650px] max-h-[85vh]'}`}>
+        <WebOSCard
+          id="rsvp-login-card"
+          title="Voyageurs"
+          isActive={true}
+          isOverview={false}
+          index={0}
+          activeIndex={0}
+          stackIndex={0}
+          stackSize={1}
+          onClose={onClose || (() => {})}
+          onFocus={() => {}}
+          onMinimize={onClose || (() => {})}
+          isFullScreen={isFullScreen}
+          onToggleFullScreen={() => setIsFullScreen(!isFullScreen)}
         >
-          {/* Back button MOVED INSIDE card */}
-          {onClose && (
-            <button 
-              onClick={onClose}
-              className="absolute top-6 left-6 sm:top-10 sm:left-10 flex items-center gap-2 text-slate-400 hover:text-med-blue transition-colors group z-20"
-            >
-              <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] font-body">Go Back</span>
-            </button>
-          )}
-
-          {/* Internal Accents */}
-          <div className="absolute top-0 right-0 w-72 h-72 bg-med-terracotta/10 rounded-full blur-[120px] opacity-60 pointer-events-none" />
-          
-          <div className="relative z-10 flex flex-col items-center w-full max-w-lg mx-auto">
-            <Logo className="mb-4 sm:mb-6 w-16 h-16 sm:w-20 sm:h-20" />
+          <div className="dark flex flex-col h-full bg-[#1a202c] text-white/90 overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-72 h-72 bg-med-terracotta/10 rounded-full blur-[120px] opacity-60 pointer-events-none" />
+            
+            <div className="flex-1 overflow-y-auto px-6 py-8 md:px-10 flex flex-col items-center justify-start sm:justify-center">
+              <Logo className="mb-4 sm:mb-6 w-16 h-16 sm:w-20 sm:h-20" />
             
             <div className="text-center mb-4 sm:mb-8">
               <h1 
@@ -263,8 +250,9 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
                 {error}
               </motion.p>
             )}
+            </div>
           </div>
-        </motion.div>
+        </WebOSCard>
       </div>
       <PrivacyPolicyModal isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />
       <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />

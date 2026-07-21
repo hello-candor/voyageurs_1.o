@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { isValidEmail, isValidName } from '../utils/validation';
 import { Button } from './Button';
+import { WebOSCard } from './WebOSCard';
 
 import { onGuestRegistered } from '../services/registrationOrchestrator';
 import { DEFAULT_AGENDA_DATA } from '../data/defaults';
@@ -119,58 +120,46 @@ const PillButton = ({
 
 // ─── Shell (webOS Workspace + Onyx Card) ─────────────────────────────────────
 const Shell = ({ children, stepIndex, stepTitle = 'Voyageurs' }: { children: React.ReactNode; stepIndex: number; stepTitle?: string }) => {
-    const { theme } = useTheme();
+    const { toggleProfile } = useUser();
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
     return (
-    <div className="fixed inset-0 z-[1000] overflow-y-auto transition-colors duration-500">
-
-        {/* webOS Workspace Background */}
-        <div className="fixed inset-0 z-0 pointer-events-none">
-            {/* Light mode base */}
-            <div className={`absolute inset-0 bg-gradient-to-br from-white/60 via-[#F5F2EB] to-[#F5F2EB] transition-opacity duration-700 ${theme === 'light' ? 'opacity-100' : 'opacity-0'}`} />
-            {/* Dark mode base */}
-            <div className={`absolute inset-0 bg-gradient-to-br from-[#330046]/40 via-[#1A1A1A] to-[#1A1A1A] transition-opacity duration-700 ${theme === 'dark' ? 'opacity-100' : 'opacity-0'}`} />
-            {/* Ambient glows */}
-            <div className={`absolute top-[20%] left-[30%] w-[600px] h-[600px] bg-[#508BC5] rounded-full blur-[120px] ${theme === 'dark' ? 'mix-blend-screen opacity-[0.15]' : 'mix-blend-multiply opacity-[0.1]'}`} />
-            <div className={`absolute bottom-[10%] right-[20%] w-[500px] h-[500px] bg-[#FFCDA6] rounded-full blur-[140px] ${theme === 'dark' ? 'mix-blend-screen opacity-[0.10]' : 'mix-blend-multiply opacity-[0.2]'}`} />
-            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#330046] rounded-full blur-[160px] mix-blend-screen transition-opacity duration-700 ${theme === 'dark' ? 'opacity-40' : 'opacity-0'}`} />
-        </div>
-
-        <div className="relative w-full max-w-xl px-5 py-4 min-h-screen flex items-center justify-center mx-auto">
-            <AnimatePresence mode="wait">
-                <motion.div
+        <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center overflow-hidden"
+          style={{ background: 'radial-gradient(circle at center, #1b263b 0%, #0d1b2a 100%)' }}
+        >
+          <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[650px] max-h-[85vh]'}`}>
+            <WebOSCard
+              id="onboarding-card"
+              title={stepTitle}
+              isActive={true}
+              isOverview={false}
+              index={0}
+              activeIndex={0}
+              stackIndex={0}
+              stackSize={1}
+              onClose={toggleProfile}
+              onFocus={() => {}}
+              onMinimize={toggleProfile}
+              isFullScreen={isFullScreen}
+              onToggleFullScreen={() => setIsFullScreen(!isFullScreen)}
+            >
+              <div className="dark flex flex-col h-full bg-[#1a202c] text-white/90 overflow-hidden relative">
+                <AnimatePresence mode="wait">
+                  <motion.div
                     key={stepIndex}
-                    initial={{ opacity: 0, scale: 0.96, y: 16, filter: 'blur(4px)' }}
-                    animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-                    exit={{ opacity: 0, scale: 0.96, y: -12, filter: 'blur(4px)' }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 40 }}
-                    className={`w-full max-h-[90vh] overflow-hidden rounded-[32px] ring-1 relative flex flex-col justify-start shadow-2xl transition-all duration-300 ${
-                        theme === 'light'
-                            ? 'bg-white/60 backdrop-blur-3xl border-white/50 shadow-xl ring-black/5'
-                            : 'bg-[#330046]/30 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-white/20'
-                    }`}
-                >
-                    {/* Onyx Header Chrome — matches WebOSCard exactly */}
-                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${
-                        theme === 'light' ? 'bg-white/40 border-white/40' : 'bg-transparent border-white/10'
-                    }`}>
-                        <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
-                            <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>{stepTitle}</span>
-                        </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1 overflow-y-auto px-6 py-6 md:px-10 md:py-8">
-                        <div className="absolute top-0 right-0 w-72 h-72 bg-med-terracotta/10 dark:bg-med-terracotta/20 rounded-full blur-[120px] opacity-60 dark:opacity-80 pointer-events-none" />
-                        <div className="relative z-10 flex flex-col items-center w-full max-w-md mx-auto">
-                            {children}
-                        </div>
-                    </div>
-                </motion.div>
-            </AnimatePresence>
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute inset-0 overflow-y-auto px-6 py-8 md:px-10 flex flex-col items-center justify-start sm:justify-center"
+                  >
+                    {children}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </WebOSCard>
+          </div>
         </div>
-    </div>
     );
 };
 

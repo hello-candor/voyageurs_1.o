@@ -134,9 +134,7 @@ const App = () => {
             <div className="flex items-center justify-center gap-6 md:gap-8 text-[11px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
               <button onClick={() => setShowPrivacy(true)} className="hover:text-med-blue dark:hover:text-white transition-colors duration-300">Privacy Policy</button>
               <button onClick={() => setShowTerms(true)} className="hover:text-med-blue dark:hover:text-white transition-colors duration-300">Terms of Service</button>
-              <button onClick={() => setShowAdmin(true)} className="hover:text-med-blue dark:hover:text-white transition-colors duration-300 flex items-center gap-1.5">
-                <Lock size={12} className="mb-0.5" /> Host Login
-              </button>
+              <button onClick={() => setShowAdmin(true)} className="hover:text-med-blue dark:hover:text-white transition-colors duration-300">Login</button>
             </div>
 
             <div className="space-y-2">

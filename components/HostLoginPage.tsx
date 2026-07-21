@@ -31,19 +31,15 @@ export const HostLoginPage = () => {
   const {
     loginHost,
     loginHostWithEmail,
-    signupHostWithEmail,
-    loginHostWithGooglePopup,
     error: authError,
     isLoading: authLoading,
   } = useAuth();
 
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passcode, setPasscode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPasscodeSection, setShowPasscodeSection] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
@@ -54,19 +50,6 @@ export const HostLoginPage = () => {
     if (authError) setError(authError);
   }, [authError]);
 
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    setError('');
-    try {
-      await loginHostWithGooglePopup();
-    } catch (err: any) {
-      if (err?.code !== 'auth/popup-closed-by-user') {
-        setError('Google Sign-In failed. Please try again.');
-      }
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,14 +57,9 @@ export const HostLoginPage = () => {
     setIsLoading(true);
     setError('');
     try {
-      let success: boolean;
-      if (mode === 'signup') {
-        success = await signupHostWithEmail(email.trim(), password);
-      } else {
-        success = await loginHostWithEmail(email.trim(), password);
-      }
+      const success = await loginHostWithEmail(email.trim(), password);
       if (!success && !authError) {
-        setError(mode === 'signup' ? 'Sign-up failed.' : 'Sign-in failed.');
+        setError('Sign-in failed.');
       }
     } catch (err: any) {
       setError(err.message || 'Authentication failed.');
@@ -159,25 +137,7 @@ export const HostLoginPage = () => {
                 </p>
               </div>
 
-              {/* ── Google Sign-In ── */}
-              <button
-                onClick={handleGoogleSignIn}
-                disabled={busy || isGoogleLoading}
-                className="w-full h-11 bg-white hover:bg-gray-50 rounded-full flex items-center justify-center gap-3 shadow-lg transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isGoogleLoading ? (
-                  <Loader2 className="animate-spin w-4 h-4 text-gray-500" />
-                ) : (
-                  <>
-                    <GoogleLogo />
-                    <span className="text-xs font-semibold text-gray-800 font-body">
-                      Sign in with Google
-                    </span>
-                  </>
-                )}
-              </button>
 
-              <OrDivider />
 
               {/* ── Email / Password ── */}
               <form onSubmit={handleEmailAuth} className="space-y-4">
@@ -203,7 +163,7 @@ export const HostLoginPage = () => {
                     placeholder="Password"
                     className="w-full h-11 bg-black/20 border border-white/10 rounded-full pl-10 pr-12 text-sm text-white placeholder:text-white/30 outline-none focus:border-[#C07D5E]/60 focus:bg-black/30 transition-all font-body"
                     disabled={busy}
-                    autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+                    autoComplete="current-password"
                   />
                   <button
                     type="button"
@@ -222,23 +182,11 @@ export const HostLoginPage = () => {
                   {isLoading ? (
                     <Loader2 className="animate-spin w-4 h-4" />
                   ) : (
-                    mode === 'signup' ? 'Create Account' : 'Sign In'
+                    'Sign In'
                   )}
                 </button>
               </form>
 
-              <div className="text-center mt-4">
-                <button
-                  onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setError(''); }}
-                  className="text-[10px] text-white/40 hover:text-white/70 transition-colors font-body"
-                >
-                  {mode === 'signin' ? (
-                    <>New host? <span className="text-[#C07D5E] font-semibold">Create account</span></>
-                  ) : (
-                    <>Already a host? <span className="text-[#C07D5E] font-semibold">Sign in</span></>
-                  )}
-                </button>
-              </div>
 
               {/* ── Passcode ── */}
               <div className="mt-8 pt-6 border-t border-white/10">

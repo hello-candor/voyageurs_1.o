@@ -439,9 +439,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin, onRSVP }: any) 
                             <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-500 dark:text-slate-300 hover:text-med-blue dark:hover:text-white transition-colors">
                                 {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
                             </button>
-                            <button onClick={onShowLogin} className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-500 dark:text-slate-300 hover:text-med-blue dark:hover:text-white transition-colors">
-                                <User size={16} />
-                            </button>
+
                         </div>
                     </nav>
                 </div>
@@ -496,12 +494,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin, onRSVP }: any) 
 
                         </div>
 
-                        <button 
-                            onClick={onShowLogin} 
-                            className="hidden lg:block text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-med-blue dark:text-white hover:text-med-terracotta dark:hover:text-[#C25E3E] transition-all duration-300 px-4 py-2.5 rounded-full hover:bg-slate-50 dark:hover:bg-white/5 active:scale-95 cursor-pointer mr-1"
-                        >
-                            Login
-                        </button>
+
 
                         <div className="relative hidden lg:block">
                             <div className="absolute inset-[-4px] bg-med-terracotta rounded-full blur-md opacity-80 animate-pulse"></div>
@@ -1212,6 +1205,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin, onRSVP }: any) 
                         <div className="flex items-center gap-6">
                             <button onClick={() => setShowPrivacy(true)} className="hover:text-med-terracotta transition-colors">Privacy</button>
                             <button onClick={() => setShowTerms(true)} className="hover:text-med-terracotta transition-colors">Terms</button>
+                            <button onClick={onShowLogin} className="hover:text-med-terracotta transition-colors">Login</button>
                         </div>
                         <p>© 2026 Candor Digital Group, LLC. All rights reserved.</p>
                     </div>
