@@ -17,6 +17,7 @@ import { isValidEmail, isValidName } from '../utils/validation';
 import { authService } from '../services/authService';
 import { Button } from './Button';
 import { WebOSCard } from './WebOSCard';
+import { UnifiedHeader } from './UnifiedHeader';
 
 import { onGuestRegistered } from '../services/registrationOrchestrator';
 import { DEFAULT_AGENDA_DATA } from '../data/defaults';
@@ -137,7 +138,11 @@ const Shell = ({ children, stepIndex, stepTitle = 'RSVP', onClose }: { children:
         <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center overflow-hidden"
           style={{ background: 'radial-gradient(circle at center, #1b263b 0%, #0d1b2a 100%)' }}
         >
-          <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[90dvh] max-h-[900px]'}`}>
+          <UnifiedHeader 
+             showAppMenu={true}
+             className="!fixed top-0 left-0 right-0"
+          />
+          <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[90dvh] max-h-[900px] mt-12'}`}>
             <WebOSCard
               id="onboarding-card"
               title={stepTitle}
@@ -153,7 +158,7 @@ const Shell = ({ children, stepIndex, stepTitle = 'RSVP', onClose }: { children:
               isFullScreen={isFullScreen}
               onToggleFullScreen={() => setIsFullScreen(!isFullScreen)}
             >
-              <div className="dark flex flex-col h-full bg-[#1a202c] text-white/90 overflow-hidden relative">
+              <div className="flex flex-col h-full overflow-hidden relative">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={stepIndex}

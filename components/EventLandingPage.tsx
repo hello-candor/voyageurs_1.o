@@ -15,6 +15,7 @@ import {
     Info, Shirt, ListChecks, MapPinned, Clock3, AlertCircle, Pencil, Wallet,
     Palette, Music, Eye, Building2, ChevronLeft, ChevronRight, PartyPopper, Moon, Sun, Martini, RefreshCw
 } from 'lucide-react';
+import { UnifiedHeader } from './UnifiedHeader';
 import { safeStorage } from '../utils/storage';
 import { isValidEmail, isValidName } from '../utils/validation';
 
@@ -422,7 +423,7 @@ const SectionCard = ({ children, className = '' }: { children: React.ReactNode; 
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className={`bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-[2.5rem] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_40px_-12px_rgba(0,0,0,0.4)] border border-white/80 dark:border-gray-800 px-6 py-8 sm:px-8 sm:py-10 relative overflow-hidden ${className}`}
+        className={`bg-[#1e293b]/70 backdrop-blur-xl rounded-[2.5rem] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.4)] border border-white/10 px-6 py-8 sm:px-8 sm:py-10 relative overflow-hidden ${className}`}
     >
         {children}
     </motion.div>
@@ -676,7 +677,7 @@ export const EventLandingPage: React.FC = () => {
     }, [eventConfirms, parsedCouple, selectableEvents]);
 
     return (
-        <div className="fixed inset-0 z-[100] overflow-y-auto bg-med-sand dark:bg-[#111827] transition-colors duration-500">
+        <div className="fixed inset-0 z-[100] flex w-full h-full overflow-hidden bg-med-sand dark:bg-[#111827] transition-colors duration-500">
             {/* Fonts */}
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
@@ -686,42 +687,33 @@ export const EventLandingPage: React.FC = () => {
                 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
             `}</style>
 
+
             <Blobs />
 
+            {/* ────── Pane 1 (Master Navigation) ────── */}
+            <motion.div
+                animate={{
+                    width: activeModal ? '25%' : '100%',
+                    opacity: activeModal ? 0.4 : 1,
+                    scale: activeModal ? 0.95 : 1
+                }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className={`h-full overflow-y-auto shrink-0 relative z-10 transition-all cursor-${activeModal ? 'pointer' : 'auto'}`}
+                onClick={() => { if (activeModal) setActiveModal(null); }}
+            >
+                {activeModal && (
+                    <div className="absolute inset-0 z-[60] bg-transparent" title="Tap to go back" />
+                )}
+
+
             {/* ────── Sticky Header ────── */}
-            <div className="sticky top-0 z-50 backdrop-blur-xl bg-med-sand/80 dark:bg-[#111827]/80 border-b border-slate-200/30 dark:border-gray-800/50 px-5 py-3">
-                <div className="max-w-2xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <img src="/assets/voyageurs-icon.png" alt="Voyageurs" className="w-8 h-8 object-contain" />
-                        <div>
-                            <p className="text-[10px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta">Voyageurs</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={toggleDarkMode}
-                            className="w-8 h-8 rounded-full bg-slate-100 dark:bg-gray-800 flex items-center justify-center text-slate-400 hover:text-med-terracotta transition-colors"
-                            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-                        >
-                            {isDark ? <Sun size={14} /> : <Moon size={14} />}
-                        </button>
-                        <button
-                            onClick={() => { localStorage.clear(); window.location.reload(); }}
-                            className="w-8 h-8 rounded-full bg-slate-100 dark:bg-gray-800 flex items-center justify-center text-slate-400 hover:text-med-terracotta transition-colors"
-                            title="Clear cache & reload"
-                        >
-                            <RefreshCw size={14} />
-                        </button>
-                        <button
-                            onClick={logout}
-                            className="w-8 h-8 rounded-full bg-slate-100 dark:bg-gray-800 flex items-center justify-center text-slate-400 hover:text-med-terracotta transition-colors"
-                            title="Log out"
-                        >
-                            <LogOut size={14} />
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <UnifiedHeader 
+                appMenuItems={[
+                    { label: isDark ? 'Light Mode' : 'Dark Mode', icon: isDark ? Sun : Moon, onClick: toggleDarkMode },
+                    { label: 'Reload App', icon: RefreshCw, onClick: () => { localStorage.clear(); window.location.reload(); } },
+                    { label: 'Sign Out', icon: LogOut, onClick: logout, danger: true }
+                ]}
+            />
 
             {/* ────── Main Content ────── */}
             <div className="relative z-10 w-full max-w-2xl mx-auto px-4 sm:px-6 pb-16 pt-6 space-y-6">
@@ -781,23 +773,34 @@ export const EventLandingPage: React.FC = () => {
                         </button>
                     </div>
                 </motion.div>
+            </div>
+            </motion.div>
 
-
-                {/* ── Modals Wrapper ── */}
-                <AnimatePresence>
-                    {activeModal && (
-                        <div className="fixed inset-0 z-[200] flex justify-center items-end sm:items-center p-0 sm:p-6 isolate">
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-med-blue/60 dark:bg-black/80 backdrop-blur-md" onClick={() => setActiveModal(null)} />
-                            <motion.div initial={{ opacity: 0, y: '100%', scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: '100%', scale: 0.95 }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="relative w-full max-w-2xl bg-med-sand dark:bg-gray-900 shadow-2xl flex flex-col rounded-t-[2.5rem] sm:rounded-[2.5rem] overflow-hidden border border-white/20 h-[90vh]">
-                                <div className="sticky top-0 z-20 bg-med-sand/90 dark:bg-gray-900/90 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-slate-200/50 dark:border-gray-800/50">
-                                    <h2 className="font-heading text-2xl font-bold text-med-blue dark:text-white">
-                                        {activeModal === 'RSVP' && 'Your RSVP & Party'}
-                                        {activeModal === 'Event' && 'The Event'}
-                                        {activeModal === 'Destination' && 'The Destination'}
-                                    </h2>
-                                    <button onClick={() => setActiveModal(null)} className="w-8 h-8 rounded-full bg-slate-200/50 dark:bg-gray-800 flex items-center justify-center text-slate-500 hover:text-med-terracotta hover:bg-slate-200 transition-all"><X size={16} /></button>
-                                </div>
-                                <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 pb-20 space-y-6">
+            {/* ────── Pane 2 (Detail View) ────── */}
+            <AnimatePresence>
+                {activeModal && (
+                    <motion.div
+                        initial={{ x: '100%', opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: '100%', opacity: 0 }}
+                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute right-0 top-0 bottom-0 w-[90%] md:w-[75%] lg:w-[75%] dark bg-[#1a202c] shadow-[-20px_0_40px_rgba(0,0,0,0.4)] rounded-l-[2.5rem] border-l border-white/10 z-20 overflow-hidden flex flex-col"
+                    >
+                        {/* Drag Handle for mobile dismiss */}
+                        <div className="md:hidden absolute left-2 top-0 bottom-0 w-8 flex items-center justify-center opacity-50 z-30" onClick={() => setActiveModal(null)}>
+                            <div className="w-1.5 h-16 bg-white/20 rounded-full" />
+                        </div>
+                        
+                        {/* Elegant Header */}
+                        <div className="sticky top-0 z-20 bg-[#1a202c]/90 backdrop-blur-md px-8 py-6 flex items-center justify-between border-b border-white/5">
+                            <h2 className="font-heading text-3xl font-bold text-white tracking-tight">
+                                {activeModal === 'RSVP' && 'Your RSVP & Party'}
+                                {activeModal === 'Event' && 'The Event'}
+                                {activeModal === 'Destination' && 'The Destination'}
+                            </h2>
+                            {/* Removed the X button to rely on spatial navigation */}
+                        </div>
+                        <div className="flex-1 overflow-y-auto px-6 py-8 pb-32 space-y-8 scrollbar-hide text-white">
 
                 {activeModal === 'RSVP' && (
                 <>
@@ -1901,14 +1904,12 @@ export const EventLandingPage: React.FC = () => {
 
                 </>
                 )}
-                                </div>
-                            </motion.div>
                         </div>
-                    )}
-                </AnimatePresence>
+                    </motion.div>
+                )}
+            </AnimatePresence>
                 {/* Footer spacer */}
                 <div className="py-6" />
-            </div>
 
             {/* ── Getting There Help Modal ── */}
             <AnimatePresence>

@@ -148,39 +148,44 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
     >
         <div className={`
             w-full h-full flex flex-col overflow-hidden shadow-2xl transition-all duration-300 relative
-            ${theme === 'light' ? 'bg-white/60 backdrop-blur-3xl border-white/50 shadow-xl' : 'bg-[#1a202c]/80 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]'}
-            ${isOverview ? `rounded-[32px] ring-1 ${theme === 'light' ? 'ring-black/5 shadow-[inset_0_0_20px_rgba(0,0,0,0.02)]' : 'ring-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]'}` : isFullScreen ? 'rounded-none' : `rounded-none md:rounded-[24px] ring-1 ${theme === 'light' ? 'ring-black/5' : 'ring-white/10'}`}
+            ${theme === 'light' 
+              ? 'bg-white/75 backdrop-blur-3xl border border-white/60 shadow-xl text-gray-900' 
+              : 'dark bg-[#1a202c]/80 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white/90'
+            }
+            ${isOverview 
+              ? `rounded-[32px] ring-1 ${theme === 'light' ? 'ring-black/5 shadow-[inset_0_0_20px_rgba(0,0,0,0.02)]' : 'ring-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]'}` 
+              : isFullScreen ? 'rounded-none' : `rounded-none md:rounded-[24px] ring-1 ${theme === 'light' ? 'ring-black/5' : 'ring-white/10'}`}
         `}>
             {/* Header Bar */}
             <div className={`
                 h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none
-                ${theme === 'light' ? 'bg-white/40 border-white/40' : 'bg-transparent border-white/10'}
+                ${theme === 'light' ? 'bg-white/40 border-black/5' : 'bg-transparent border-white/10'}
                 ${isOverview ? 'pointer-events-none' : ''}
             `}>
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
-                    <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>{title}</span>
+                    <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{title}</span>
                 </div>
                 
                 {!isOverview && (
                     <div className="flex items-center gap-1">
                         <button 
                             onClick={(e) => { e.stopPropagation(); onMinimize(); }}
-                            className={`p-2 rounded-full transition-colors ${theme === 'light' ? 'hover:bg-gray-200 text-gray-400 hover:text-gray-500' : 'hover:bg-gray-700 text-gray-400 hover:text-gray-500'}`}
+                            className={`p-2 rounded-full transition-colors ${theme === 'light' ? 'hover:bg-gray-200/60 text-gray-500 hover:text-gray-700' : 'hover:bg-gray-700 text-gray-400 hover:text-gray-200'}`}
                             title="Minimize"
                         >
                             <Minus size={18} />
                         </button>
                         <button 
                             onClick={(e) => { e.stopPropagation(); onToggleFullScreen(); }}
-                            className={`p-2 rounded-full transition-colors ${theme === 'light' ? 'hover:bg-gray-200 text-gray-400 hover:text-gray-500' : 'hover:bg-gray-700 text-gray-400 hover:text-gray-500'}`}
+                            className={`p-2 rounded-full transition-colors ${theme === 'light' ? 'hover:bg-gray-200/60 text-gray-500 hover:text-gray-700' : 'hover:bg-gray-700 text-gray-400 hover:text-gray-200'}`}
                             title={isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
                         >
                             {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
                         </button>
                         <button 
                             onClick={(e) => { e.stopPropagation(); handleClose(); }}
-                            className={`p-2 rounded-full transition-colors ${theme === 'light' ? 'hover:bg-red-100 text-gray-400 hover:text-red-500' : 'hover:bg-red-900/20 text-gray-400 hover:text-red-500'}`}
+                            className={`p-2 rounded-full transition-colors ${theme === 'light' ? 'hover:bg-red-100 text-gray-500 hover:text-red-600' : 'hover:bg-red-900/20 text-gray-400 hover:text-red-500'}`}
                             title="Close"
                         >
                             <X size={18} />
@@ -190,7 +195,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
             </div>
 
             {/* Content Mask */}
-            <div className={`flex-1 relative overflow-hidden ${isOverview ? 'pointer-events-none' : ''} ${theme === 'light' ? 'bg-transparent' : 'bg-transparent'}`}>
+            <div className={`flex-1 relative overflow-hidden ${isOverview ? 'pointer-events-none' : ''}`}>
                 <div className="w-full h-full overflow-y-auto scrollbar-hide">
                     {children}
                 </div>
@@ -207,7 +212,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
                     className="absolute -bottom-16 left-0 right-0 text-center pointer-events-none"
                 >
                     <span className={`text-sm font-bold uppercase tracking-widest drop-shadow-md ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{title}</span>
-                    {stackSize > 1 && <p className={`text-[10px] uppercase tracking-wider mt-1 ${theme === 'light' ? 'text-med-blue/60' : 'text-white/60'}`}>{stackSize} Cards</p>}
+                    {stackSize > 1 && <p className={`text-[10px] uppercase tracking-wider mt-1 ${theme === 'light' ? 'text-slate-600' : 'text-white/60'}`}>{stackSize} Cards</p>}
                 </motion.div>
             )}
         </div>

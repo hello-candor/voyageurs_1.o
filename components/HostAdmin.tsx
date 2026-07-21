@@ -729,47 +729,35 @@ export const HostAdmin: React.FC<HostAdminProps> = ({ onSwitchToGuest, isOpen, o
             />
 
             {/* Layer 2: Top Bar */}
-            <div id="host-top-bar" className="absolute top-0 left-0 right-0 h-20 flex items-center justify-between px-8 z-50 pointer-events-none">
-                <div className="flex items-center gap-3 pointer-events-auto">
-                    <div className="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-med-terracotta backdrop-blur-md">
-                        <LayoutDashboard size={20} />
-                    </div>
-                    <div>
-                        <h1 className="text-white font-serif text-xl leading-none">Voyageurs Admin</h1>
-                        <p className="text-[10px] text-gray-300 uppercase tracking-widest mt-1">Host Console</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-3 pointer-events-auto relative">
-                    <button
-                        id="host-exit-btn"
-                        onClick={onSwitchToGuest || onClose}
-                        className="flex items-center justify-center p-2 md:px-4 md:py-2 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 backdrop-blur-md transition-all group"
-                        title="Return to Guest View"
-                    >
-                        <Eye size={16} className="md:mr-2" />
-                        <span className="hidden md:inline text-[10px] font-bold uppercase tracking-widest">Guest Hub</span>
-                    </button>
-
-                    <div className="h-6 w-px bg-white/10 mx-1" />
-
-                    <button onClick={() => setIsAssistantOpen(!isAssistantOpen)} className={`p-3 rounded-full transition-all backdrop-blur-md ${isAssistantOpen ? 'bg-med-blue text-white' : 'bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 text-med-terracotta'}`}>
-                        <Sparkles size={18} />
-                    </button>
-                    <button onClick={toggleTheme} className="p-3 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 rounded-full text-white transition-all backdrop-blur-md">
-                        {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-                    </button>
-
-                    <div className="h-6 w-px bg-white/10 mx-1" />
-
-                    <button onClick={handleSignOut} className="p-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-full text-red-400 hover:text-red-200 transition-all backdrop-blur-md" title="Sign Out">
-                        <LogOut size={18} />
-                    </button>
-
-                    {isAssistantOpen && (
-                        <HostAssistantModal onClose={() => setIsAssistantOpen(false)} context={`Event: ${config.appName}`} />
-                    )}
-                </div>
-            </div>
+            <UnifiedHeader 
+                title="Voyageurs Admin"
+                subtitle="Host Console"
+                appMenuItems={[
+                    { label: theme === 'dark' ? 'Light Mode' : 'Dark Mode', icon: theme === 'dark' ? Sun : Moon, onClick: toggleTheme },
+                    { label: 'Reload App', icon: RefreshCw, onClick: () => { localStorage.clear(); window.location.reload(); } },
+                    { label: 'Sign Out', icon: LogOut, onClick: handleSignOut, danger: true }
+                ]}
+                rightContent={
+                    <>
+                        <button
+                            id="host-exit-btn"
+                            onClick={onSwitchToGuest || onClose}
+                            className="flex items-center justify-center p-2 md:px-4 md:py-1.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 backdrop-blur-md transition-all group mr-2"
+                            title="Return to Guest View"
+                        >
+                            <Eye size={14} className="md:mr-1.5" />
+                            <span className="hidden md:inline text-[9px] font-bold uppercase tracking-widest">Guest Hub</span>
+                        </button>
+                        <button onClick={() => setIsAssistantOpen(!isAssistantOpen)} className={`p-2 md:py-1.5 md:px-3 rounded-full flex items-center justify-center gap-1.5 transition-all backdrop-blur-md ${isAssistantOpen ? 'bg-med-blue text-white' : 'bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 text-med-terracotta'}`}>
+                            <Sparkles size={14} />
+                            <span className="hidden md:inline text-[9px] font-bold uppercase tracking-widest">Assistant</span>
+                        </button>
+                        {isAssistantOpen && (
+                            <HostAssistantModal onClose={() => setIsAssistantOpen(false)} context={`Event: ${config.appName}`} />
+                        )}
+                    </>
+                }
+            />
 
             {/* Layer 3: Main App Stacks (Z-20) */}
             <div className={`relative z-20 w-full h-full flex flex-col items-center justify-start pt-24 pb-32 overflow-hidden transition-all duration-500 ${isOverviewMode ? 'scale-95' : ''}`}>

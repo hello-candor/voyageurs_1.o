@@ -15,6 +15,7 @@ import { HubRSVPCard } from './HubRSVPCard';
 import { NotificationCenter } from './NotificationCenter';
 import { WelcomeTour } from './WelcomeTour';
 import { useNotification } from '../context/NotificationContext';
+import { UnifiedHeader } from './UnifiedHeader';
 import { X, Search, Map, Bell, GripHorizontal, Sun, Moon, UserCircle, LogOut, ChevronLeft, ChevronRight, HelpCircle, Lock } from 'lucide-react';
 import { PlanningTab } from './TripPlanner';
 import { useGuidance } from '../hooks/useGuidance';
@@ -91,7 +92,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isTourOpen, setIsTourOpen] = useState(false);
     const [isNotificationCenterOpen, setIsNotificationCenterOpen] = useState(false);
-    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
     // App Specific Contexts
     const { user, isVerified, isProfileOpen, toggleProfile, logout } = useUser();
@@ -101,7 +101,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
     const { theme, toggleTheme } = useTheme();
     const { unreadTotal } = useChat();
 
-    const userMenuRef = useRef<HTMLDivElement>(null);
     const notificationRef = useRef<HTMLDivElement>(null);
 
     // Initialization
@@ -116,9 +115,6 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
     // Close Menus on click outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
-                setIsUserMenuOpen(false);
-            }
             if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
                 setIsNotificationCenterOpen(false);
             }
@@ -382,149 +378,97 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
             <WelcomeTour isOpen={isTourOpen} onClose={() => { safeStorage.setItem('tour_seen', 'true'); setIsTourOpen(false); }} />
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} onNavigate={(v) => launchApp(v)} />
 
-            <div className={`fixed top-0 left-0 right-0 h-12 flex items-center justify-between px-4 md:px-6 z-[110] transition-all duration-700 pointer-events-none ${isFullScreenActive ? 'opacity-0 -translate-y-full' : 'opacity-100'}`}>
-                <div className="flex items-center gap-3 text-white/90 pointer-events-auto h-full py-1">
-                    <div className="flex flex-col justify-center leading-tight h-full">
-                        <span className={`font-serif font-bold text-sm md:text-base tracking-tight whitespace-nowrap transition-colors duration-500 drop-shadow-md ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{config.appName}</span>
-                        <span className={`text-[8px] uppercase tracking-[0.2em] opacity-70 font-sans hidden md:block ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{config.destination}</span>
+            <UnifiedHeader 
+                title={config.appName}
+                subtitle={config.destination}
+                className={isFullScreenActive ? 'opacity-0 -translate-y-full' : 'opacity-100'}
+                appMenuItems={[
+                    { label: 'My Profile', icon: UserCircle, onClick: () => launchApp('profile') },
+                    { label: 'Help & FAQ', icon: HelpCircle, onClick: () => launchApp('faq') },
+                    { label: theme === 'dark' ? 'Light Mode' : 'Dark Mode', icon: theme === 'dark' ? Sun : Moon, onClick: toggleTheme },
+                    ...(user?.isAdmin ? [{ label: 'Host Admin', icon: Lock, onClick: onSwitchToHost }] : []),
+                    { label: 'Reload App', icon: RefreshCw, onClick: () => { localStorage.clear(); window.location.reload(); } },
+                    { label: 'Sign Out', icon: LogOut, onClick: logout, danger: true }
+                ]}
+                menuHeader={
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-med-blue flex items-center justify-center text-white shrink-0">
+                            <span className="font-serif font-bold text-lg">{user?.name?.charAt(0)}</span>
+                        </div>
+                        <div className="min-w-0">
+                            <p className={`text-sm font-bold truncate ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{user?.name}</p>
+                            <p className={`text-[10px] truncate ${theme === 'light' ? 'text-gray-500' : 'text-white/50'}`}>{user?.email}</p>
+                        </div>
                     </div>
-                </div>
-
-                <div className="absolute left-1/2 -translate-x-1/2 flex items-center pt-2 pb-2 pointer-events-auto h-full">
-                    {config.enableAI && (
-                        <button id="hub-search-btn" onClick={() => setIsSearchOpen(true)} className={`flex items-center justify-center gap-3 transition-all px-4 md:px-6 h-full rounded-full border backdrop-blur-2xl shadow-2xl active:scale-95 group ${theme === 'light' ? 'bg-white/80 text-med-blue border-med-blue/20' : 'bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:border-white/30'}`}>
+                }
+                centerContent={
+                    config.enableAI && (
+                        <button id="hub-search-btn" onClick={() => setIsSearchOpen(true)} className={`flex items-center justify-center gap-3 transition-all px-4 md:px-6 h-full rounded-full border backdrop-blur-2xl shadow-2xl active:scale-95 group py-2 ${theme === 'light' ? 'bg-white/80 text-med-blue border-med-blue/20' : 'bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:border-white/30'}`}>
                             <Search size={16} className="group-hover:scale-110 transition-transform text-med-terracotta" />
                             <span className="text-[10px] font-bold uppercase tracking-[0.3em] hidden md:block">Ask Céleste</span>
                         </button>
-                    )}
-                </div>
-
-                <div className="flex items-center gap-1 md:gap-2 pointer-events-auto h-full py-2">
-
-                    {/* Journal button removed */}
-
-                    {isHost && (
-                        <button
-                            onClick={onSwitchToHost}
-                            className="flex items-center justify-center h-full px-2 md:px-3 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 backdrop-blur-md transition-all group"
-                            title="Return to Host Console"
-                        >
-                            <Lock size={14} className="md:mr-2" />
-                            <span className="hidden md:inline text-[9px] font-bold uppercase tracking-widest">Admin</span>
-                        </button>
-                    )}
-
-                    {user && user.status && (
-                        <button 
-                            onClick={() => launchApp('rsvp')}
-                            className={`flex items-center justify-center h-full gap-1.5 px-3 rounded-full border text-[9px] font-bold uppercase tracking-widest backdrop-blur-md transition-all hidden md:flex hover:opacity-80 active:scale-95
-                            ${user.status === 'Confirmed' ? (theme === 'light' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20') : ''}
-                            ${user.status === 'Declined' ? (theme === 'light' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-red-500/10 text-red-400 border-red-500/20') : ''}
-                            ${user.status === 'Pending' ? (theme === 'light' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-amber-500/10 text-amber-400 border-amber-500/20') : ''}
-                        `}>
-                            {user.status !== 'Confirmed' && (
-                                <span className={`w-1.5 h-1.5 rounded-full ${user.status === 'Pending' ? 'animate-pulse' : ''}
-                                    ${user.status === 'Declined' ? (theme === 'light' ? 'bg-red-500' : 'bg-red-400') : ''}
-                                    ${user.status === 'Pending' ? (theme === 'light' ? 'bg-amber-500' : 'bg-amber-400') : ''}
-                                `} />
-                            )}
-                            {user.status}
-                        </button>
-                    )}
-
-                    <div className="relative h-full flex items-center" ref={notificationRef}>
-                        <button
-                            onClick={() => setIsNotificationCenterOpen(!isNotificationCenterOpen)}
-                            className={`
-                    h-full aspect-square flex items-center justify-center rounded-full transition-all duration-300 relative
-                    ${isNotificationCenterOpen ? 'bg-white/10 text-white' : (theme === 'light' ? 'text-med-blue/60 hover:text-med-blue hover:bg-med-blue/5' : 'text-white/60 hover:text-white hover:bg-white/5')}
-                `}
-                            title="Notifications"
-                        >
-                            <Bell size={18} />
-                            {totalAlerts > 0 && (
-                                <span className="absolute top-1 right-1 w-2 h-2 bg-med-terracotta rounded-full border-2 border-slate-900/50 animate-pulse" />
-                            )}
-                        </button>
-
-                        {isNotificationCenterOpen && (
-                            <NotificationCenter
-                                isOpen={isNotificationCenterOpen}
-                                onClose={() => setIsNotificationCenterOpen(false)}
-                                onNavigate={(v) => { launchApp(v); setIsNotificationCenterOpen(false); }}
-                            />
+                    )
+                }
+                rightContent={
+                    <>
+                        {isHost && (
+                            <button
+                                onClick={onSwitchToHost}
+                                className="flex items-center justify-center h-full px-2 md:px-3 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 backdrop-blur-md transition-all group"
+                                title="Return to Host Console"
+                            >
+                                <Lock size={14} className="md:mr-2" />
+                                <span className="hidden md:inline text-[9px] font-bold uppercase tracking-widest">Admin</span>
+                            </button>
                         )}
-                    </div>
-
-                    <div className="relative h-full flex items-center" ref={userMenuRef}>
+                        {user && user.status && (
+                            <button 
+                                onClick={() => launchApp('rsvp')}
+                                className={`flex items-center justify-center h-full gap-1.5 px-3 rounded-full border text-[9px] font-bold uppercase tracking-widest backdrop-blur-md transition-all hidden md:flex hover:opacity-80 active:scale-95
+                                ${user.status === 'Confirmed' ? (theme === 'light' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20') : ''}
+                                ${user.status === 'Declined' ? (theme === 'light' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-red-500/10 text-red-400 border-red-500/20') : ''}
+                                ${user.status === 'Pending' ? (theme === 'light' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-amber-500/10 text-amber-400 border-amber-500/20') : ''}
+                            `}>
+                                {user.status !== 'Confirmed' && (
+                                    <span className={`w-1.5 h-1.5 rounded-full ${user.status === 'Pending' ? 'animate-pulse' : ''}
+                                        ${user.status === 'Declined' ? (theme === 'light' ? 'bg-red-500' : 'bg-red-400') : ''}
+                                        ${user.status === 'Pending' ? (theme === 'light' ? 'bg-amber-500' : 'bg-amber-400') : ''}
+                                    `} />
+                                )}
+                                {user.status}
+                            </button>
+                        )}
+                        <div className="relative h-full flex items-center" ref={notificationRef}>
+                            <button
+                                onClick={() => setIsNotificationCenterOpen(!isNotificationCenterOpen)}
+                                className={`
+                        h-full aspect-square flex items-center justify-center rounded-full transition-all duration-300 relative
+                        ${isNotificationCenterOpen ? 'bg-white/10 text-white' : (theme === 'light' ? 'text-med-blue/60 hover:text-med-blue hover:bg-med-blue/5' : 'text-white/60 hover:text-white hover:bg-white/5')}
+                    `}
+                                title="Notifications"
+                            >
+                                <Bell size={18} />
+                                {totalAlerts > 0 && (
+                                    <span className="absolute top-1 right-1 w-2 h-2 bg-med-terracotta rounded-full border-2 border-slate-900/50 animate-pulse" />
+                                )}
+                            </button>
+                            {isNotificationCenterOpen && (
+                                <NotificationCenter
+                                    isOpen={isNotificationCenterOpen}
+                                    onClose={() => setIsNotificationCenterOpen(false)}
+                                    onNavigate={(v) => { launchApp(v); setIsNotificationCenterOpen(false); }}
+                                />
+                            )}
+                        </div>
                         <button
-                            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                            className={`flex items-center justify-center h-full aspect-square rounded-full transition-all border ${isUserMenuOpen ? 'bg-white/10 border-white/20' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
+                            onClick={() => launchApp('profile')}
+                            className="flex items-center justify-center h-10 aspect-square rounded-full transition-all border bg-white/5 border-white/5 hover:bg-white/10 ml-2"
                         >
                             <img src={user?.avatar} alt="" className="w-full h-full rounded-full object-cover" />
                         </button>
-
-                        {isUserMenuOpen && (
-                            <div className={`absolute top-full right-0 mt-2 w-64 backdrop-blur-3xl rounded-3xl p-6 shadow-2xl border animate-in fade-in slide-in-from-top-2 duration-200 z-[120] overflow-hidden ${theme === 'light' ? 'bg-white/95 border-gray-200' : 'bg-slate-900/95 border-white/10'}`}>
-                                <div className={`flex items-center gap-3 mb-6 pb-4 border-b ${theme === 'light' ? 'border-gray-100' : 'border-white/10'}`}>
-                                    <div className="w-10 h-10 rounded-full bg-med-blue flex items-center justify-center text-white shrink-0">
-                                        <span className="font-serif font-bold text-lg">{user?.name?.charAt(0)}</span>
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className={`text-sm font-bold truncate ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{user?.name}</p>
-                                        <p className={`text-[10px] truncate ${theme === 'light' ? 'text-gray-500' : 'text-white/50'}`}>{user?.email}</p>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <button
-                                        onClick={() => { launchApp('profile'); setIsUserMenuOpen(false); }}
-                                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${theme === 'light' ? 'hover:bg-gray-100 text-gray-700 hover:text-med-blue' : 'hover:bg-white/10 text-white/80 hover:text-white'}`}
-                                    >
-                                        <UserCircle size={18} />
-                                        <span className="text-xs font-bold uppercase tracking-wider">My Profile</span>
-                                    </button>
-                                    <button
-                                        onClick={() => { launchApp('faq'); setIsUserMenuOpen(false); }}
-                                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${theme === 'light' ? 'hover:bg-gray-100 text-gray-700 hover:text-med-blue' : 'hover:bg-white/10 text-white/80 hover:text-white'}`}
-                                    >
-                                        <HelpCircle size={18} />
-                                        <span className="text-xs font-bold uppercase tracking-wider">Help & FAQ</span>
-                                    </button>
-                                    <button
-                                        onClick={toggleTheme}
-                                        className={`w-full flex items-center justify-between p-3 rounded-xl transition-colors ${theme === 'light' ? 'hover:bg-gray-100 text-gray-700 hover:text-med-blue' : 'hover:bg-white/10 text-white/80 hover:text-white'}`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-                                            <span className="text-xs font-bold uppercase tracking-wider">Theme</span>
-                                        </div>
-                                        <span className={`text-[10px] px-2 py-0.5 rounded ${theme === 'light' ? 'bg-gray-200 text-gray-600' : 'bg-white/20 text-white/60'}`}>
-                                            {theme === 'dark' ? 'Light' : 'Dark'}
-                                        </span>
-                                    </button>
-                                    {user?.isAdmin && (
-                                        <button
-                                            onClick={() => { setIsUserMenuOpen(false); onSwitchToHost(); }}
-                                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${theme === 'light' ? 'hover:bg-gray-100 text-gray-700 hover:text-med-blue' : 'hover:bg-white/10 text-white/80 hover:text-white'}`}
-                                        >
-                                            <Lock size={18} />
-                                            <span className="text-xs font-bold uppercase tracking-wider">Host Admin</span>
-                                        </button>
-                                    )}
-                                    <div className={`h-px my-2 ${theme === 'light' ? 'bg-gray-100' : 'bg-white/10'}`} />
-                                    <button
-                                        onClick={() => { logout(); setIsUserMenuOpen(false); }}
-                                        className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors text-left"
-                                    >
-                                        <LogOut size={18} />
-                                        <span className="text-xs font-bold uppercase tracking-wider">Sign Out</span>
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
+                    </>
+                }
+            />
 
             <div className={`relative w-full h-full flex flex-col items-center justify-start z-20 pointer-events-none
           ${isFullScreenActive ? 'pt-0 pb-0' : 'pt-12 pb-16'}
