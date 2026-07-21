@@ -34,8 +34,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (user) {
         // Check if this is a real (non-anonymous) user for host access
         if (!user.isAnonymous) {
-          setIsHost(true);
-          safeStorage.setItem('host_session', 'active_firebase');
+          // Explicitly segment Host access to Bryan for the Montpellier trip
+          const email = user.email?.toLowerCase();
+          const isAuthorizedHost = email === 'bryan@candor.io' || email === 'bryan@2026.com';
+          
+          if (isAuthorizedHost) {
+            setIsHost(true);
+            safeStorage.setItem('host_session', 'active_firebase');
+          } else {
+            console.warn("Unauthorized host attempt by:", email);
+            setIsHost(false);
+            safeStorage.removeItem('host_session');
+          }
         } else {
           // Anonymous user — check for legacy host session
           const legacySession = safeStorage.getItem('host_session');

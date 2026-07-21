@@ -44,7 +44,7 @@ const App = () => {
 
   useEffect(() => {
     const hasInitialized = safeStorage.getItem('trip_initialized');
-    if (isHost && !hasInitialized && allTrips.length === 1 && allTrips[0].id === 'default') {
+    if (isHost && !hasInitialized && allTrips.length === 1 && allTrips[0].id === 'voyageurs_2026') {
       setIsSettingUp(true);
     }
     if (isHost) {

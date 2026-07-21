@@ -210,6 +210,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     const [isCloudEnabled, setIsCloudEnabled] = useState(true);
+    const [authUid, setAuthUid] = useState<string | null>(null);
     const authStateChecked = useRef(false);
 
     const setVerified = useCallback((val: boolean) => {
@@ -222,7 +223,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         const unsubscribeAuth = auth.onAuthStateChanged((u) => {
             authStateChecked.current = true;
-            if (!u) {
+            if (u) {
+                setAuthUid(u.uid);
+            } else {
+                setAuthUid(null);
                 // If auth fails/is missing, switch to local mode
                 setIsCloudEnabled(false);
             }
@@ -235,8 +239,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!isCloudEnabled) return;
 
         // Safety check: wait until auth is determined
-        if (!auth.currentUser && !authStateChecked.current) return;
-        if (!auth.currentUser) {
+        if (!authUid && !authStateChecked.current) return;
+        if (!authUid) {
             setIsCloudEnabled(false);
             return;
         }
@@ -248,9 +252,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 snapshot.forEach((doc) => {
                     guests.push({ id: doc.id, ...doc.data() } as Guest);
                 });
-                if (guests.length > 0) {
-                    setAllGuests(guests);
-                    safeStorage.setItem('local_guests', guests);
+                
+                // Unconditionally set all guests to clear dummy data if cloud is empty
+                setAllGuests(guests);
+                safeStorage.setItem('local_guests', guests);
 
                     // Sync current user if they exist in remote
                     if (user && user.invitationCode) {
@@ -271,7 +276,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                             } : null);
                         }
                     }
-                }
             }, (error) => {
                 // CRITICAL FIX: If permission denied, switch to offline mode immediately and silence error
                 if (error.code === 'permission-denied' || error.code === 'unavailable') {
@@ -285,11 +289,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.warn("Firestore init failed, switching to offline.");
             setIsCloudEnabled(false);
         }
-    }, [user?.email, isCloudEnabled]);
+    }, [user?.email, isCloudEnabled, authUid]);
 
     // Sync Gallery Posts
     useEffect(() => {
-        if (!isCloudEnabled || !auth.currentUser) return;
+        if (!isCloudEnabled || !authUid) return;
 
         try {
             const q = query(collection(db, 'gallery_posts'), orderBy('timestamp', 'desc'));
@@ -308,7 +312,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } catch (e) {
             // Ignore
         }
-    }, [isCloudEnabled]);
+    }, [isCloudEnabled, authUid]);
 
     // Local Persistence
     useEffect(() => {

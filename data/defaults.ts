@@ -480,7 +480,7 @@ export const DEFAULT_GALLERY_DATA = DEFAULT_GALLERY_CONTENT.collections; // Back
 
 // --- APP CONFIG ---
 export const DEFAULT_CONFIG = {
-  id: 'default',
+  id: 'voyageurs_2026',
   appName: "Voyageurs",
   destination: "Montpellier, France",
   occasion: "The 40th Birthday",

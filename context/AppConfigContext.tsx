@@ -61,7 +61,7 @@ export const AppConfigProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   });
 
   const [activeTripId, setActiveTripId] = useState<string>(() => {
-    return safeStorage.getItem('voyageur_active_trip', 'default') || 'default';
+    return safeStorage.getItem('voyageur_active_trip', 'voyageurs_2026') || 'voyageurs_2026';
   });
 
   const [isCloudEnabled, setIsCloudEnabled] = useState(true);
