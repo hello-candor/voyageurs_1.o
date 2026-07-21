@@ -15,7 +15,8 @@ import {
     Info, Shirt, ListChecks, MapPinned, Clock3, AlertCircle, Pencil, Wallet,
     Palette, Music, Eye, Building2, ChevronLeft, ChevronRight, PartyPopper, Moon, Sun, Martini, RefreshCw
 } from 'lucide-react';
-import { UnifiedHeader } from './UnifiedHeader';
+import { MarketingHeader } from './MarketingHeader';
+import { MarketingFooter } from './MarketingFooter';
 import { safeStorage } from '../utils/storage';
 import { isValidEmail, isValidName } from '../utils/validation';
 
@@ -47,7 +48,7 @@ const Blobs = () => (
 
 const Eyebrow = ({ label, onEdit, isEditing, rightContent, editLabel }: { label: string; onEdit?: () => void; isEditing?: boolean; rightContent?: React.ReactNode; editLabel?: string }) => (
     <div className="flex items-center justify-between mb-5">
-        <h2 className="text-base font-body font-bold uppercase tracking-[0.25em] text-med-terracotta">
+        <h2 className="text-[10px] font-body font-bold uppercase tracking-[0.25em] text-med-terracotta">
             {label}
         </h2>
         <div className="flex items-center gap-2">
@@ -94,25 +95,25 @@ const STATUS_CONFIG: Record<RSVPStatus, {
 }> = {
     Confirmed: {
         icon: PartyPopper, label: 'Attending', description: "You're confirmed — we can't wait to see you!",
-        color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20',
-        border: 'border-emerald-200 dark:border-emerald-800', dot: 'bg-emerald-500',
+        color: 'text-med-olive', bg: 'bg-med-olive/10',
+        border: 'border-med-olive/20', dot: 'bg-med-olive',
     },
     Pending: {
         icon: HelpCircle, label: 'Still Exploring', description: "No rush — you can update anytime before August 15th.",
-        color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20',
-        border: 'border-amber-200 dark:border-amber-800', dot: 'bg-amber-500',
+        color: 'text-med-blue dark:text-blue-300', bg: 'bg-med-blue/5 dark:bg-blue-900/20',
+        border: 'border-med-blue/10 dark:border-blue-800', dot: 'bg-med-blue',
     },
     Declined: {
         icon: Frown, label: 'Not Attending', description: "We'll miss you! You can change your mind anytime before August 15th.",
-        color: 'text-red-500 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20',
-        border: 'border-red-200 dark:border-red-800', dot: 'bg-red-500',
+        color: 'text-med-terracotta', bg: 'bg-med-terracotta/10',
+        border: 'border-med-terracotta/20', dot: 'bg-med-terracotta',
     },
 };
 
 const RSVP_OPTIONS: { status: RSVPStatus; label: string; labelPlural?: string; icon: React.ElementType; color: string; bg: string; border: string }[] = [
-    { status: 'Confirmed', label: "I'll Be There", labelPlural: "We'll Be There", icon: PartyPopper, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20', border: 'border-emerald-200 dark:border-emerald-800' },
-    { status: 'Pending', label: 'Still Exploring', labelPlural: 'Still Exploring', icon: Compass, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20', border: 'border-amber-200 dark:border-amber-800' },
-    { status: 'Declined', label: "Can't Make It", icon: X, color: 'text-red-500 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20', border: 'border-red-200 dark:border-red-800' },
+    { status: 'Confirmed', label: "I'll Be There", labelPlural: "We'll Be There", icon: PartyPopper, color: 'text-med-olive', bg: 'bg-med-olive/10', border: 'border-med-olive/20' },
+    { status: 'Pending', label: 'Still Exploring', labelPlural: 'Still Exploring', icon: Compass, color: 'text-med-blue dark:text-blue-300', bg: 'bg-med-blue/5 dark:bg-blue-900/20', border: 'border-med-blue/10 dark:border-blue-800' },
+    { status: 'Declined', label: "Can't Make It", icon: X, color: 'text-med-terracotta', bg: 'bg-med-terracotta/10', border: 'border-med-terracotta/20' },
 ];
 
 // ─── Hub Feature Teasers ─────────────────────────────────────────────────────
@@ -288,7 +289,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({ event, onClose }) =
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 60, scale: 0.97 }}
                     transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="relative w-full max-w-lg bg-white dark:bg-gray-900 shadow-2xl flex flex-col rounded-t-[2rem] sm:rounded-[2rem] overflow-hidden border border-white/10 max-h-[92vh] sm:max-h-[85vh] sm:mx-4"
+                    className="relative w-full max-w-lg bg-white dark:bg-gray-900 shadow-2xl flex flex-col rounded-t-3xl sm:rounded-3xl overflow-hidden border border-white/10 max-h-[92vh] sm:max-h-[85vh] sm:mx-4"
                 >
                     {/* Close button */}
                     <button
@@ -323,7 +324,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({ event, onClose }) =
                     <div className="flex-1 overflow-y-auto px-5 py-6 sm:px-6 space-y-5">
                         {/* Venue & Address */}
                         <div className="flex items-start gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5">
+                            <div className="w-9 h-9 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5">
                                 <MapPinned size={16} className="text-med-terracotta" />
                             </div>
                             <div>
@@ -347,8 +348,8 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({ event, onClose }) =
                                 <Clock3 size={11} className="text-med-terracotta" />
                                 <span className="text-[11px] font-body font-bold text-med-blue dark:text-white">{event.time}</span>
                             </div>
-                            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${event.price > 0 ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-200/60 dark:border-purple-800' : 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200/60 dark:border-emerald-800'}`}>
-                                <span className={`text-[11px] font-body font-bold ${event.price > 0 ? 'text-purple-600 dark:text-purple-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${event.price > 0 ? 'bg-med-blue/10 border-med-blue/20' : 'bg-med-olive/10 border-med-olive/20'}`}>
+                                <span className={`text-[11px] font-body font-bold ${event.price > 0 ? 'text-med-blue dark:text-blue-300' : 'text-med-olive dark:text-med-olive'}`}>
                                     {event.price > 0 ? `€${event.price} per guest` : 'Included'}
                                 </span>
                             </div>
@@ -378,14 +379,14 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({ event, onClose }) =
                         {/* What's Included */}
                         <div>
                             <div className="flex items-center gap-2 mb-3">
-                                <Check size={13} className="text-emerald-500" />
+                                <Check size={13} className="text-med-olive" />
                                 <span className="text-[11px] font-body font-bold uppercase tracking-[0.2em] text-med-terracotta">What's Included</span>
                             </div>
                             <div className="grid grid-cols-1 gap-1.5">
                                 {d.included.map((item, i) => (
                                     <div key={i} className="flex items-center gap-2">
-                                        <div className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-                                            <Check size={9} className="text-emerald-500" strokeWidth={3} />
+                                        <div className="w-4 h-4 rounded-full bg-med-olive/20 dark:bg-med-olive/20 flex items-center justify-center shrink-0">
+                                            <Check size={9} className="text-med-olive" strokeWidth={3} />
                                         </div>
                                         <span className="text-[12px] font-body text-slate-600 dark:text-gray-300">{item}</span>
                                     </div>
@@ -423,7 +424,7 @@ const SectionCard = ({ children, className = '' }: { children: React.ReactNode; 
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className={`bg-[#1e293b]/70 backdrop-blur-xl rounded-[2.5rem] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.4)] border border-white/10 px-6 py-8 sm:px-8 sm:py-10 relative overflow-hidden flex flex-col h-full ${className}`}
+        className={`bg-[#1e293b]/70 backdrop-blur-xl rounded-[32px] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.4)] border border-white/10 px-6 py-8 sm:px-8 sm:py-10 relative overflow-hidden flex flex-col h-full ${className}`}
     >
         {children}
     </motion.div>
@@ -707,9 +708,8 @@ export const EventLandingPage: React.FC = () => {
 
 
             {/* ────── Sticky Header ────── */}
-            <UnifiedHeader 
+            <MarketingHeader 
                 appMenuItems={[
-                    { label: isDark ? 'Light Mode' : 'Dark Mode', icon: isDark ? Sun : Moon, onClick: toggleDarkMode },
                     { label: 'Reload App', icon: RefreshCw, onClick: () => { localStorage.clear(); window.location.reload(); } },
                     { label: 'Sign Out', icon: LogOut, onClick: logout, danger: true }
                 ]}
@@ -736,7 +736,7 @@ export const EventLandingPage: React.FC = () => {
 
                     {/* Dashboard Tiles */}
                     <div className="flex flex-col gap-4 mt-8 w-full max-w-lg mx-auto">
-                        <button onClick={() => setActiveModal('RSVP')} className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
+                        <button onClick={() => setActiveModal('RSVP')} className="flex items-center gap-4 p-5 rounded-2xl bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
                             <div className={`w-14 h-14 rounded-full ${statusConfig.bg} border ${statusConfig.border} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
                                 <StatusIcon size={24} className={statusConfig.color} />
                             </div>
@@ -748,7 +748,7 @@ export const EventLandingPage: React.FC = () => {
                             <ChevronRight size={20} className="text-slate-300 dark:text-gray-600 group-hover:text-med-terracotta transition-colors" />
                         </button>
 
-                        <button onClick={() => setActiveModal('Event')} className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
+                        <button onClick={() => setActiveModal('Event')} className="flex items-center gap-4 p-5 rounded-2xl bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
                             <div className="w-14 h-14 rounded-full bg-med-terracotta/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                 <Calendar size={24} className="text-med-terracotta" />
                             </div>
@@ -760,7 +760,7 @@ export const EventLandingPage: React.FC = () => {
                             <ChevronRight size={20} className="text-slate-300 dark:text-gray-600 group-hover:text-med-terracotta transition-colors" />
                         </button>
 
-                        <button onClick={() => setActiveModal('Destination')} className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
+                        <button onClick={() => setActiveModal('Destination')} className="flex items-center gap-4 p-5 rounded-2xl bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
                             <div className="w-14 h-14 rounded-full bg-med-blue/10 dark:bg-blue-900/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                 <MapPin size={24} className="text-med-blue dark:text-blue-400" />
                             </div>
@@ -824,7 +824,7 @@ export const EventLandingPage: React.FC = () => {
                         {rsvpJustSaved && (
                             <motion.div
                                 initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                                className="w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center shadow-lg shrink-0"
+                                className="w-8 h-8 bg-med-olive text-white rounded-full flex items-center justify-center shadow-lg shrink-0"
                             >
                                 <Check size={16} strokeWidth={3} />
                             </motion.div>
@@ -834,7 +834,7 @@ export const EventLandingPage: React.FC = () => {
                     {/* Summary stats */}
                     <div className="flex flex-wrap gap-3 mb-5">
                         {(user?.partyMembers || []).length > 1 && (
-                            <div className="flex items-center gap-2 px-4 py-2.5 bg-med-sand/60 dark:bg-gray-800/40 rounded-xl">
+                            <div className="flex items-center gap-2 px-4 py-2.5 bg-med-sand/60 dark:bg-gray-800/40 rounded-2xl">
                                 <Users size={14} className="text-slate-400" />
                                 <span className="text-sm font-body font-bold text-med-blue dark:text-white">{(user?.partyMembers || []).length} guests</span>
                                 <span className="text-[10px] font-body text-slate-400 uppercase tracking-wider">confirmed</span>
@@ -892,9 +892,9 @@ export const EventLandingPage: React.FC = () => {
                                                         }
                                                     }}
                                                     disabled={isSavingRSVP}
-                                                    className={`w-full flex items-center gap-4 p-5 rounded-[1.5rem] border-2 ${option.border} ${option.bg} hover:shadow-lg transition-all duration-300 group text-left active:scale-[0.98]`}
+                                                    className={`w-full flex items-center gap-4 p-5 rounded-2xl border-2 ${option.border} ${option.bg} hover:shadow-lg transition-all duration-300 group text-left active:scale-[0.98]`}
                                                 >
-                                                    <div className={`w-12 h-12 rounded-xl ${option.bg} border ${option.border} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
+                                                    <div className={`w-12 h-12 rounded-2xl ${option.bg} border ${option.border} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
                                                         <Icon size={22} className={option.color} />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
@@ -917,7 +917,7 @@ export const EventLandingPage: React.FC = () => {
                                                     transition={{ duration: 0.3 }}
                                                     className="overflow-hidden"
                                                 >
-                                                    <div className="p-4 rounded-[1.5rem] border-2 border-red-200 dark:border-red-800 bg-red-50/50 dark:bg-red-900/10 space-y-3">
+                                                    <div className="p-4 rounded-2xl border-2 border-red-200 dark:border-red-800 bg-red-50/50 dark:bg-red-900/10 space-y-3">
                                                         <p className="text-xs font-body text-slate-500 dark:text-gray-400 leading-relaxed">
                                                             We're sorry to hear that! Want to send a note to the host?
                                                         </p>
@@ -926,12 +926,12 @@ export const EventLandingPage: React.FC = () => {
                                                             onChange={e => setDeclineNote(e.target.value)}
                                                             placeholder="Optional — share a message with the host..."
                                                             rows={3}
-                                                            className="w-full bg-white dark:bg-gray-800 border border-red-200 dark:border-red-700 rounded-xl px-4 py-3 text-sm font-body text-med-blue dark:text-white placeholder:text-slate-300 dark:placeholder:text-gray-600 outline-none focus:border-red-400 transition-colors resize-none"
+                                                            className="w-full bg-white dark:bg-gray-800 border border-red-200 dark:border-red-700 rounded-2xl px-4 py-3 text-sm font-body text-med-blue dark:text-white placeholder:text-slate-300 dark:placeholder:text-gray-600 outline-none focus:border-red-400 transition-colors resize-none"
                                                         />
                                                         <div className="flex gap-2">
                                                             <button
                                                                 onClick={() => { setShowDeclineNote(false); setDeclineNote(''); }}
-                                                                className="flex-1 py-2.5 rounded-xl text-[10px] font-body font-bold uppercase tracking-[0.2em] text-slate-400 border border-slate-200 dark:border-gray-700 hover:border-slate-300 transition-colors"
+                                                                className="flex-1 py-2.5 rounded-2xl text-[10px] font-body font-bold uppercase tracking-[0.2em] text-slate-400 border border-slate-200 dark:border-gray-700 hover:border-slate-300 transition-colors"
                                                             >
                                                                 Cancel
                                                             </button>
@@ -944,7 +944,7 @@ export const EventLandingPage: React.FC = () => {
                                                                     handleRSVPChange('Declined');
                                                                 }}
                                                                 disabled={isSavingRSVP}
-                                                                className="flex-1 py-2.5 rounded-xl text-[10px] font-body font-bold uppercase tracking-[0.2em] text-white bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-40"
+                                                                className="flex-1 py-2.5 rounded-2xl text-[10px] font-body font-bold uppercase tracking-[0.2em] text-white bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-40"
                                                             >
                                                                 {declineNote.trim() ? 'Send & Decline' : 'Confirm Decline'}
                                                             </button>
@@ -1063,7 +1063,7 @@ export const EventLandingPage: React.FC = () => {
                                     </div>
 
                                     {/* Primary guest */}
-                                    <div className="flex items-center gap-3 py-3 px-4 rounded-[1.5rem] bg-med-terracotta/8 dark:bg-med-terracotta/10 border border-med-terracotta/20 mb-2">
+                                    <div className="flex items-center gap-3 py-3 px-4 rounded-2xl bg-med-terracotta/8 dark:bg-med-terracotta/10 border border-med-terracotta/20 mb-2">
                                         <div className="w-8 h-8 rounded-full bg-med-terracotta/20 flex items-center justify-center shrink-0">
                                             <User size={14} className="text-med-terracotta" />
                                         </div>
@@ -1076,7 +1076,7 @@ export const EventLandingPage: React.FC = () => {
 
                                     {/* Secondary guest for couples */}
                                     {parsedCouple.isCouple && parsedCouple.secondary && (
-                                        <div className="flex items-center gap-3 py-3 px-4 rounded-[1.5rem] bg-med-terracotta/8 dark:bg-med-terracotta/10 border border-med-terracotta/20 mb-2">
+                                        <div className="flex items-center gap-3 py-3 px-4 rounded-2xl bg-med-terracotta/8 dark:bg-med-terracotta/10 border border-med-terracotta/20 mb-2">
                                             <div className="w-8 h-8 rounded-full bg-med-terracotta/20 flex items-center justify-center shrink-0">
                                                 <User size={14} className="text-med-terracotta" />
                                             </div>
@@ -1096,7 +1096,7 @@ export const EventLandingPage: React.FC = () => {
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: 'auto' }}
                                                 exit={{ opacity: 0, height: 0 }}
-                                                className="flex items-center gap-3 py-3 px-4 rounded-[1.5rem] bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 mb-2 overflow-hidden"
+                                                className="flex items-center gap-3 py-3 px-4 rounded-2xl bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 mb-2 overflow-hidden"
                                             >
                                                 <div className="w-8 h-8 rounded-full bg-med-blue/10 flex items-center justify-center shrink-0">
                                                     <User size={14} className="text-med-blue/60 dark:text-blue-300" />
@@ -1116,7 +1116,7 @@ export const EventLandingPage: React.FC = () => {
                                                         submitRSVP({ partyMembers: updatedParty } as any);
                                                         addNotification(`${m.name} is now the primary guest.`, 'success');
                                                     }}
-                                                    className="w-7 h-7 rounded-full hover:bg-amber-50 dark:hover:bg-amber-500/10 flex items-center justify-center text-slate-300 hover:text-amber-500 transition-colors shrink-0"
+                                                    className="w-7 h-7 rounded-full hover:bg-med-terracotta/10 flex items-center justify-center text-slate-300 hover:text-med-terracotta transition-colors shrink-0"
                                                     title="Make primary guest"
                                                 >
                                                     <Star size={13} />
@@ -1126,7 +1126,7 @@ export const EventLandingPage: React.FC = () => {
                                                         removeFromParty(m.id);
                                                         addNotification(`${m.name} removed from your party.`, 'info');
                                                     }}
-                                                    className="w-7 h-7 rounded-full hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center justify-center text-slate-300 hover:text-red-400 transition-colors shrink-0"
+                                                    className="w-7 h-7 rounded-full hover:bg-med-terracotta/10 flex items-center justify-center text-slate-300 hover:text-med-terracotta transition-colors shrink-0"
                                                     title="Remove from party"
                                                 >
                                                     <X size={13} />
@@ -1144,7 +1144,7 @@ export const EventLandingPage: React.FC = () => {
                                                 exit={{ opacity: 0, height: 0 }}
                                                 className="overflow-hidden mt-3"
                                             >
-                                                <div className="p-4 rounded-[1.5rem] bg-white dark:bg-gray-800 border-2 border-med-terracotta/20 space-y-3">
+                                                <div className="p-4 rounded-2xl bg-white dark:bg-gray-800 border-2 border-med-terracotta/20 space-y-3">
                                                     <p className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta">Add Guest</p>
                                                     <input
                                                         type="text"
@@ -1183,7 +1183,7 @@ export const EventLandingPage: React.FC = () => {
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 onClick={() => setAddingMember(true)}
-                                                className="w-full mt-3 h-12 rounded-[1.5rem] border-2 border-dashed border-slate-200 dark:border-gray-700 hover:border-med-terracotta/40 flex items-center justify-center gap-2 text-[11px] font-body font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-gray-500 hover:text-med-terracotta transition-all"
+                                                className="w-full mt-3 h-12 rounded-2xl border-2 border-dashed border-slate-200 dark:border-gray-700 hover:border-med-terracotta/40 flex items-center justify-center gap-2 text-[11px] font-body font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-gray-500 hover:text-med-terracotta transition-all"
                                             >
                                                 <Plus size={13} /> Add Guest to Party
                                             </motion.button>
@@ -1225,7 +1225,7 @@ export const EventLandingPage: React.FC = () => {
                                         transition={{ delay: i * 0.06 }}
                                         onClick={() => isLocked ? undefined : (isEditingEvents ? toggleEvent(evt.id) : setExpandedEvent(expandedEvent === evt.id ? null : evt.id))}
                                         disabled={isLocked}
-                                        className={`w-full flex items-start gap-4 p-4 rounded-[1.5rem] border transition-all duration-300 text-left relative ${
+                                        className={`w-full flex items-start gap-4 p-4 rounded-2xl border transition-all duration-300 text-left relative ${
                                             isLocked
                                                 ? 'border-slate-100 dark:border-gray-800 bg-slate-50/50 dark:bg-gray-800/30 opacity-50 cursor-default'
                                                 : isAttending
@@ -1251,7 +1251,7 @@ export const EventLandingPage: React.FC = () => {
                                             isLocked
                                                 ? 'bg-slate-200 dark:bg-gray-700'
                                                 : isAttending
-                                                    ? 'bg-emerald-500 shadow-md shadow-emerald-500/30'
+                                                    ? 'bg-med-olive shadow-md shadow-emerald-500/30'
                                                     : 'bg-slate-200 dark:bg-gray-700'
                                         }`}>
                                             {isLocked
@@ -1263,7 +1263,7 @@ export const EventLandingPage: React.FC = () => {
                                         </div>
 
                                         {/* Calendar Badge */}
-                                        <div className={`shrink-0 w-14 rounded-xl overflow-hidden border transition-all ${
+                                        <div className={`shrink-0 w-14 rounded-2xl overflow-hidden border transition-all ${
                                             isAttending
                                                 ? 'border-slate-200/80 dark:border-gray-700 shadow-sm'
                                                 : 'border-slate-100 dark:border-gray-800 opacity-50'
@@ -1377,7 +1377,7 @@ export const EventLandingPage: React.FC = () => {
 
                                                         {/* Venue */}
                                                         <div className="flex items-start gap-3">
-                                                            <div className="w-8 h-8 rounded-xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5">
+                                                            <div className="w-8 h-8 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5">
                                                                 <MapPinned size={14} className="text-med-terracotta" />
                                                             </div>
                                                             <div>
@@ -1398,10 +1398,10 @@ export const EventLandingPage: React.FC = () => {
                                                         <p className="text-[12px] font-body text-slate-600 dark:text-gray-300 leading-relaxed">{d.overview}</p>
 
                                                         {/* Cost & What's Included */}
-                                                        <div className="p-3 rounded-xl bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700/50 space-y-3">
+                                                        <div className="p-3 rounded-2xl bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700/50 space-y-3">
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center gap-2">
-                                                                    <div className="w-8 h-8 rounded-xl bg-med-terracotta/10 flex items-center justify-center shrink-0">
+                                                                    <div className="w-8 h-8 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0">
                                                                         <Wallet size={14} className="text-med-terracotta" />
                                                                     </div>
                                                                     <p className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-med-terracotta">Cost per guest</p>
@@ -1416,8 +1416,8 @@ export const EventLandingPage: React.FC = () => {
                                                                 <div className="grid grid-cols-1 gap-1">
                                                                     {d.included.map((item, idx) => (
                                                                         <div key={idx} className="flex items-center gap-2">
-                                                                            <div className="w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-                                                                                <Check size={8} className="text-emerald-500" strokeWidth={3} />
+                                                                            <div className="w-3.5 h-3.5 rounded-full bg-med-olive/20 dark:bg-med-olive/20 flex items-center justify-center shrink-0">
+                                                                                <Check size={8} className="text-med-olive" strokeWidth={3} />
                                                                             </div>
                                                                             {typeof item === 'object' && item.link ? (
                                                                                 <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-[11px] font-body text-med-terracotta hover:underline inline-flex items-center gap-1">
@@ -1434,7 +1434,7 @@ export const EventLandingPage: React.FC = () => {
 
                                                         {/* Notes */}
                                                         {d.notes && (
-                                                            <div className="p-3 rounded-xl bg-amber-50/60 dark:bg-amber-900/10 border border-amber-200/40 dark:border-amber-800/40">
+                                                            <div className="p-3 rounded-2xl bg-amber-50/60 dark:bg-amber-900/10 border border-amber-200/40 dark:border-amber-800/40">
                                                                 <div className="flex items-start gap-2">
                                                                     <AlertCircle size={12} className="text-amber-500 mt-0.5 shrink-0" />
                                                                     <p className="text-[11px] font-body text-amber-700 dark:text-amber-300 leading-relaxed">{d.notes}</p>
@@ -1641,14 +1641,14 @@ export const EventLandingPage: React.FC = () => {
                             return (
                                 <div
                                     key={route.id}
-                                    className="rounded-[1.5rem] border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 overflow-hidden transition-all duration-300"
+                                    className="rounded-2xl border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 overflow-hidden transition-all duration-300"
                                 >
                                     <button
                                         onClick={() => setExpandedRoute(isOpen ? null : route.id)}
                                         className="w-full flex items-start gap-4 p-4 text-left"
                                     >
                                         <div className="flex items-start gap-3 flex-1">
-                                            <div className="w-10 h-10 rounded-xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5">
+                                            <div className="w-10 h-10 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5">
                                                 <RouteIcon size={18} className="text-med-terracotta" />
                                             </div>
                                             <div className="flex-1 min-w-0">
@@ -1765,10 +1765,10 @@ export const EventLandingPage: React.FC = () => {
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.08 }}
-                                className="p-4 rounded-[1.5rem] border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 hover:border-med-terracotta/40 hover:shadow-md transition-all duration-300 group"
+                                className="p-4 rounded-2xl border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 hover:border-med-terracotta/40 hover:shadow-md transition-all duration-300 group"
                             >
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-med-terracotta/20 transition-colors">
+                                    <div className="w-10 h-10 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-med-terracotta/20 transition-colors">
                                         <Building2 size={18} className="text-med-terracotta" />
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -1817,9 +1817,9 @@ export const EventLandingPage: React.FC = () => {
                         initial={{ opacity: 0, y: 8 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="flex items-center gap-4 p-4 rounded-[1.5rem] border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 hover:border-med-terracotta/40 hover:shadow-md transition-all duration-300 group"
+                        className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 hover:border-med-terracotta/40 hover:shadow-md transition-all duration-300 group"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-med-terracotta/10 flex items-center justify-center shrink-0 group-hover:bg-med-terracotta/20 transition-colors">
+                        <div className="w-10 h-10 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 group-hover:bg-med-terracotta/20 transition-colors">
                             <UtensilsCrossed size={18} className="text-med-terracotta" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -1881,9 +1881,9 @@ export const EventLandingPage: React.FC = () => {
                                     whileInView={{ opacity: 1, x: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: i * 0.08 }}
-                                    className="flex items-start gap-4 p-4 rounded-[1.5rem] border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 hover:border-med-terracotta/40 hover:shadow-md transition-all duration-300 group"
+                                    className="flex items-start gap-4 p-4 rounded-2xl border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 hover:border-med-terracotta/40 hover:shadow-md transition-all duration-300 group"
                                 >
-                                    <div className="w-10 h-10 rounded-xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-med-terracotta/20 transition-colors">
+                                    <div className="w-10 h-10 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-med-terracotta/20 transition-colors">
                                         <Icon size={18} className="text-med-terracotta" />
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -1915,6 +1915,7 @@ export const EventLandingPage: React.FC = () => {
             </AnimatePresence>
                 {/* Footer spacer */}
                 <div className="py-6" />
+                <MarketingFooter />
 
             {/* ── Getting There Help Modal ── */}
             <AnimatePresence>
@@ -1942,7 +1943,7 @@ export const EventLandingPage: React.FC = () => {
                                 <X size={16} className="text-slate-400" />
                             </button>
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-2xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                                     <Check size={20} className="text-green-600 dark:text-green-400" />
                                 </div>
                                 <h3 className="text-lg font-body font-bold text-med-blue dark:text-white">Help Requested</h3>

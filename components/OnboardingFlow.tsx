@@ -17,8 +17,8 @@ import { isValidEmail, isValidName } from '../utils/validation';
 import { authService } from '../services/authService';
 import { Button } from './Button';
 import { WebOSCard } from './WebOSCard';
-import { UnifiedHeader } from './UnifiedHeader';
-
+import { MarketingHeader } from './MarketingHeader';
+import { MarketingFooter } from './MarketingFooter';
 import { onGuestRegistered } from '../services/registrationOrchestrator';
 import { DEFAULT_AGENDA_DATA } from '../data/defaults';
 
@@ -81,37 +81,6 @@ const FlatInput = ({
     </div>
 );
 
-// ─── Pill CTA ─────────────────────────────────────────────────────────────────
-const PillButton = ({
-    onClick, disabled, isLoading, children, type = 'button', variant = 'primary', fullWidth = true, className = ''
-}: {
-    onClick?: () => void; disabled?: boolean; isLoading?: boolean;
-    children: React.ReactNode; type?: 'button' | 'submit'; variant?: 'primary' | 'ghost';
-    fullWidth?: boolean; className?: string;
-}) => {
-    if (variant === 'ghost') {
-        return (
-            <button
-                type={type}
-                onClick={onClick}
-                disabled={disabled}
-                className={`h-12 px-6 text-slate-500 hover:text-med-blue dark:text-gray-400 dark:hover:text-white text-[10px] font-body font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 border-2 border-transparent hover:border-slate-200 dark:hover:border-gray-800 rounded-full ${fullWidth ? 'w-full' : ''} ${className}`}
-            >
-                {children}
-            </button>
-        );
-    }
-    return (
-        <button
-            type={type}
-            onClick={onClick}
-            disabled={disabled || isLoading}
-            className={`h-12 bg-[#E2923D] dark:bg-[#c07030] text-white rounded-full text-[10px] font-body font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-[#d17e2b] dark:hover:bg-[#a86028] shadow-[#E2923D]/20 transition-all flex items-center justify-center gap-4 group active:scale-95 disabled:opacity-50 ${fullWidth ? 'w-full' : 'px-10'} ${className}`}
-        >
-            {isLoading ? <Loader2 className="animate-spin w-4 h-4" /> : children}
-        </button>
-    );
-};
 
 // ─── Shell (webOS Workspace + Onyx Card) ─────────────────────────────────────
 const Shell = ({ children, stepIndex, stepTitle = 'RSVP', onClose }: { children: React.ReactNode; stepIndex: number; stepTitle?: string; onClose?: () => void }) => {
@@ -119,13 +88,8 @@ const Shell = ({ children, stepIndex, stepTitle = 'RSVP', onClose }: { children:
     const [isFullScreen, setIsFullScreen] = useState(false);
 
     return (
-        <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center overflow-hidden"
-          style={{ background: 'radial-gradient(circle at center, #1b263b 0%, #0d1b2a 100%)' }}
-        >
-          <UnifiedHeader 
-             showAppMenu={true}
-             className="!fixed top-0 left-0 right-0"
-          />
+        <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center overflow-hidden bg-med-sand dark:bg-slate-900 transition-colors duration-500">
+          <MarketingHeader />
           <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[90dvh] max-h-[900px] mt-12'}`}>
             <WebOSCard
               id="onboarding-card"
@@ -466,7 +430,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                     {/* Compact confirmation when profile data exists */}
                     {hasExistingProfile && !showEditDetails ? (
                         <div className="space-y-3 mt-auto">
-                            <div className="p-4 rounded-[1.5rem] bg-white dark:bg-gray-800/50 border-2 border-slate-100 dark:border-gray-700">
+                            <div className="p-4 rounded-2xl bg-white dark:bg-gray-800/50 border-2 border-slate-100 dark:border-gray-700">
                                 <div className="flex items-center justify-between mb-3">
                                     <p className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-med-terracotta flex items-center gap-1.5">
                                         <Check size={10} /> Confirmed Details
@@ -536,7 +500,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                         </div>
 
                         {/* Primary guest pill */}
-                        <div className="flex items-center gap-2 py-2 px-3 rounded-[1rem] bg-med-terracotta/5 border border-med-terracotta/10 mb-1.5">
+                        <div className="flex items-center gap-2 py-2 px-3 rounded-2xl bg-med-terracotta/5 border border-med-terracotta/10 mb-1.5">
                             <div className="w-6 h-6 rounded-full bg-med-terracotta/20 flex items-center justify-center shrink-0">
                                 <User size={12} className="text-med-terracotta" />
                             </div>
@@ -556,7 +520,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
-                                    className="flex items-center gap-2 py-2 px-3 rounded-[1rem] bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 mb-1.5"
+                                    className="flex items-center gap-2 py-2 px-3 rounded-2xl bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 mb-1.5"
                                 >
                                     <div className="w-6 h-6 rounded-full bg-med-blue/10 flex items-center justify-center shrink-0">
                                         <User size={12} className="text-med-blue/60 dark:text-blue-300" />
@@ -581,7 +545,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                                     exit={{ opacity: 0, height: 0 }}
                                     className="overflow-hidden mt-2"
                                 >
-                                    <div className="p-3 rounded-[1rem] bg-white dark:bg-gray-800 border-2 border-med-terracotta/20 space-y-2">
+                                    <div className="p-3 rounded-2xl bg-white dark:bg-gray-800 border-2 border-med-terracotta/20 space-y-2">
                                         <input
                                             type="text"
                                             placeholder="Full name"
@@ -605,7 +569,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                                     animate={{ opacity: 1 }}
                                     onClick={() => setAddingMember(true)}
                                     disabled={partyMembers.length >= 5}
-                                    className="w-full mt-1.5 h-9 rounded-[1rem] border border-dashed border-slate-200 dark:border-gray-700 hover:border-med-terracotta/40 flex items-center justify-center gap-1.5 text-[9px] font-body font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-med-terracotta transition-all disabled:opacity-30"
+                                    className="w-full mt-1.5 h-9 rounded-2xl border border-dashed border-slate-200 dark:border-gray-700 hover:border-med-terracotta/40 flex items-center justify-center gap-1.5 text-[9px] font-body font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-med-terracotta transition-all disabled:opacity-30"
                                 >
                                     <Plus size={12} /> Add Guest
                                 </motion.button>
@@ -616,10 +580,10 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                     </div>
 
                     <div className="mt-auto pt-2 flex items-center gap-2 w-full">
-                        <PillButton variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
+                        <Button variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
                             ← BACK
-                        </PillButton>
-                        <PillButton
+                        </Button>
+                        <Button
                             onClick={() => {
                                 if (validateDetails()) handleFinish('Confirmed');
                             }}
@@ -627,7 +591,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                             className="flex-[2]"
                         >
                             FINISH &nbsp;<ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                        </PillButton>
+                        </Button>
                     </div>
                 </div>
             </Shell>
@@ -654,22 +618,22 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                         onChange={(e) => setDeclineMessage(e.target.value)}
                         placeholder="Optional note to the host..."
                         rows={2}
-                        className="w-full bg-white/80 dark:bg-gray-800/60 border-2 border-slate-100 dark:border-gray-700 rounded-[1rem] px-3 py-2 text-xs font-body text-med-blue dark:text-white focus:outline-none focus:border-med-terracotta/50 resize-none"
+                        className="w-full bg-white/80 dark:bg-gray-800/60 border-2 border-slate-100 dark:border-gray-700 rounded-2xl px-3 py-2 text-xs font-body text-med-blue dark:text-white focus:outline-none focus:border-med-terracotta/50 resize-none"
                     />
                 </div>
 
                 <div className="w-full flex items-center gap-2">
-                    <PillButton variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
+                    <Button variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
                         ← BACK
-                    </PillButton>
-                    <PillButton
+                    </Button>
+                    <Button
                         onClick={() => handleFinish('Declined')}
                         fullWidth={false}
                         className="flex-[2]"
                         isLoading={isFinishing}
                     >
                         {declineMessage.trim() ? 'SEND & FINISH' : 'FINISH'}
-                    </PillButton>
+                    </Button>
                 </div>
             </Shell>
         );
@@ -699,7 +663,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                         onChange={(e) => setInputValue(formatCode(e.target.value))}
                         placeholder="XXX-XXX-XXX" 
                         maxLength={11}
-                        className="w-full h-12 bg-slate-50/50 dark:bg-[#1a1f2e] border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta rounded-none px-4 text-center font-body font-bold text-med-blue dark:text-white outline-none transition-all flex items-center justify-center leading-none placeholder:text-sm placeholder:tracking-[0.5em] placeholder:font-body placeholder:opacity-30 placeholder:font-normal"
+                        className="w-full h-12 bg-slate-50/50 dark:bg-[#1a1f2e] border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta rounded-2xl px-4 text-center font-body font-bold text-med-blue dark:text-white outline-none transition-all flex items-center justify-center leading-none placeholder:text-sm placeholder:tracking-[0.5em] placeholder:font-body placeholder:opacity-30 placeholder:font-normal"
                         style={{ 
                             fontSize: 'clamp(1.2rem, 5vw, 2rem)',
                             letterSpacing: '0.08em',
@@ -713,7 +677,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                     </div>
 
                     <div className="space-y-3 mt-auto">
-                        <label className="flex items-start gap-3 p-3 bg-med-sand/40 dark:bg-[#1a1f2e]/40 rounded-[1rem] border border-med-blue/5 cursor-pointer">
+                        <label className="flex items-start gap-3 p-3 bg-med-sand/40 dark:bg-[#1a1f2e]/40 rounded-2xl border border-med-blue/5 cursor-pointer">
                             <input
                             type="checkbox"
                             checked={agreedToTerms}
@@ -727,14 +691,14 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                     </div>
 
                     <div className="mt-auto pt-4">
-                    <PillButton 
+                    <Button 
                         type="submit"
                         disabled={isLoginLoading || !inputValue || !agreedToTerms}
                         isLoading={isLoginLoading}
                         fullWidth
                     >
                         CONTINUE
-                    </PillButton>
+                    </Button>
                     </div>
                 </form>
 
@@ -786,7 +750,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setSelectedRSVP('Confirmed')}
                     disabled={isFinishing}
-                    className={`flex flex-col items-center gap-1.5 p-2 rounded-[1.2rem] border-2 transition-all group ${
+                    className={`flex flex-col items-center gap-1.5 p-2 rounded-3xl border-2 transition-all group ${
                         selectedRSVP === 'Confirmed'
                             ? 'border-med-terracotta bg-med-terracotta/10'
                             : 'border-slate-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/50'
