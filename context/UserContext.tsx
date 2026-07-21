@@ -227,8 +227,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setAuthUid(u.uid);
             } else {
                 setAuthUid(null);
-                // If auth fails/is missing, switch to local mode
-                setIsCloudEnabled(false);
             }
         });
         return () => unsubscribeAuth();
@@ -239,11 +237,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!isCloudEnabled) return;
 
         // Safety check: wait until auth is determined
-        if (!authUid && !authStateChecked.current) return;
-        if (!authUid) {
-            setIsCloudEnabled(false);
-            return;
-        }
+        if (!authUid) return;
 
         try {
             const guestsCollection = collection(db, "events", CURRENT_EVENT_ID, "guests");
