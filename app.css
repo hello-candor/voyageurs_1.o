@@ -25,6 +25,12 @@
   --color-bg: #F5F2EB;
   --color-accent: #D67252;
   --color-success: #8A9A5B;
+
+  /* WebOS Onyx Theme */
+  --onyx-card-radius: 32px;
+  --onyx-btn-radius: 9999px;
+  --onyx-shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  --onyx-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
 }
 
 .dark {
@@ -32,6 +38,7 @@
   --color-bg: #111827;
   --color-accent: #b85a3a;
   --color-success: #6b7a44;
+  --onyx-shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
 }
 
 html {

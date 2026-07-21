@@ -21,21 +21,7 @@ import { DEFAULT_AGENDA_DATA } from '../data/defaults';
 type Step = 'welcome' | 'details' | 'attendance' | 'rsvp' | 'decline';
 type RSVPStatus = 'Confirmed' | 'Declined' | 'Pending';
 
-// ─── Shared Decorative Background ───────────────────────────────────────────
-const Blobs = () => (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <motion.div
-            animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
-            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-            className="absolute -top-24 -right-24 w-[500px] h-[500px] bg-med-terracotta/10 rounded-full blur-[120px]"
-        />
-        <motion.div
-            animate={{ x: [0, -40, 0], y: [0, 60, 0] }}
-            transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-            className="absolute -bottom-24 -left-24 w-[600px] h-[600px] bg-med-blue/10 rounded-full blur-[140px]"
-        />
-    </div>
-);
+// Blobs removed — webOS workspace background provides atmosphere
 
 // ─── Logo ────────────────────────────────────────────────────────────────────
 const Logo = ({ className = 'w-16 h-16' }) => (
@@ -62,7 +48,7 @@ const ProgressBar = ({ step, total }: { step: number; total: number }) => (
                     className="h-full rounded-full bg-med-terracotta"
                     initial={{ width: 0 }}
                     animate={{ width: i < step ? '100%' : '0%' }}
-                    transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94], delay: i * 0.1 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 30, delay: i * 0.1 }}
                 />
             </div>
         ))}
@@ -130,25 +116,46 @@ const PillButton = ({
     );
 };
 
-// ─── Shell ────────────────────────────────────────────────────────────────────
-const Shell = ({ children, stepIndex }: { children: React.ReactNode; stepIndex: number }) => (
-    <div className="fixed inset-0 z-[1000] overflow-y-auto bg-med-sand dark:bg-[#1A1A1A] transition-colors duration-500">
+// ─── Shell (webOS Workspace + Onyx Card) ─────────────────────────────────────
+const Shell = ({ children, stepIndex, stepTitle = 'Voyageurs' }: { children: React.ReactNode; stepIndex: number; stepTitle?: string }) => (
+    <div className="fixed inset-0 z-[1000] overflow-y-auto transition-colors duration-500">
 
-        <Blobs />
+        {/* webOS Workspace Background */}
+        <div className="fixed inset-0 z-0 pointer-events-none">
+            {/* Light mode base */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-[#F5F2EB] to-[#F5F2EB] dark:opacity-0 transition-opacity duration-700" />
+            {/* Dark mode base */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#330046]/40 via-[#1A1A1A] to-[#1A1A1A] opacity-0 dark:opacity-100 transition-opacity duration-700" />
+            {/* Ambient glows */}
+            <div className="absolute top-[20%] left-[30%] w-[600px] h-[600px] bg-[#508BC5] rounded-full blur-[120px] mix-blend-multiply opacity-[0.1] dark:mix-blend-screen dark:opacity-[0.15]" />
+            <div className="absolute bottom-[10%] right-[20%] w-[500px] h-[500px] bg-[#FFCDA6] rounded-full blur-[140px] mix-blend-multiply opacity-[0.2] dark:mix-blend-screen dark:opacity-[0.10]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#330046] rounded-full blur-[160px] mix-blend-screen opacity-0 dark:opacity-40 transition-opacity duration-700" />
+        </div>
 
         <div className="relative w-full max-w-xl px-5 py-4 min-h-screen flex items-center justify-center mx-auto">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={stepIndex}
-                    initial={{ opacity: 0, scale: 0.98, y: 12, filter: 'blur(4px)' }}
+                    initial={{ opacity: 0, scale: 0.96, y: 16, filter: 'blur(4px)' }}
                     animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-                    exit={{ opacity: 0, scale: 0.98, y: -8, filter: 'blur(4px)' }}
-                    transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="w-full max-h-[90vh] bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.2)] dark:shadow-[0_32px_128px_-32px_rgba(0,0,0,0.5)] border border-white dark:border-gray-700 px-6 py-6 md:px-10 md:py-8 relative flex flex-col justify-start overflow-y-auto"
+                    exit={{ opacity: 0, scale: 0.96, y: -12, filter: 'blur(4px)' }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 40 }}
+                    className="w-full max-h-[90vh] overflow-hidden rounded-[var(--onyx-card-radius)] shadow-[var(--onyx-shadow-card)] relative flex flex-col justify-start bg-white/95 dark:bg-[#1a202c]/92 dark:backdrop-blur-[40px] border border-white dark:border-white/[0.08] border-t-white/50 dark:border-t-white/10"
                 >
-                    <div className="absolute top-0 right-0 w-72 h-72 bg-med-terracotta/10 dark:bg-med-terracotta/20 rounded-full blur-[120px] opacity-60 dark:opacity-80 pointer-events-none" />
-                    <div className="relative z-10 flex flex-col items-center w-full max-w-md mx-auto">
-                        {children}
+                    {/* Onyx Header Chrome */}
+                    <div className="h-12 shrink-0 flex items-center justify-between px-6 border-b bg-white/40 dark:bg-transparent border-white/40 dark:border-white/10 select-none">
+                        <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
+                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">{stepTitle}</span>
+                        </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 overflow-y-auto px-6 py-6 md:px-10 md:py-8">
+                        <div className="absolute top-0 right-0 w-72 h-72 bg-med-terracotta/10 dark:bg-med-terracotta/20 rounded-full blur-[120px] opacity-60 dark:opacity-80 pointer-events-none" />
+                        <div className="relative z-10 flex flex-col items-center w-full max-w-md mx-auto">
+                            {children}
+                        </div>
                     </div>
                 </motion.div>
             </AnimatePresence>
@@ -379,7 +386,7 @@ export const OnboardingFlow: React.FC = () => {
     // ── Step 2: Personal Details + Party (only if attending) ──────────────────
     if (currentStep === 'details') {
         return (
-            <Shell stepIndex={1}>
+            <Shell stepIndex={1} stepTitle="Details">
                 <Logo className="mb-2 w-14 h-14" />
 
                 <div className="text-center mb-3 w-full">
@@ -565,7 +572,7 @@ export const OnboardingFlow: React.FC = () => {
     // ── Decline Confirmation ──────────────────────────────────────────────────
     if (currentStep === 'decline') {
         return (
-            <Shell stepIndex={0}>
+            <Shell stepIndex={0} stepTitle="Decline">
                 <Logo className="mb-2 w-14 h-14" />
 
                 <div className="text-center mb-3 w-full">
@@ -606,7 +613,7 @@ export const OnboardingFlow: React.FC = () => {
 
     // ── Step 1: RSVP (Icon-Focused) ───────────────────────────────────────────
     return (
-        <Shell stepIndex={0}>
+        <Shell stepIndex={0} stepTitle="RSVP">
             <Logo className="mb-2 w-14 h-14" />
 
             <div className="text-center mb-3 w-full">

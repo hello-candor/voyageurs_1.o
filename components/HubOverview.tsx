@@ -8,6 +8,7 @@ import {
     Sparkles, Compass, ArrowRight, Calendar, Check,
     MapPin, PenTool, Users, Ticket, Binoculars
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { HubView } from './HubLayout';
 import { Button } from './Button';
 import { useGuidance } from '../hooks/useGuidance';
@@ -171,185 +172,196 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
 
   if (!user || !displayedStepFinal) return null;
 
+  // Shared card classes — Onyx webOS design system
+  const cardBase = `rounded-[var(--onyx-card-radius)] p-8 border cursor-pointer hover:-translate-y-1 hover:scale-[1.01] ${
+      theme === 'light'
+          ? 'bg-white/95 border-t border-white/50 border-x border-b border-med-terracotta/10 shadow-[var(--onyx-shadow-card)]'
+          : 'bg-[#1a202c]/92 backdrop-blur-[40px] border-t border-t-white/10 border-x border-b border-white/[0.06] shadow-[var(--onyx-shadow-card)]'
+  }`;
+  // Springy hover transition via inline style (Tailwind can't do custom cubic-bezier easily)
+  const cardTransitionStyle = { transition: 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.15), box-shadow 0.3s ease, filter 0.3s ease' };
+
+  const cardDivider = theme === 'light' ? 'border-med-terracotta/10' : 'border-white/[0.08]';
+
   return (
     <div className="w-full h-full flex flex-col justify-center items-center p-6 md:p-12 text-primary overflow-y-auto scrollbar-hide">
         
-        {/* Main Dashboard Container */}
-        <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-center py-20">
-            
-            {/* 1. Welcome / Status / Stepper Widget */}
-            <div className="col-span-1 lg:col-span-2 space-y-8">
-                <div>
-                    <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl mb-2 drop-shadow-lg text-primary">
-                        Bonjour, <span className="italic text-med-terracotta">{user.name.split(' ')[0]}.</span>
-                    </h1>
-                    <p className={`text-lg md:text-xl font-light italic drop-shadow-md ${theme === 'light' ? 'text-med-blue/80' : 'text-blue-100/80'}`}>
-                        {timeLeft ? `${timeLeft.d} days until ${config.destination.split(',')[0]}.` : "Welcome to the Celebration."}
-                    </p>
-                </div>
+        <div className="max-w-5xl w-full space-y-10 py-16">
 
-                {items.length > 0 && (
-                    <div className="w-full relative mt-4 mb-8">
-                        <DeckCarousel items={items} onFocusItem={() => onTabChange('logistics' as HubView)} />
-                        <div className="text-center mt-2">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Journey Deck</span>
-                        </div>
-                    </div>
-                )}
-
-                {/* JOURNEY STEPPER WIDGET */}
-                <div className={`group relative overflow-hidden backdrop-blur-md border p-6 md:p-8 rounded-[2rem] shadow-2xl animate-in slide-in-from-bottom-4 duration-700 transition-all ${theme === 'light' ? 'bg-white/60 border-med-blue/10' : 'bg-black/40 border-white/10 hover:bg-black/50'}`}>
-                    
-                    {/* Background Layers */}
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522582324369-2dfc36bd9275?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center opacity-20 group-hover:scale-110 transition-transform duration-1000 ease-out" />
-                    <div className={`absolute inset-0 bg-gradient-to-t transition-colors ${theme === 'light' ? 'from-white/40 via-transparent to-transparent' : 'from-black via-transparent to-transparent opacity-80'}`} />
-
-                    <div className="relative z-10">
-                        {/* Horizontal Progress Bar */}
-                        <div className="relative flex justify-between items-center mb-10 px-2">
-                            {/* Connecting Line */}
-                            <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-full h-0.5 -z-10 rounded-full ${theme === 'light' ? 'bg-med-blue/10' : 'bg-white/10'}`}></div>
-                            <div 
-                                className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-med-olive -z-10 transition-all duration-1000 ease-out rounded-full"
-                                style={{ width: `${(Math.max(0, activeStepIndex === -1 ? 4 : activeStepIndex) / 4) * 100}%` }}
-                            ></div>
-
-                            {steps.map((step, idx) => {
-                                const isActualActive = activeGuidance 
-                                    ? step.target === activeGuidance.targetView
-                                    : (actualCurrentStep && step.id === actualCurrentStep.id && !isAllComplete);
-                                const isSelected = displayedStepFinal.id === step.id && !showAllSetView;
-                                const isPast = step.isComplete;
-                                
-                                return (
-                                    <div 
-                                        key={step.id} 
-                                        className="flex flex-col items-center gap-2 relative group/step cursor-pointer" 
-                                        onClick={() => setPreviewStepId(step.id)}
-                                    >
-                                        <div 
-                                            className={`
-                                                w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 relative z-10
-                                                ${isPast 
-                                                    ? 'bg-med-olive border-med-olive text-white' 
-                                                    : isActualActive 
-                                                        ? 'bg-med-terracotta border-med-terracotta text-white shadow-lg shadow-med-terracotta/40' 
-                                                        : (theme === 'light' ? 'bg-white border-med-blue/30 text-med-blue/60' : 'bg-black/40 border-white/30 text-white/60')
-                                                }
-                                                ${isSelected ? 'scale-125 ring-2 ring-med-terracotta ring-offset-2 ring-offset-transparent' : 'scale-90 hover:scale-100'}
-                                            `}
-                                        >
-                                            {isPast ? <Check size={16} strokeWidth={4} /> : <step.icon size={16} />}
-                                            {isActualActive && !isPast && <div className="absolute inset-0 rounded-full border-2 border-med-terracotta animate-ping opacity-30"></div>}
-                                        </div>
-                                        <span 
-                                            className={`
-                                                absolute top-full mt-2 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-all duration-300
-                                                ${isSelected 
-                                                    ? 'text-primary opacity-100 translate-y-0' 
-                                                    : (theme === 'light' 
-                                                        ? 'text-med-blue opacity-70 translate-y-0 group-hover/step:opacity-100' 
-                                                        : 'text-white opacity-60 translate-y-0 group-hover/step:opacity-100'
-                                                      )
-                                                }
-                                            `}
-                                        >
-                                            Step {step.id}
-                                        </span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        {/* Active Step Details */}
-                        <div className={`flex flex-col md:flex-row gap-6 items-start md:items-center justify-between border-t pt-6 ${theme === 'light' ? 'border-med-blue/10' : 'border-white/10'}`}>
-                            <div className="flex-1">
-                                <h3 className="text-2xl font-serif font-bold mb-1 flex flex-wrap items-center gap-3 text-primary">
-                                    {showAllSetView ? "You're All Set!" : (!previewStepId && activeGuidance ? activeGuidance.title : displayedStepFinal.longLabel)}
-                                    {showAllSetView ? (
-                                        <span className="px-2 py-0.5 bg-med-olive/20 text-med-olive rounded text-[9px] font-sans font-bold uppercase tracking-widest border border-med-olive/20 flex items-center gap-1">
-                                            <Sparkles size={10} /> Journey Ready
-                                        </span>
-                                    ) : (
-                                        <span className={`px-2 py-0.5 rounded text-[9px] font-sans font-bold uppercase tracking-widest border ${badgeStyle}`}>
-                                            {badgeLabel}
-                                        </span>
-                                    )}
-                                </h3>
-                                <p className={`text-sm max-w-md leading-relaxed ${theme === 'light' ? 'text-gray-600' : 'text-blue-100/70'}`}>
-                                    {showAllSetView ? "Your itinerary is crafted and your spot is saved. See you in ." : (!previewStepId && activeGuidance ? activeGuidance.message : displayedStepFinal.desc)}
-                                </p>
-                            </div>
-                            <Button 
-                                onClick={(e) => { 
-                                    e.stopPropagation(); 
-                                    const target = showAllSetView ? 'logistics' : (!previewStepId && activeGuidance ? activeGuidance.targetView : displayedStepFinal.target);
-                                    onTabChange(target as HubView); 
-                                }}
-                                variant={showAllSetView || displayedStepFinal.isComplete ? "primary" : "action"}
-                                size="md"
-                                className="shrink-0 shadow-xl"
-                            >
-                                {showAllSetView ? "Planner" : getAppName(!previewStepId && activeGuidance ? activeGuidance.targetView : displayedStepFinal.target)} <ArrowRight size={14} className="ml-2"/>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+            {/* Welcome Header */}
+            <div>
+                <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-1 text-primary">
+                    Bonjour, <span className="italic text-med-terracotta">{user.name.split(' ')[0]}.</span>
+                </h1>
+                <p className={`text-base md:text-lg font-light italic ${theme === 'light' ? 'text-med-blue/80' : 'text-blue-100/80'}`}>
+                    {timeLeft ? `${timeLeft.d} days until ${config.destination.split(',')[0]}.` : "Welcome to the Celebration."}
+                </p>
             </div>
 
-            {/* 2. Quick Glance Widgets */}
-            <div className="space-y-4">
-                {/* Official Agenda Widget */}
-                <div 
-                    onClick={() => onTabChange('calendar')}
-                    className={`group relative overflow-hidden backdrop-blur-md border p-6 rounded-[2rem] shadow-xl cursor-pointer transition-all duration-500 ${theme === 'light' ? 'bg-white/60 border-med-blue/10' : 'bg-black/40 border-white/10 hover:bg-black/50'}`}
-                >
-                    {/* Background Layers */}
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1514525253440-b393452e8d26?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-20 group-hover:scale-110 transition-transform duration-1000 ease-out" />
-                    <div className={`absolute inset-0 bg-gradient-to-t transition-colors ${theme === 'light' ? 'from-white/40 via-transparent to-transparent' : 'from-black via-transparent to-transparent opacity-80'}`} />
-
-                    <div className="relative z-10">
-                        <div className={`flex items-center justify-between mb-5 border-b pb-3 ${theme === 'light' ? 'border-med-blue/10' : 'border-white/10'}`}>
-                            <div className="flex items-center gap-2 text-med-terracotta">
-                                <Calendar size={16} />
-                                <span className="text-[10px] font-bold uppercase tracking-widest">Official Agenda</span>
-                            </div>
-                            <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/40' : 'text-white/40'} group-hover:text-primary transition-colors`} />
-                        </div>
-                        
-                        <div className="flex justify-between gap-3">
-                            {officialDays.map((day) => (
-                                <div key={day.date} className={`flex-1 flex flex-col items-center rounded-2xl py-4 border transition-colors backdrop-blur-sm ${theme === 'light' ? 'bg-med-blue/5 border-med-blue/10 group-hover:border-med-blue/20' : 'bg-white/10 border-white/10 group-hover:border-white/20'}`}>
-                                    <span className={`block text-[9px] font-bold uppercase leading-none mb-1.5 ${theme === 'light' ? 'text-med-blue/60' : 'text-white/60'}`}>{day.dayName}</span>
-                                    <span className={`block text-2xl font-serif leading-none ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{day.dayNum}</span>
-                                </div>
-                            ))}
-                        </div>
+            {/* Deck Carousel — above the card grid */}
+            {items.length > 0 && (
+                <div className="w-full relative">
+                    <DeckCarousel items={items} onFocusItem={() => onTabChange('logistics' as HubView)} />
+                    <div className="text-center mt-2">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Journey Deck</span>
                     </div>
                 </div>
+            )}
 
-                {/* Destination Highlight Card */}
-                <div 
-                    onClick={() => onTabChange('guide')}
-                    className={`group backdrop-blur-md border p-6 rounded-[2rem] shadow-xl cursor-pointer transition-all duration-500 relative overflow-hidden ${theme === 'light' ? 'bg-white/60 border-med-blue/10' : 'bg-black/40 border-white/10 hover:bg-black/50'}`}
+            {/* Card Grid — 3 equal columns */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                {/* 1. Journey Stepper Card */}
+                <motion.div
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 40, delay: 0.1 }}
+                    onClick={() => {
+                        const target = showAllSetView ? 'logistics' : (!previewStepId && activeGuidance ? activeGuidance.targetView : displayedStepFinal.target);
+                        onTabChange(target as HubView);
+                    }}
+                    className={`${cardBase} group flex flex-col`}
+                    style={cardTransitionStyle}
                 >
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1587574293340-e0011c4e8ecf?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center opacity-20 group-hover:scale-110 transition-transform duration-1000 ease-out" />
-                    <div className={`absolute inset-0 bg-gradient-to-t transition-colors ${theme === 'light' ? 'from-white/40 via-transparent to-transparent' : 'from-black via-transparent to-transparent opacity-80'}`} />
-                    
-                    <div className="relative z-10">
-                        <div className={`flex items-center justify-between mb-5 border-b pb-3 ${theme === 'light' ? 'border-med-blue/10' : 'border-white/10'}`}>
-                            <div className="flex items-center gap-2 text-med-terracotta">
-                                <MapPin size={16} />
-                                <span className="text-[10px] font-bold uppercase tracking-widest">Your Destination</span>
-                            </div>
-                            <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/40' : 'text-white/40'} group-hover:text-primary transition-colors`} />
+                    {/* Card Header — Onyx chrome */}
+                    <div className={`flex items-center justify-between mb-6 border-b pb-4 ${cardDivider}`}>
+                        <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
+                            <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>Your Journey</span>
                         </div>
-                        <h3 className="font-serif text-2xl leading-tight text-primary mb-2">{config.destination.split(',')[0]}</h3>
-                        <p className={`text-xs leading-relaxed line-clamp-2 ${theme === 'light' ? 'text-gray-600' : 'text-white/70'}`}>
+                        <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/30' : 'text-white/30'} group-hover:text-med-terracotta transition-colors`} />
+                    </div>
+
+                    {/* Compact Progress Dots */}
+                    <div className="relative flex justify-between items-center mb-6 px-1">
+                        {/* Connecting Line */}
+                        <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-full h-px -z-10 rounded-full ${theme === 'light' ? 'bg-gray-200' : 'bg-white/10'}`}></div>
+                        <div 
+                            className="absolute left-0 top-1/2 -translate-y-1/2 h-px bg-med-olive -z-10 transition-all duration-1000 ease-out rounded-full"
+                            style={{ width: `${(Math.max(0, activeStepIndex === -1 ? 4 : activeStepIndex) / 4) * 100}%` }}
+                        ></div>
+
+                        {steps.map((step) => {
+                            const isActualActive = activeGuidance 
+                                ? step.target === activeGuidance.targetView
+                                : (actualCurrentStep && step.id === actualCurrentStep.id && !isAllComplete);
+                            const isSelected = displayedStepFinal.id === step.id && !showAllSetView;
+                            const isPast = step.isComplete;
+                            
+                            return (
+                                <div 
+                                    key={step.id} 
+                                    className="flex flex-col items-center relative cursor-pointer" 
+                                    onClick={(e) => { e.stopPropagation(); setPreviewStepId(step.id); }}
+                                >
+                                    <div 
+                                        className={`
+                                            w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all duration-500 relative z-10
+                                            ${isPast 
+                                                ? 'bg-med-olive border-med-olive text-white' 
+                                                : isActualActive 
+                                                    ? 'bg-med-terracotta border-med-terracotta text-white shadow-md shadow-med-terracotta/30' 
+                                                    : (theme === 'light' ? 'bg-white border-gray-200 text-gray-400' : 'bg-gray-800 border-white/20 text-white/40')
+                                            }
+                                            ${isSelected ? 'scale-125 ring-2 ring-med-terracotta ring-offset-2 ring-offset-transparent' : 'hover:scale-110'}
+                                        `}
+                                    >
+                                        {isPast ? <Check size={10} strokeWidth={4} /> : <step.icon size={10} />}
+                                        {isActualActive && !isPast && <div className="absolute inset-0 rounded-full border-2 border-med-terracotta animate-ping opacity-30"></div>}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Active Step Details — stacked vertically */}
+                    <div className="flex-1 flex flex-col">
+                        <h3 className="text-xl font-serif font-bold mb-1 text-primary flex items-center gap-2 flex-wrap">
+                            {showAllSetView ? "You're All Set!" : (!previewStepId && activeGuidance ? activeGuidance.title : displayedStepFinal.longLabel)}
+                            {showAllSetView ? (
+                                <span className="px-2 py-0.5 bg-med-olive/20 text-med-olive rounded text-[8px] font-sans font-bold uppercase tracking-widest border border-med-olive/20 inline-flex items-center gap-1">
+                                    <Sparkles size={8} /> Ready
+                                </span>
+                            ) : (
+                                <span className={`px-2 py-0.5 rounded text-[8px] font-sans font-bold uppercase tracking-widest border ${badgeStyle}`}>
+                                    {badgeLabel}
+                                </span>
+                            )}
+                        </h3>
+                        <p className={`text-xs leading-relaxed mb-5 flex-1 ${theme === 'light' ? 'text-gray-500' : 'text-blue-100/60'}`}>
+                            {showAllSetView ? "Your itinerary is crafted and your spot is saved." : (!previewStepId && activeGuidance ? activeGuidance.message : displayedStepFinal.desc)}
+                        </p>
+                        <Button 
+                            onClick={(e) => { 
+                                e.stopPropagation(); 
+                                const target = showAllSetView ? 'logistics' : (!previewStepId && activeGuidance ? activeGuidance.targetView : displayedStepFinal.target);
+                                onTabChange(target as HubView); 
+                            }}
+                            variant={showAllSetView || displayedStepFinal.isComplete ? "primary" : "action"}
+                            size="sm"
+                            fullWidth
+                        >
+                            {showAllSetView ? "Planner" : getAppName(!previewStepId && activeGuidance ? activeGuidance.targetView : displayedStepFinal.target)} <ArrowRight size={12} className="ml-1.5"/>
+                        </Button>
+                    </div>
+                </motion.div>
+
+                {/* 2. Official Agenda Card */}
+                <motion.div
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 40, delay: 0.2 }}
+                    onClick={() => onTabChange('calendar')}
+                    className={`${cardBase} group flex flex-col`}
+                    style={cardTransitionStyle}
+                >
+                    {/* Card Header — Onyx chrome */}
+                    <div className={`flex items-center justify-between mb-6 border-b pb-4 ${cardDivider}`}>
+                        <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
+                            <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>Official Agenda</span>
+                        </div>
+                        <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/30' : 'text-white/30'} group-hover:text-med-terracotta transition-colors`} />
+                    </div>
+                    
+                    {/* Day Pills */}
+                    <div className="flex justify-between gap-3 flex-1">
+                        {officialDays.map((day) => (
+                            <div key={day.date} className={`flex-1 flex flex-col items-center justify-center rounded-2xl py-5 border transition-colors ${theme === 'light' ? 'bg-med-sand/40 border-med-terracotta/10 group-hover:border-med-terracotta/20' : 'bg-white/[0.03] border-white/[0.08] group-hover:border-white/[0.15]'}`}>
+                                <span className={`block text-[9px] font-bold uppercase leading-none mb-2 ${theme === 'light' ? 'text-med-blue/50' : 'text-white/50'}`}>{day.dayName}</span>
+                                <span className={`block text-3xl font-serif leading-none ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{day.dayNum}</span>
+                            </div>
+                        ))}
+                    </div>
+                </motion.div>
+
+                {/* 3. Destination Card */}
+                <motion.div
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 40, delay: 0.3 }}
+                    onClick={() => onTabChange('guide')}
+                    className={`${cardBase} group flex flex-col`}
+                    style={cardTransitionStyle}
+                >
+                    {/* Card Header — Onyx chrome */}
+                    <div className={`flex items-center justify-between mb-6 border-b pb-4 ${cardDivider}`}>
+                        <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
+                            <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>Your Destination</span>
+                        </div>
+                        <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/30' : 'text-white/30'} group-hover:text-med-terracotta transition-colors`} />
+                    </div>
+
+                    {/* Destination Content */}
+                    <div className="flex-1 flex flex-col justify-center">
+                        <h3 className="font-serif text-3xl leading-tight text-primary mb-3">{config.destination.split(',')[0]}</h3>
+                        <p className={`text-xs leading-relaxed ${theme === 'light' ? 'text-gray-500' : 'text-white/60'}`}>
                             Discover the medieval streets, hidden courtyards, and why they call it "The Gifted One".
                         </p>
                     </div>
-                </div>
+                </motion.div>
+
             </div>
 
         </div>
