@@ -209,6 +209,16 @@ const App = () => {
     );
   }
 
+  // SCENARIO 1.5: EXPLICIT HOST LOGIN ATTEMPT
+  // Takes precedence over guest sessions so hosts can always log in
+  if (isHostRoute) {
+    return (
+      <Suspense fallback={<LoadingScreen />}>
+        <HostLoginPage />
+      </Suspense>
+    );
+  }
+
   // ── Hub launch gate: controlled via AppConfig (Firestore or defaults) ──
   const hubUnlocked = config.hubUnlocked;
 
@@ -251,14 +261,6 @@ const App = () => {
     );
   }
 
-  // SCENARIO 3.5: HOST LOGIN ROUTE
-  if (isHostRoute) {
-    return (
-      <Suspense fallback={<LoadingScreen />}>
-        <HostLoginPage />
-      </Suspense>
-    );
-  }
 
   return (
     <div className="min-h-screen font-sans selection:bg-med-terracotta/30 bg-background transition-colors duration-300 flex flex-col overflow-x-hidden">
