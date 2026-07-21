@@ -49,16 +49,12 @@ export const RSVPPrompt: React.FC<{ onRSVP?: () => void }> = ({ onRSVP }) => {
                     <X size={16} />
                 </button>
 
-                <div className="flex flex-col items-center text-center space-y-4 pt-2 relative z-10">
-                    <div className="p-3 bg-med-terracotta/10 dark:bg-white/10 rounded-2xl shadow-inner text-med-terracotta dark:text-white ring-1 ring-med-terracotta/20 dark:ring-white/20">
-                        <CalendarCheck size={26} strokeWidth={1.5} />
-                    </div>
-
-                    <div>
+                <div className="flex flex-col h-full relative z-10 p-2">
+                    <div className="text-center w-full">
                         <h3 className="font-heading font-bold text-2xl leading-tight text-med-blue dark:text-white">Got An Invite?</h3>
                     </div>
 
-                    <div className="flex flex-col w-full gap-2 pt-2">
+                    <div className="flex flex-col w-full gap-2 mt-auto pt-6">
                         <button 
                             onClick={handleRSVP}
                             className="btn-terracotta w-full py-3.5 text-xs gap-2"

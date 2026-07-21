@@ -52,22 +52,6 @@ const Logo = ({ className = 'w-16 h-16' }) => (
     </div>
 );
 
-// ─── Progress Bar ──────────────────────────────────────────────────────────────────
-const ProgressBar = ({ step, total }: { step: number; total: number }) => (
-    <div className="w-full max-w-[180px] mx-auto mb-8 flex gap-2">
-        {Array.from({ length: total }, (_, i) => (
-            <div key={i} className="flex-1 h-1 rounded-full bg-slate-200 dark:bg-gray-700 overflow-hidden">
-                <motion.div
-                    className="h-full rounded-full bg-med-terracotta"
-                    initial={{ width: 0 }}
-                    animate={{ width: i < step ? '100%' : '0%' }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30, delay: i * 0.1 }}
-                />
-            </div>
-        ))}
-    </div>
-);
-
 // ─── Flat Input ───────────────────────────────────────────────────────────────
 const FlatInput = ({
     label, icon: Icon, type = 'text', value, onChange, placeholder, error, autoFocus, disabled
@@ -80,7 +64,7 @@ const FlatInput = ({
         <label className="text-[10px] font-body font-bold uppercase tracking-[0.25em] text-med-terracotta flex items-center gap-1.5">
             <Icon size={10} /> {label}
         </label>
-        <div className="relative group">
+        <div className="relative group my-auto">
             <input
                 type={type}
                 value={value}
@@ -166,7 +150,7 @@ const Shell = ({ children, stepIndex, stepTitle = 'RSVP', onClose }: { children:
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute inset-0 overflow-y-auto px-6 py-8 md:px-10 flex flex-col items-center justify-start sm:justify-center"
+                    className="absolute inset-0 overflow-y-auto px-6 py-8 md:px-10 flex flex-col items-center justify-start"
                   >
                     {children}
                   </motion.div>
@@ -467,10 +451,8 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
     if (currentStep === 'details') {
         return (
             <Shell stepIndex={1} stepTitle="Details" onClose={onClose}>
-                <Logo className="mb-2 w-14 h-14" />
 
                 <div className="text-center mb-3 w-full">
-                    <ProgressBar step={2} total={2} />
                     <h2
                         className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-1"
                         style={{ fontSize: 'clamp(1.8rem, 6vw, 2.4rem)' }}
@@ -479,10 +461,11 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                     </h2>
                 </div>
 
-                <div className="w-full space-y-3">
+                <div className="w-full flex-1 flex flex-col">
+                    <div className="my-auto space-y-3">
                     {/* Compact confirmation when profile data exists */}
                     {hasExistingProfile && !showEditDetails ? (
-                        <div className="space-y-3">
+                        <div className="space-y-3 mt-auto">
                             <div className="p-4 rounded-[1.5rem] bg-white dark:bg-gray-800/50 border-2 border-slate-100 dark:border-gray-700">
                                 <div className="flex items-center justify-between mb-3">
                                     <p className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-med-terracotta flex items-center gap-1.5">
@@ -630,7 +613,9 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                         </AnimatePresence>
                     </div>
 
-                    <div className="pt-2 flex items-center gap-2 w-full">
+                    </div>
+
+                    <div className="mt-auto pt-2 flex items-center gap-2 w-full">
                         <PillButton variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
                             ← BACK
                         </PillButton>
@@ -653,7 +638,6 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
     if (currentStep === 'decline') {
         return (
             <Shell stepIndex={0} stepTitle="Decline" onClose={onClose}>
-                <Logo className="mb-2 w-14 h-14" />
 
                 <div className="text-center mb-3 w-full">
                     <h2
@@ -696,10 +680,8 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
     if (currentStep === 'invite') {
         return (
             <Shell stepIndex={0} stepTitle="Welcome" onClose={onClose}>
-                <Logo className="mb-2 w-14 h-14" />
 
                 <div className="text-center mb-3 w-full">
-                    <ProgressBar step={1} total={3} />
                     <h2
                         className="font-heading font-light text-med-blue dark:text-blue-100 leading-[0.9] mb-1"
                         style={{ fontSize: 'clamp(1.8rem, 6vw, 3rem)' }}
@@ -708,8 +690,8 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                     </h2>
                 </div>
 
-                <form onSubmit={handleLoginSubmit} className="w-full space-y-4">
-                    <div className="relative group">
+                <form onSubmit={handleLoginSubmit} className="w-full flex flex-col flex-1">
+                    <div className="relative group my-auto">
                         <p className="text-[10px] font-body text-slate-400 dark:text-gray-500 text-center mb-2 tracking-wide uppercase font-bold">Enter Your Invite Code</p>
                         <input 
                         type="text" 
@@ -730,7 +712,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                         </div>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-3 mt-auto">
                         <label className="flex items-start gap-3 p-3 bg-med-sand/40 dark:bg-[#1a1f2e]/40 rounded-[1rem] border border-med-blue/5 cursor-pointer">
                             <input
                             type="checkbox"
@@ -744,6 +726,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                         </label>
                     </div>
 
+                    <div className="mt-auto pt-4">
                     <PillButton 
                         type="submit"
                         disabled={isLoginLoading || !inputValue || !agreedToTerms}
@@ -752,6 +735,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                     >
                         CONTINUE
                     </PillButton>
+                    </div>
                 </form>
 
                 <AnimatePresence>
@@ -773,10 +757,8 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
     // ── Step 2: RSVP (Icon-Focused) ───────────────────────────────────────────
     return (
         <Shell stepIndex={1} stepTitle="RSVP" onClose={onClose}>
-            <Logo className="mb-2 w-14 h-14" />
 
             <div className="text-center mb-3 w-full">
-                <ProgressBar step={2} total={3} />
                 <h2
                     className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-1"
                     style={{ fontSize: 'clamp(1.8rem, 6vw, 2.4rem)' }}
@@ -786,6 +768,8 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
             </div>
 
             {/* Event Info Box */}
+            <div className="flex-1 flex flex-col w-full">
+            <div className="my-auto w-full">
             <div className="w-full text-center mb-4 px-2">
                 <p className="text-sm leading-relaxed font-body text-slate-500 dark:text-gray-400">
                     You're invited to celebrate <span className="font-semibold text-med-blue dark:text-white">Bryan's 40th</span> in <span className="font-semibold text-med-blue dark:text-white">Montpellier, France</span> on <span className="font-semibold text-med-blue dark:text-white">September 18-20</span>.
@@ -864,7 +848,9 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                 </p>
             </div>
 
-            <div className="w-full pt-4 flex items-center gap-3">
+            </div>
+            </div>
+            <div className="w-full mt-auto pt-4 flex items-center gap-3">
                 <PillButton variant="ghost" onClick={() => setCurrentStep('invite')} fullWidth={false} className="flex-[1]">
                     ← BACK
                 </PillButton>

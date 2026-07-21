@@ -423,7 +423,7 @@ const SectionCard = ({ children, className = '' }: { children: React.ReactNode; 
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className={`bg-[#1e293b]/70 backdrop-blur-xl rounded-[2.5rem] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.4)] border border-white/10 px-6 py-8 sm:px-8 sm:py-10 relative overflow-hidden ${className}`}
+        className={`bg-[#1e293b]/70 backdrop-blur-xl rounded-[2.5rem] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.4)] border border-white/10 px-6 py-8 sm:px-8 sm:py-10 relative overflow-hidden flex flex-col h-full ${className}`}
     >
         {children}
     </motion.div>
@@ -812,6 +812,7 @@ export const EventLandingPage: React.FC = () => {
                     <Eyebrow label="Your RSVP" onEdit={() => setRsvpExpanded(!rsvpExpanded)} isEditing={rsvpExpanded} editLabel="Edit RSVP" />
 
                     {/* Status display */}
+                    <div className="my-auto">
                     <div className="flex items-center gap-4 mb-5">
                         <div className={`w-14 h-14 rounded-2xl ${statusConfig.bg} border ${statusConfig.border} flex items-center justify-center shadow-inner shrink-0`}>
                             <StatusIcon size={24} className={statusConfig.color} />
@@ -842,7 +843,10 @@ export const EventLandingPage: React.FC = () => {
 
                     </div>
 
+                    </div>
+
                     {/* Change RSVP toggle */}
+                    <div className="mt-auto pt-4 w-full">
                     {!cutoff.isPast && rsvpExpanded && (
                         <>
                             <button
@@ -954,6 +958,7 @@ export const EventLandingPage: React.FC = () => {
                             </AnimatePresence>
                         </>
                     )}
+                    </div>
                     {/* ── Details & Party (visible when editing) ── */}
                     <AnimatePresence>
                         {rsvpExpanded && (
