@@ -2,6 +2,9 @@
 import { 
   GoogleAuthProvider, 
   signInWithCredential,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   User
 } from "firebase/auth";
@@ -49,6 +52,39 @@ export const authService = {
       return result.user;
     } catch (error) {
       console.error("Error during Google sign-in:", error);
+      if ((error as any).code === 'auth/popup-closed-by-user') {
+        return null;
+      }
+      throw error;
+    }
+  },
+
+  /**
+   * Signs in a host using email and password via Firebase Auth.
+   */
+  signInWithEmail: async (email: string, password: string): Promise<User> => {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    return result.user;
+  },
+
+  /**
+   * Creates a new host account using email and password via Firebase Auth.
+   */
+  signUpWithEmail: async (email: string, password: string): Promise<User> => {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    return result.user;
+  },
+
+  /**
+   * Initiates Google Sign-In via popup and returns the user object.
+   */
+  signInWithGooglePopup: async (): Promise<User | null> => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      return result.user;
+    } catch (error) {
+      console.error("Error during Google popup sign-in:", error);
       if ((error as any).code === 'auth/popup-closed-by-user') {
         return null;
       }

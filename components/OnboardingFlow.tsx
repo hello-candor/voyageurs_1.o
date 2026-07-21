@@ -6,6 +6,7 @@ import { useNotification } from '../context/NotificationContext';
 import { useAuth } from '../context/AuthContext';
 import { safeStorage } from '../utils/storage';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 import {
     User, Mail, Users, Globe, Loader2, MapPin,
     ArrowRight, Check, Phone, Plus, Trash2, Calendar,
@@ -117,19 +118,22 @@ const PillButton = ({
 };
 
 // ─── Shell (webOS Workspace + Onyx Card) ─────────────────────────────────────
-const Shell = ({ children, stepIndex, stepTitle = 'Voyageurs' }: { children: React.ReactNode; stepIndex: number; stepTitle?: string }) => (
+const Shell = ({ children, stepIndex, stepTitle = 'Voyageurs' }: { children: React.ReactNode; stepIndex: number; stepTitle?: string }) => {
+    const { theme } = useTheme();
+
+    return (
     <div className="fixed inset-0 z-[1000] overflow-y-auto transition-colors duration-500">
 
         {/* webOS Workspace Background */}
         <div className="fixed inset-0 z-0 pointer-events-none">
             {/* Light mode base */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-[#F5F2EB] to-[#F5F2EB] dark:opacity-0 transition-opacity duration-700" />
+            <div className={`absolute inset-0 bg-gradient-to-br from-white/60 via-[#F5F2EB] to-[#F5F2EB] transition-opacity duration-700 ${theme === 'light' ? 'opacity-100' : 'opacity-0'}`} />
             {/* Dark mode base */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#330046]/40 via-[#1A1A1A] to-[#1A1A1A] opacity-0 dark:opacity-100 transition-opacity duration-700" />
+            <div className={`absolute inset-0 bg-gradient-to-br from-[#330046]/40 via-[#1A1A1A] to-[#1A1A1A] transition-opacity duration-700 ${theme === 'dark' ? 'opacity-100' : 'opacity-0'}`} />
             {/* Ambient glows */}
-            <div className="absolute top-[20%] left-[30%] w-[600px] h-[600px] bg-[#508BC5] rounded-full blur-[120px] mix-blend-multiply opacity-[0.1] dark:mix-blend-screen dark:opacity-[0.15]" />
-            <div className="absolute bottom-[10%] right-[20%] w-[500px] h-[500px] bg-[#FFCDA6] rounded-full blur-[140px] mix-blend-multiply opacity-[0.2] dark:mix-blend-screen dark:opacity-[0.10]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#330046] rounded-full blur-[160px] mix-blend-screen opacity-0 dark:opacity-40 transition-opacity duration-700" />
+            <div className={`absolute top-[20%] left-[30%] w-[600px] h-[600px] bg-[#508BC5] rounded-full blur-[120px] ${theme === 'dark' ? 'mix-blend-screen opacity-[0.15]' : 'mix-blend-multiply opacity-[0.1]'}`} />
+            <div className={`absolute bottom-[10%] right-[20%] w-[500px] h-[500px] bg-[#FFCDA6] rounded-full blur-[140px] ${theme === 'dark' ? 'mix-blend-screen opacity-[0.10]' : 'mix-blend-multiply opacity-[0.2]'}`} />
+            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#330046] rounded-full blur-[160px] mix-blend-screen transition-opacity duration-700 ${theme === 'dark' ? 'opacity-40' : 'opacity-0'}`} />
         </div>
 
         <div className="relative w-full max-w-xl px-5 py-4 min-h-screen flex items-center justify-center mx-auto">
@@ -140,13 +144,19 @@ const Shell = ({ children, stepIndex, stepTitle = 'Voyageurs' }: { children: Rea
                     animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
                     exit={{ opacity: 0, scale: 0.96, y: -12, filter: 'blur(4px)' }}
                     transition={{ type: 'spring', stiffness: 400, damping: 40 }}
-                    className="w-full max-h-[90vh] overflow-hidden rounded-[var(--onyx-card-radius)] shadow-[var(--onyx-shadow-card)] relative flex flex-col justify-start bg-white/95 dark:bg-[#1a202c]/92 dark:backdrop-blur-[40px] border border-white dark:border-white/[0.08] border-t-white/50 dark:border-t-white/10"
+                    className={`w-full max-h-[90vh] overflow-hidden rounded-[32px] ring-1 relative flex flex-col justify-start shadow-2xl transition-all duration-300 ${
+                        theme === 'light'
+                            ? 'bg-white/60 backdrop-blur-3xl border-white/50 shadow-xl ring-black/5'
+                            : 'bg-[#330046]/30 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-white/20'
+                    }`}
                 >
-                    {/* Onyx Header Chrome */}
-                    <div className="h-12 shrink-0 flex items-center justify-between px-6 border-b bg-white/40 dark:bg-transparent border-white/40 dark:border-white/10 select-none">
+                    {/* Onyx Header Chrome — matches WebOSCard exactly */}
+                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${
+                        theme === 'light' ? 'bg-white/40 border-white/40' : 'bg-transparent border-white/10'
+                    }`}>
                         <div className="flex items-center gap-3">
                             <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
-                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">{stepTitle}</span>
+                            <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>{stepTitle}</span>
                         </div>
                     </div>
 
@@ -161,7 +171,8 @@ const Shell = ({ children, stepIndex, stepTitle = 'Voyageurs' }: { children: Rea
             </AnimatePresence>
         </div>
     </div>
-);
+    );
+};
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export const OnboardingFlow: React.FC = () => {

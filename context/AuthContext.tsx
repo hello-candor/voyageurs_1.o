@@ -13,6 +13,9 @@ interface AuthContextType {
   loginHost: (password: string) => Promise<boolean>;
   loginHostWithGoogle: (credential: string) => Promise<void>;
   signupHost: (email: string, password: string) => Promise<void>;
+  loginHostWithEmail: (email: string, password: string) => Promise<boolean>;
+  signupHostWithEmail: (email: string, password: string) => Promise<boolean>;
+  loginHostWithGooglePopup: () => Promise<boolean>;
   logoutHost: () => Promise<void>;
   verifyGuestCode: (code: string) => Promise<boolean>;
 }
@@ -112,6 +115,64 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  const loginHostWithEmail = useCallback(async (email: string, password: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await authService.signInWithEmail(email, password);
+      // onAuthStateChanged will fire and set isHost = true for non-anonymous users
+      return true;
+    } catch (err: any) {
+      const msg = err.code === 'auth/user-not-found' ? 'No account found with this email.' :
+                  err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential' ? 'Invalid email or password.' :
+                  err.code === 'auth/too-many-requests' ? 'Too many attempts. Please try again later.' :
+                  'Sign-in failed. Please try again.';
+      setError(msg);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const signupHostWithEmail = useCallback(async (email: string, password: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await authService.signUpWithEmail(email, password);
+      // onAuthStateChanged will fire and set isHost = true for non-anonymous users
+      return true;
+    } catch (err: any) {
+      const msg = err.code === 'auth/email-already-in-use' ? 'An account with this email already exists. Try signing in.' :
+                  err.code === 'auth/weak-password' ? 'Password must be at least 6 characters.' :
+                  err.code === 'auth/invalid-email' ? 'Please enter a valid email address.' :
+                  'Sign-up failed. Please try again.';
+      setError(msg);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const loginHostWithGooglePopup = useCallback(async (): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const user = await authService.signInWithGooglePopup();
+      if (!user) {
+        setError('Google Sign-In was cancelled.');
+        return false;
+      }
+      return true;
+    } catch (err: any) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        setError('Google Sign-In failed. Please try again.');
+      }
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   const logoutHost = useCallback(async () => {
     setIsLoading(true);
     await authService.logout();
@@ -146,9 +207,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loginHost,
     loginHostWithGoogle,
     signupHost,
+    loginHostWithEmail,
+    signupHostWithEmail,
+    loginHostWithGooglePopup,
     logoutHost,
     verifyGuestCode
-  }), [isHost, firebaseUser, isLoading, error, loginHost, loginHostWithGoogle, signupHost, logoutHost, verifyGuestCode]);
+  }), [isHost, firebaseUser, isLoading, error, loginHost, loginHostWithGoogle, signupHost, loginHostWithEmail, signupHostWithEmail, loginHostWithGooglePopup, logoutHost, verifyGuestCode]);
 
   return (
     <AuthContext.Provider value={value}>

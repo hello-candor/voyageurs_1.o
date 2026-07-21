@@ -25,6 +25,7 @@ const LoginPage = React.lazy(() => import('./components/LoginPage').then(m => ({
 const OnboardingFlow = React.lazy(() => import('./components/OnboardingFlow').then(m => ({ default: m.OnboardingFlow })));
 const EventLandingPage = React.lazy(() => import('./components/EventLandingPage').then(m => ({ default: m.EventLandingPage })));
 const JournalPage = React.lazy(() => import('./components/JournalPage').then(m => ({ default: m.JournalPage })));
+const HostLoginPage = React.lazy(() => import('./components/HostLoginPage').then(m => ({ default: m.HostLoginPage })));
 
 const LoadingScreen = () => {
   const [msgIndex, setMsgIndex] = useState(0);
@@ -115,6 +116,7 @@ const App = () => {
   const [isSettingUp, setIsSettingUp] = useState(false);
   const [isGuestPreview, setIsGuestPreview] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [isHostRoute, setIsHostRoute] = useState(false);
 
   // Determine if this is the initial host setup
   useEffect(() => {
@@ -148,6 +150,8 @@ const App = () => {
     } else if (isRSVPPath) {
       setShowLogin(true);
       window.history.replaceState({}, '', '/');
+    } else if (window.location.pathname === '/host') {
+      setIsHostRoute(true);
     }
 
     // Listen for in-app RSVP navigation
@@ -168,6 +172,11 @@ const App = () => {
 
   // SCENARIO 1: HOST LOGGED IN
   if (isHost) {
+    // Clean up /host route after successful auth
+    if (window.location.pathname === '/host') {
+      window.history.replaceState({}, '', '/');
+    }
+
     if (isSettingUp) {
       return (
         <Suspense fallback={<LoadingScreen />}>
@@ -242,6 +251,14 @@ const App = () => {
     );
   }
 
+  // SCENARIO 3.5: HOST LOGIN ROUTE
+  if (isHostRoute) {
+    return (
+      <Suspense fallback={<LoadingScreen />}>
+        <HostLoginPage />
+      </Suspense>
+    );
+  }
 
   return (
     <div className="min-h-screen font-sans selection:bg-med-terracotta/30 bg-background transition-colors duration-300 flex flex-col overflow-x-hidden">

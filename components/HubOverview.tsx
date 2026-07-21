@@ -173,15 +173,13 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
   if (!user || !displayedStepFinal) return null;
 
   // Shared card classes — Onyx webOS design system
-  const cardBase = `rounded-[var(--onyx-card-radius)] p-8 border cursor-pointer hover:-translate-y-1 hover:scale-[1.01] ${
+  const cardBase = `rounded-[32px] ring-1 overflow-hidden cursor-pointer hover:-translate-y-1 hover:scale-[1.01] shadow-2xl transition-all duration-300 ${
       theme === 'light'
-          ? 'bg-white/95 border-t border-white/50 border-x border-b border-med-terracotta/10 shadow-[var(--onyx-shadow-card)]'
-          : 'bg-[#1a202c]/92 backdrop-blur-[40px] border-t border-t-white/10 border-x border-b border-white/[0.06] shadow-[var(--onyx-shadow-card)]'
+          ? 'bg-white/60 backdrop-blur-3xl border-white/50 shadow-xl ring-black/5'
+          : 'bg-[#330046]/30 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-white/20'
   }`;
   // Springy hover transition via inline style (Tailwind can't do custom cubic-bezier easily)
   const cardTransitionStyle = { transition: 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.15), box-shadow 0.3s ease, filter 0.3s ease' };
-
-  const cardDivider = theme === 'light' ? 'border-med-terracotta/10' : 'border-white/[0.08]';
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center p-6 md:p-12 text-primary overflow-y-auto scrollbar-hide">
@@ -223,8 +221,8 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                     className={`${cardBase} group flex flex-col`}
                     style={cardTransitionStyle}
                 >
-                    {/* Card Header — Onyx chrome */}
-                    <div className={`flex items-center justify-between mb-6 border-b pb-4 ${cardDivider}`}>
+                    {/* Onyx Header Chrome — matches WebOSCard exactly */}
+                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${theme === 'light' ? 'bg-white/40 border-white/40' : 'bg-transparent border-white/10'}`}>
                         <div className="flex items-center gap-3">
                             <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
                             <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>Your Journey</span>
@@ -232,7 +230,8 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                         <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/30' : 'text-white/30'} group-hover:text-med-terracotta transition-colors`} />
                     </div>
 
-                    {/* Compact Progress Dots */}
+                    <div className="p-8 flex flex-col flex-1">
+                        {/* Compact Progress Dots */}
                     <div className="relative flex justify-between items-center mb-6 px-1">
                         {/* Connecting Line */}
                         <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-full h-px -z-10 rounded-full ${theme === 'light' ? 'bg-gray-200' : 'bg-white/10'}`}></div>
@@ -304,6 +303,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                             {showAllSetView ? "Planner" : getAppName(!previewStepId && activeGuidance ? activeGuidance.targetView : displayedStepFinal.target)} <ArrowRight size={12} className="ml-1.5"/>
                         </Button>
                     </div>
+                    </div>
                 </motion.div>
 
                 {/* 2. Official Agenda Card */}
@@ -315,8 +315,8 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                     className={`${cardBase} group flex flex-col`}
                     style={cardTransitionStyle}
                 >
-                    {/* Card Header — Onyx chrome */}
-                    <div className={`flex items-center justify-between mb-6 border-b pb-4 ${cardDivider}`}>
+                    {/* Onyx Header Chrome — matches WebOSCard exactly */}
+                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${theme === 'light' ? 'bg-white/40 border-white/40' : 'bg-transparent border-white/10'}`}>
                         <div className="flex items-center gap-3">
                             <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
                             <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>Official Agenda</span>
@@ -324,7 +324,8 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                         <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/30' : 'text-white/30'} group-hover:text-med-terracotta transition-colors`} />
                     </div>
                     
-                    {/* Day Pills */}
+                    <div className="p-8 flex flex-col flex-1">
+                        {/* Day Pills */}
                     <div className="flex justify-between gap-3 flex-1">
                         {officialDays.map((day) => (
                             <div key={day.date} className={`flex-1 flex flex-col items-center justify-center rounded-2xl py-5 border transition-colors ${theme === 'light' ? 'bg-med-sand/40 border-med-terracotta/10 group-hover:border-med-terracotta/20' : 'bg-white/[0.03] border-white/[0.08] group-hover:border-white/[0.15]'}`}>
@@ -332,6 +333,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                                 <span className={`block text-3xl font-serif leading-none ${theme === 'light' ? 'text-med-blue' : 'text-white'}`}>{day.dayNum}</span>
                             </div>
                         ))}
+                    </div>
                     </div>
                 </motion.div>
 
@@ -344,8 +346,8 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                     className={`${cardBase} group flex flex-col`}
                     style={cardTransitionStyle}
                 >
-                    {/* Card Header — Onyx chrome */}
-                    <div className={`flex items-center justify-between mb-6 border-b pb-4 ${cardDivider}`}>
+                    {/* Onyx Header Chrome — matches WebOSCard exactly */}
+                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${theme === 'light' ? 'bg-white/40 border-white/40' : 'bg-transparent border-white/10'}`}>
                         <div className="flex items-center gap-3">
                             <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
                             <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>Your Destination</span>
@@ -353,12 +355,14 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                         <ArrowRight size={14} className={`${theme === 'light' ? 'text-med-blue/30' : 'text-white/30'} group-hover:text-med-terracotta transition-colors`} />
                     </div>
 
-                    {/* Destination Content */}
+                    <div className="p-8 flex flex-col flex-1">
+                        {/* Destination Content */}
                     <div className="flex-1 flex flex-col justify-center">
                         <h3 className="font-serif text-3xl leading-tight text-primary mb-3">{config.destination.split(',')[0]}</h3>
                         <p className={`text-xs leading-relaxed ${theme === 'light' ? 'text-gray-500' : 'text-white/60'}`}>
                             Discover the medieval streets, hidden courtyards, and why they call it "The Gifted One".
                         </p>
+                    </div>
                     </div>
                 </motion.div>
 
