@@ -505,7 +505,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin }: any) => {
 
                         <div className="relative hidden lg:block">
                             <div className="absolute inset-[-4px] bg-med-terracotta rounded-full blur-md opacity-80 animate-pulse"></div>
-                            <button onClick={onShowLogin} className="relative btn-terracotta px-6 py-2.5 text-[10px] sm:px-6 sm:py-2.5 sm:text-xs">
+                            <button onClick={() => setShowOnboarding(true)} className="relative btn-terracotta px-6 py-2.5 text-[10px] sm:px-6 sm:py-2.5 sm:text-xs">
                                 RSVP Now
                             </button>
                         </div>

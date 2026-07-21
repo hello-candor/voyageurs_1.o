@@ -181,6 +181,7 @@ const App = () => {
         onHostLoginSuccess={() => {
           setShowAdmin(true);
         }}
+        onShowLogin={() => setShowAdmin(true)}
       />
       {showAdmin && (
         <div className="fixed inset-0 z-[500] bg-slate-950 animate-in fade-in duration-300">
