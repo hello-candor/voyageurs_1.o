@@ -9,21 +9,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import {
     User, Mail, Users, Globe, Loader2, MapPin,
-    ArrowRight, Check, Phone, Plus, Trash2, Calendar,
+    ArrowRight, Check, Phone, Plus, Trash2, Calendar, AlertCircle, Info,
     Plane, Map, Utensils, Camera, Music, Heart, Star,
-    Clock, Compass, PartyPopper, X, ArrowUpDown
+    Clock, Compass, PartyPopper, X, ArrowUpDown, Key, Sparkles
 } from 'lucide-react';
 import { isValidEmail, isValidName } from '../utils/validation';
+import { authService } from '../services/authService';
 import { Button } from './Button';
 import { WebOSCard } from './WebOSCard';
 
 import { onGuestRegistered } from '../services/registrationOrchestrator';
 import { DEFAULT_AGENDA_DATA } from '../data/defaults';
 
-type Step = 'welcome' | 'details' | 'attendance' | 'rsvp' | 'decline';
+type Step = 'invite' | 'welcome' | 'details' | 'attendance' | 'rsvp' | 'decline';
 type RSVPStatus = 'Confirmed' | 'Declined' | 'Pending';
 
 // Blobs removed — webOS workspace background provides atmosphere
+
+
+// Helpers for invite code formatting
+const stripCode = (v: string) => v.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+const formatCode = (raw: string) => {
+  const clean = stripCode(raw);
+  const parts = [clean.slice(0, 3), clean.slice(3, 6), clean.slice(6)].filter(Boolean);
+  return parts.join('-');
+};
 
 // ─── Logo ────────────────────────────────────────────────────────────────────
 const Logo = ({ className = 'w-16 h-16' }) => (
@@ -119,7 +129,7 @@ const PillButton = ({
 };
 
 // ─── Shell (webOS Workspace + Onyx Card) ─────────────────────────────────────
-const Shell = ({ children, stepIndex, stepTitle = 'RSVP' }: { children: React.ReactNode; stepIndex: number; stepTitle?: string }) => {
+const Shell = ({ children, stepIndex, stepTitle = 'RSVP', onClose }: { children: React.ReactNode; stepIndex: number; stepTitle?: string; onClose?: () => void }) => {
     const { toggleProfile } = useUser();
     const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -137,9 +147,9 @@ const Shell = ({ children, stepIndex, stepTitle = 'RSVP' }: { children: React.Re
               activeIndex={0}
               stackIndex={0}
               stackSize={1}
-              onClose={toggleProfile}
+              onClose={onClose || toggleProfile}
               onFocus={() => {}}
-              onMinimize={toggleProfile}
+              onMinimize={onClose || toggleProfile}
               isFullScreen={isFullScreen}
               onToggleFullScreen={() => setIsFullScreen(!isFullScreen)}
             >
@@ -164,15 +174,80 @@ const Shell = ({ children, stepIndex, stepTitle = 'RSVP' }: { children: React.Re
 };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-export const OnboardingFlow: React.FC = () => {
-    const { user, login, submitRSVP, completeOnboarding, updateTravelDetails, inviteToParty } = useUser();
+export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
+    const { user, isVerified, login, submitRSVP, completeOnboarding, updateTravelDetails, inviteToParty, loginWithCode } = useUser();
     const { updateSettings, durationDays } = useTripPlanner();
     const { addNotification } = useNotification();
     const { logoutHost } = useAuth();
 
-    const [currentStep, setCurrentStep] = useState<Step>('rsvp');
+    const [currentStep, setCurrentStep] = useState<Step>(isVerified ? 'rsvp' : 'invite');
     const [isFinishing, setIsFinishing] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    
+    // Login State
+    const [inputValue, setInputValue] = useState('');
+    const [isLoginLoading, setIsLoginLoading] = useState(false);
+    const [loginError, setLoginError] = useState('');
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [showTerms, setShowTerms] = useState(false);
+    const [showPrivacy, setShowPrivacy] = useState(false);
+    const [showConsentInfo, setShowConsentInfo] = useState(false);
+    const hasAutoSubmitted = React.useRef(false);
+
+    // Auto-fill and auto-submit from ?code= URL parameter
+    useEffect(() => {
+      if (hasAutoSubmitted.current) return;
+      const params = new URLSearchParams(window.location.search);
+      const codeParam = params.get('code');
+      if (codeParam) {
+        const code = stripCode(codeParam);
+        setInputValue(formatCode(code));
+        hasAutoSubmitted.current = true;
+        
+        const url = new URL(window.location.href);
+        url.searchParams.delete('code');
+        window.history.replaceState({}, '', url.pathname + url.search);
+
+        setTimeout(async () => {
+          setIsLoginLoading(true);
+          setLoginError('');
+          try {
+            const success = await loginWithCode(code);
+            if (success) {
+              setCurrentStep('rsvp');
+            } else {
+              setLoginError("Invalid invite code.");
+            }
+          } catch (err) {
+            setLoginError("Connection error.");
+          } finally {
+            setIsLoginLoading(false);
+          }
+        }, 1200);
+      }
+    }, [loginWithCode]);
+
+    const handleLoginSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!inputValue) return;
+      
+      setIsLoginLoading(true);
+      setLoginError('');
+      
+      try {
+          const success = await loginWithCode(inputValue.trim().toUpperCase());
+          if (success) {
+            setCurrentStep('rsvp');
+          } else {
+            setLoginError("Invalid invite code. Check your invitation.");
+          }
+      } catch (err) {
+        setLoginError("Connection error. Please try again.");
+      } finally {
+        setIsLoginLoading(false);
+      }
+    };
+
     const [rsvpStatus, setRsvpStatus] = useState<RSVPStatus>('Confirmed');
     const [selectedRSVP, setSelectedRSVP] = useState<RSVPStatus | null>(null);
     const [declineMessage, setDeclineMessage] = useState('');
@@ -386,7 +461,7 @@ export const OnboardingFlow: React.FC = () => {
     // ── Step 2: Personal Details + Party (only if attending) ──────────────────
     if (currentStep === 'details') {
         return (
-            <Shell stepIndex={1} stepTitle="Details">
+            <Shell stepIndex={1} stepTitle="Details" onClose={onClose}>
                 <Logo className="mb-2 w-14 h-14" />
 
                 <div className="text-center mb-3 w-full">
@@ -572,7 +647,7 @@ export const OnboardingFlow: React.FC = () => {
     // ── Decline Confirmation ──────────────────────────────────────────────────
     if (currentStep === 'decline') {
         return (
-            <Shell stepIndex={0} stepTitle="Decline">
+            <Shell stepIndex={0} stepTitle="Decline" onClose={onClose}>
                 <Logo className="mb-2 w-14 h-14" />
 
                 <div className="text-center mb-3 w-full">
@@ -611,13 +686,92 @@ export const OnboardingFlow: React.FC = () => {
         );
     }
 
-    // ── Step 1: RSVP (Icon-Focused) ───────────────────────────────────────────
+
+    // ── Step 1: Invite Code ──────────────────────────────────────────────────
+    if (currentStep === 'invite') {
+        return (
+            <Shell stepIndex={0} stepTitle="Welcome" onClose={onClose}>
+                <Logo className="mb-2 w-14 h-14" />
+
+                <div className="text-center mb-3 w-full">
+                    <ProgressBar step={1} total={3} />
+                    <h2
+                        className="font-heading font-light text-med-blue dark:text-blue-100 leading-[0.9] mb-1"
+                        style={{ fontSize: 'clamp(1.8rem, 6vw, 3rem)' }}
+                    >
+                        Welcome,<br /><span className="italic text-med-terracotta inline-block">Voyager.</span>
+                    </h2>
+                </div>
+
+                <form onSubmit={handleLoginSubmit} className="w-full space-y-4">
+                    <div className="relative group">
+                        <p className="text-[10px] font-body text-slate-400 dark:text-gray-500 text-center mb-2 tracking-wide uppercase font-bold">Enter Your Invite Code</p>
+                        <input 
+                        type="text" 
+                        value={inputValue}
+                        onChange={(e) => setInputValue(formatCode(e.target.value))}
+                        placeholder="XXX-XXX-XXX" 
+                        maxLength={11}
+                        className="w-full h-12 bg-slate-50/50 dark:bg-[#1a1f2e] border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta dark:focus:border-med-terracotta rounded-none px-4 text-center font-body font-bold text-med-blue dark:text-white outline-none transition-all flex items-center justify-center leading-none placeholder:text-sm placeholder:tracking-[0.5em] placeholder:font-body placeholder:opacity-30 placeholder:font-normal"
+                        style={{ 
+                            fontSize: 'clamp(1.2rem, 5vw, 2rem)',
+                            letterSpacing: '0.08em',
+                        }}
+                        disabled={isLoginLoading}
+                        autoFocus
+                        />
+                        <div className="absolute right-0 bottom-3 text-slate-300 dark:text-gray-700 opacity-0 group-focus-within:opacity-100 transition-opacity">
+                        <Key size={16} />
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        <label className="flex items-start gap-3 p-3 bg-med-sand/40 dark:bg-[#1a1f2e]/40 rounded-[1rem] border border-med-blue/5 cursor-pointer">
+                            <input
+                            type="checkbox"
+                            checked={agreedToTerms}
+                            onChange={(e) => setAgreedToTerms(e.target.checked)}
+                            className="mt-0.5 w-4 h-4 rounded border-slate-300 text-med-terracotta focus:ring-med-terracotta shrink-0 accent-[#E2923D]"
+                            />
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed font-body font-medium text-left">
+                                I agree to the Voyageurs <button type="button" onClick={() => setShowTerms(true)} className="underline hover:text-med-blue decoration-med-terracotta/30">Terms</button> and <button type="button" onClick={() => setShowPrivacy(true)} className="underline hover:text-med-blue decoration-med-terracotta/30">Privacy</button>.
+                            </p>
+                        </label>
+                    </div>
+
+                    <PillButton 
+                        type="submit"
+                        disabled={isLoginLoading || !inputValue || !agreedToTerms}
+                        isLoading={isLoginLoading}
+                        fullWidth
+                    >
+                        CONTINUE
+                    </PillButton>
+                </form>
+
+                <AnimatePresence>
+                {loginError && (
+                    <motion.p 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="mt-4 w-full text-red-500 text-[10px] font-bold uppercase tracking-widest px-4 py-2 bg-red-50 dark:bg-red-500/10 rounded-xl text-center font-body border border-red-100 dark:border-red-500/20"
+                    >
+                        {loginError}
+                    </motion.p>
+                )}
+                </AnimatePresence>
+            </Shell>
+        );
+    }
+
+    // ── Step 2: RSVP (Icon-Focused) ───────────────────────────────────────────
     return (
-        <Shell stepIndex={0} stepTitle="RSVP">
+        <Shell stepIndex={1} stepTitle="RSVP" onClose={onClose}>
             <Logo className="mb-2 w-14 h-14" />
 
             <div className="text-center mb-3 w-full">
-                <ProgressBar step={1} total={2} />
+                <ProgressBar step={2} total={3} />
                 <h2
                     className="font-heading font-light text-med-blue dark:text-blue-100 leading-tight mb-1"
                     style={{ fontSize: 'clamp(1.8rem, 6vw, 2.4rem)' }}
@@ -627,11 +781,13 @@ export const OnboardingFlow: React.FC = () => {
             </div>
 
             {/* Event Info Box */}
-            <div className="w-full py-4 px-5 rounded-[1.5rem] bg-med-sand/40 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 text-center mb-3">
-                <p className="text-[11px] leading-relaxed font-body text-slate-500 dark:text-gray-400">
-                    You're invited to celebrate <span className="font-semibold text-med-blue dark:text-white">Bryan's 40th</span> in Montpellier <span className="font-semibold text-med-blue dark:text-white">September 18-20</span>. Please RSVP before <span className="font-semibold text-med-terracotta">August 15</span> so we can finalize headcounts. We hope to see you in France!
+            <div className="w-full text-center mb-4 px-2">
+                <p className="text-sm leading-relaxed font-body text-slate-500 dark:text-gray-400">
+                    You're invited to celebrate <span className="font-semibold text-med-blue dark:text-white">Bryan's 40th</span> in <span className="font-semibold text-med-blue dark:text-white">Montpellier, France</span> on <span className="font-semibold text-med-blue dark:text-white">September 18-20</span>.
                 </p>
             </div>
+
+
 
             {/* RSVP Options — Icon-Focused */}
             <div className="w-full grid grid-cols-3 gap-2 mb-3">
@@ -696,8 +852,15 @@ export const OnboardingFlow: React.FC = () => {
                 </motion.button>
             </div>
 
+            {/* Combined Info Box */}
+            <div className="w-full mt-2 mb-2 py-2.5 px-5 rounded-[1.5rem] bg-med-blue/5 dark:bg-med-blue/10 border border-med-blue/10 dark:border-med-blue/20 text-center">
+                <p className="text-[10px] leading-relaxed font-body text-slate-500 dark:text-gray-400">
+                    Please RSVP by <span className="font-bold text-med-terracotta">August 15th</span> to help us finalize the guest list. Don't worry if your plans shift—you can always update your response before the deadline. If you're not sure, choose <span className="font-bold">Maybe</span> to explore the weekend itinerary, find accommodations, manage your party, and discover the destination before you decide.
+                </p>
+            </div>
+
             <div className="w-full pt-4 flex items-center gap-3">
-                <PillButton variant="ghost" onClick={logoutHost} fullWidth={false} className="flex-[1]">
+                <PillButton variant="ghost" onClick={() => setCurrentStep('invite')} fullWidth={false} className="flex-[1]">
                     ← BACK
                 </PillButton>
                 <AnimatePresence>

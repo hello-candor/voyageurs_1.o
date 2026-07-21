@@ -21,7 +21,7 @@ const TermsModal = React.lazy(() => import('./components/TermsModal').then(m => 
 const HostAdmin = React.lazy(() => import('./components/HostAdmin').then(m => ({ default: m.HostAdmin })));
 const MarketingPage = React.lazy(() => import('./components/MarketingPage').then(m => ({ default: m.MarketingPage })));
 const HostOnboarding = React.lazy(() => import('./components/HostOnboarding').then(m => ({ default: m.HostOnboarding })));
-const LoginPage = React.lazy(() => import('./components/LoginPage').then(m => ({ default: m.LoginPage })));
+
 const OnboardingFlow = React.lazy(() => import('./components/OnboardingFlow').then(m => ({ default: m.OnboardingFlow })));
 const EventLandingPage = React.lazy(() => import('./components/EventLandingPage').then(m => ({ default: m.EventLandingPage })));
 const JournalPage = React.lazy(() => import('./components/JournalPage').then(m => ({ default: m.JournalPage })));
@@ -256,7 +256,7 @@ const App = () => {
   if (isVerified && !user?.hasCompletedOnboarding) {
     return (
       <Suspense fallback={<LoadingScreen />}>
-        <OnboardingFlow />
+        <OnboardingFlow onClose={() => setShowLogin(false)} />
       </Suspense>
     );
   }
@@ -278,11 +278,13 @@ const App = () => {
         )}
       </main>
 
-      {/* LoginPage renders as a fixed overlay on top of everything */}
+      {/* OnboardingFlow triggers on login */}
       <AnimatePresence mode="wait">
         {showLogin && (
           <Suspense fallback={null}>
-            <LoginPage onClose={() => setShowLogin(false)} />
+            <div className="fixed inset-0 z-[1000] bg-background">
+                <OnboardingFlow onClose={() => setShowLogin(false)} />
+            </div>
           </Suspense>
         )}
       </AnimatePresence>
