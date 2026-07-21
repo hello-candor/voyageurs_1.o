@@ -25,11 +25,7 @@ const HostAdmin = React.lazy(() => import('./components/HostAdmin').then(module 
 const MarketingPage = React.lazy(() => import('./components/MarketingPage').then(module => ({ default: module.MarketingPage }))) as any;
 const HostOnboarding = React.lazy(() => import('./components/HostOnboarding').then(module => ({ default: module.HostOnboarding }))) as any;
 
-const LoadingScreen = () => (
-  <div className="fixed inset-0 bg-med-blue flex items-center justify-center z-[9999]">
-    <Loader2 className="w-10 h-10 text-white animate-spin" />
-  </div>
-);
+const LoadingScreen = () => null;
 
 const App = () => {
   const { user, isVerified, isProfileOpen, toggleProfile } = useUser();

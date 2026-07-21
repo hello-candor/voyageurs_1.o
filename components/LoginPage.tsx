@@ -133,10 +133,10 @@ export const LoginPage = ({ onClose }: { onClose?: () => void }) => {
         .font-body { font-family: 'Montserrat', sans-serif; }
       `}</style>
 
-      <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[650px] max-h-[85vh]'}`}>
+      <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[90dvh] max-h-[900px]'}`}>
         <WebOSCard
           id="rsvp-login-card"
-          title="Voyageurs"
+          title="RSVP"
           isActive={true}
           isOverview={false}
           index={0}

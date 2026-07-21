@@ -103,10 +103,10 @@ export const HostLoginPage = () => {
       `}</style>
 
       {/* The main app card container */}
-      <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[650px] max-h-[85vh]'}`}>
+      <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[90dvh] max-h-[900px]'}`}>
         <WebOSCard
           id="host-login-card"
-          title="Command Center"
+          title="Login"
           isActive={true}
           isOverview={false}
           index={0}

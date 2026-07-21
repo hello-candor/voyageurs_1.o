@@ -119,7 +119,7 @@ const PillButton = ({
 };
 
 // ─── Shell (webOS Workspace + Onyx Card) ─────────────────────────────────────
-const Shell = ({ children, stepIndex, stepTitle = 'Voyageurs' }: { children: React.ReactNode; stepIndex: number; stepTitle?: string }) => {
+const Shell = ({ children, stepIndex, stepTitle = 'RSVP' }: { children: React.ReactNode; stepIndex: number; stepTitle?: string }) => {
     const { toggleProfile } = useUser();
     const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -127,7 +127,7 @@ const Shell = ({ children, stepIndex, stepTitle = 'Voyageurs' }: { children: Rea
         <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center overflow-hidden"
           style={{ background: 'radial-gradient(circle at center, #1b263b 0%, #0d1b2a 100%)' }}
         >
-          <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[650px] max-h-[85vh]'}`}>
+          <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[90dvh] max-h-[900px]'}`}>
             <WebOSCard
               id="onboarding-card"
               title={stepTitle}
