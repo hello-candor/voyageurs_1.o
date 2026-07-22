@@ -813,9 +813,9 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
             </div>
             </div>
             <div className="w-full mt-auto pt-4 flex items-center gap-3">
-                <PillButton variant="ghost" onClick={() => setCurrentStep('invite')} fullWidth={false} className="flex-[1]">
+                <Button variant="ghost" onClick={() => setCurrentStep('invite')} fullWidth={false} className="flex-[1]">
                     ← BACK
-                </PillButton>
+                </Button>
                 <AnimatePresence>
                     {selectedRSVP && (
                         <motion.div
@@ -824,7 +824,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                             exit={{ opacity: 0, scale: 0.9 }}
                             className="flex-[2]"
                         >
-                            <PillButton
+                            <Button
                                 onClick={() => {
                                     if (selectedRSVP === 'Confirmed') {
                                         setCurrentStep('details');
@@ -838,7 +838,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                                 isLoading={isFinishing}
                             >
                                 CONTINUE &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                            </PillButton>
+                            </Button>
                         </motion.div>
                     )}
                 </AnimatePresence>

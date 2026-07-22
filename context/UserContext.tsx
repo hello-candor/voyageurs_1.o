@@ -488,7 +488,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // 1. Try Firestore direct lookup first (works even before local guests have synced)
         try {
             const { authService } = await import('../services/authService');
-            const guestData = await authService.verifyGuestCode(clean);
+            const guestData = await authService.verifyGuestCode(normalizedCode);
             if (guestData) {
                 login(
                     guestData.name,
@@ -510,7 +510,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         // 2. Fallback: check local allGuests array
-        const guest = allGuests.find(g => g.invitationCode === clean);
+        const guest = allGuests.find(g => g.invitationCode === normalizedCode);
         if (guest) {
             login(guest.name, guest.email, guest.guestsCount, guest.status, guest.dietary, guest.note, guest.social, guest.privacy, undefined, normalizedCode);
             setVerified(true);

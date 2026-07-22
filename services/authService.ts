@@ -109,9 +109,13 @@ export const authService = {
    * Document IDs match invitation codes, so no query needed.
    * Waits for auth to be ready (anonymous sign-in) before querying.
    * Returns the guest data if found, null otherwise.
-   */
   verifyGuestCode: async (code: string): Promise<any | null> => {
     const clean = code.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    const upperCode = [
+      clean.slice(0, 3),
+      clean.slice(3, 6),
+      clean.slice(6)
+    ].filter(Boolean).join('-');
     
     try {
       const { doc, getDoc } = await import('firebase/firestore');
@@ -129,7 +133,7 @@ export const authService = {
       }
 
       // Attempt the lookup
-      const guestDocRef = doc(db, "events", EVENT_ID, "guests", clean);
+      const guestDocRef = doc(db, "events", EVENT_ID, "guests", upperCode);
       let guestSnap = await getDoc(guestDocRef);
       
       if (guestSnap.exists()) {
