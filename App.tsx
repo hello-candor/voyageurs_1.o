@@ -164,6 +164,13 @@ const App = () => {
     };
   }, []);
 
+  // Ensure OnboardingFlow stays open if the guest is verified but hasn't completed it
+  useEffect(() => {
+    if (isVerified && !user?.hasCompletedOnboarding && !showLogin) {
+      setShowLogin(true);
+    }
+  }, [isVerified, user?.hasCompletedOnboarding, showLogin]);
+
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   if (authLoading || userLoading) {
@@ -250,17 +257,7 @@ const App = () => {
   }
 
   // SCENARIO 3: PUBLIC/MARKETING VIEW OR GUEST ONBOARDING
-  const showGuestOnboarding = isVerified || (user && user.status !== 'Declined');
-
-  // Guest verified but hasn't finished onboarding yet — launch the flow
-  if (isVerified && !user?.hasCompletedOnboarding) {
-    return (
-      <Suspense fallback={<LoadingScreen />}>
-        <OnboardingFlow onClose={() => setShowLogin(false)} />
-      </Suspense>
-    );
-  }
-
+  const showGuestOnboarding = isVerified && user?.hasCompletedOnboarding && user.status !== 'Declined';
 
   return (
     <div className="min-h-screen font-sans selection:bg-med-terracotta/30 bg-background transition-colors duration-300 flex flex-col overflow-x-hidden">

@@ -112,11 +112,6 @@ export const authService = {
    */
   verifyGuestCode: async (code: string): Promise<any | null> => {
     const clean = code.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-    const upperCode = [
-      clean.slice(0, 3),
-      clean.slice(3, 6),
-      clean.slice(6)
-    ].filter(Boolean).join('-');
     
     try {
       const { doc, getDoc } = await import('firebase/firestore');
@@ -134,7 +129,7 @@ export const authService = {
       }
 
       // Attempt the lookup
-      const guestDocRef = doc(db, "events", EVENT_ID, "guests", upperCode);
+      const guestDocRef = doc(db, "events", EVENT_ID, "guests", clean);
       let guestSnap = await getDoc(guestDocRef);
       
       if (guestSnap.exists()) {

@@ -90,7 +90,7 @@ const Shell = ({ children, stepIndex, stepTitle = 'RSVP', onClose }: { children:
     return (
         <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center overflow-hidden bg-med-sand dark:bg-slate-900 transition-colors duration-500">
           <MarketingHeader />
-          <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[90dvh] max-h-[900px] mt-12'}`}>
+          <div className={`relative transition-all duration-300 ${isFullScreen ? 'w-full h-full' : 'w-[90%] max-w-sm h-[calc(100dvh-120px)] max-h-[900px] mt-24 mb-6'}`}>
             <WebOSCard
               id="onboarding-card"
               title={stepTitle}
@@ -676,7 +676,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                         </div>
                     </div>
 
-                    <div className="space-y-3 mt-auto">
+                    <div className="mt-auto flex flex-col gap-3">
                         <label className="flex items-start gap-3 p-3 bg-med-sand/40 dark:bg-[#1a1f2e]/40 rounded-2xl border border-med-blue/5 cursor-pointer">
                             <input
                             type="checkbox"
@@ -688,17 +688,15 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                                 I agree to the Voyageurs <button type="button" onClick={() => setShowTerms(true)} className="underline hover:text-med-blue decoration-med-terracotta/30">Terms</button> and <button type="button" onClick={() => setShowPrivacy(true)} className="underline hover:text-med-blue decoration-med-terracotta/30">Privacy</button>.
                             </p>
                         </label>
-                    </div>
 
-                    <div className="mt-auto pt-4">
-                    <Button 
-                        type="submit"
-                        disabled={isLoginLoading || !inputValue || !agreedToTerms}
-                        isLoading={isLoginLoading}
-                        fullWidth
-                    >
-                        CONTINUE
-                    </Button>
+                        <Button 
+                            type="submit"
+                            disabled={isLoginLoading || !inputValue || !agreedToTerms}
+                            isLoading={isLoginLoading}
+                            fullWidth
+                        >
+                            CONTINUE
+                        </Button>
                     </div>
                 </form>
 
