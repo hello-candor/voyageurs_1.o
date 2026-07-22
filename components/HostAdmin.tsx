@@ -21,7 +21,7 @@ import {
     Film, Link, Terminal, Fingerprint, Camera, Layers, ArrowLeft, Instagram, Twitter, Facebook, DollarSign, Plane,
     MoreHorizontal, Eye, EyeOff, ArrowUp, ArrowDown, Columns, Hash, Code, Shield, Table as TableIcon, AlertTriangle,
     GlassWater, Wine, Zap, Scroll, GraduationCap, Gem, Waves, ThermometerSun, Umbrella, ShoppingBag, Music, Rainbow,
-    Heart, Landmark, MessageCircle, ZoomIn, ZoomOut, Maximize
+    Heart, Landmark, MessageCircle, ZoomIn, ZoomOut, Maximize, RefreshCw
 } from 'lucide-react';
 import { Button } from './Button';
 import { HostDock, AdminApp } from './HostDock';
@@ -36,6 +36,7 @@ import { TheCelebration } from './TheCelebration';
 import { Gallery } from './Gallery';
 import { AgendaView } from './AgendaView';
 import { PublicLogistics } from './PublicLogistics';
+import { UnifiedHeader } from './UnifiedHeader';
 
 
 interface HostAdminProps {

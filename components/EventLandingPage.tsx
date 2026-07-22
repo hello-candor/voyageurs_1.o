@@ -13,7 +13,7 @@ import {
     Wifi, CreditCard, Heart, Star, Utensils, StickyNote,
     CalendarDays, PlaneTakeoff, Train, Car, Wine, Sun, GlassWater,
     Info, Shirt, ListChecks, MapPinned, Clock3, AlertCircle, Pencil, Wallet,
-    Palette, Music, Eye, Building2, ChevronLeft, ChevronRight, PartyPopper, Moon, Sun, Martini, RefreshCw
+    Palette, Music, Eye, Building2, ChevronLeft, Moon, Martini, RefreshCw
 } from 'lucide-react';
 import { MarketingHeader } from './MarketingHeader';
 import { MarketingFooter } from './MarketingFooter';
@@ -1414,7 +1414,9 @@ export const EventLandingPage: React.FC = () => {
                                                                     <span className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-med-terracotta">What's Included</span>
                                                                 </div>
                                                                 <div className="grid grid-cols-1 gap-1">
-                                                                    {d.included.map((item, idx) => (
+                                                                    {d.included.map((item, idx) => {
+                                                                        if (!item) return null;
+                                                                        return (
                                                                         <div key={idx} className="flex items-center gap-2">
                                                                             <div className="w-3.5 h-3.5 rounded-full bg-med-olive/20 dark:bg-med-olive/20 flex items-center justify-center shrink-0">
                                                                                 <Check size={8} className="text-med-olive" strokeWidth={3} />
@@ -1427,7 +1429,8 @@ export const EventLandingPage: React.FC = () => {
                                                                                 <span className="text-[11px] font-body text-slate-600 dark:text-gray-300">{typeof item === 'string' ? item : item.text}</span>
                                                                             )}
                                                                         </div>
-                                                                    ))}
+                                                                    );
+                                                                    })}
                                                                 </div>
                                                             </div>
                                                         </div>

@@ -12,6 +12,7 @@ import { notificationService } from './services/notificationService';
 import { OSContainer } from './components/OSContainer';
 import { Button } from './components/Button';
 import { MobileNav } from './components/MobileNav';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import './styles/global.css';
 
 // Lazy load heavy components
@@ -105,7 +106,7 @@ const LoadingScreen = () => {
 };
 
 const App = () => {
-  const { user, isVerified, isProfileOpen, toggleProfile, loading: userLoading } = useUser();
+  const { user, isVerified, isProfileOpen, toggleProfile } = useUser();
   const { isHost, isLoading: authLoading } = useAuth();
   const { config } = useAppConfig();
 
@@ -173,7 +174,7 @@ const App = () => {
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  if (authLoading || userLoading) {
+  if (authLoading) {
     return <LoadingScreen />;
   }
 
@@ -186,31 +187,39 @@ const App = () => {
 
     if (isSettingUp) {
       return (
-        <Suspense fallback={<LoadingScreen />}>
-          <HostOnboarding onComplete={() => { setIsSettingUp(false); safeStorage.setItem('trip_initialized', 'true'); }} />
-        </Suspense>
+        <ErrorBoundary compact name="Host Setup">
+          <Suspense fallback={<LoadingScreen />}>
+            <HostOnboarding onComplete={() => { setIsSettingUp(false); safeStorage.setItem('trip_initialized', 'true'); }} />
+          </Suspense>
+        </ErrorBoundary>
       );
     }
 
     if (isGuestPreview) {
       return (
         <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden relative transition-colors duration-300">
-          <Suspense fallback={<LoadingScreen />}>
-            <OSContainer initialMode={'guest'} />
-          </Suspense>
+          <ErrorBoundary compact name="Guest Hub">
+            <Suspense fallback={<LoadingScreen />}>
+              <OSContainer initialMode={'guest'} />
+            </Suspense>
+          </ErrorBoundary>
           <InstallPrompt />
-          <Suspense fallback={null}>
-            <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
-          </Suspense>
+          <ErrorBoundary compact name="Travel Hub">
+            <Suspense fallback={null}>
+              <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
+            </Suspense>
+          </ErrorBoundary>
         </div>
       );
     }
 
     return (
       <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden transition-colors duration-300">
-        <Suspense fallback={<LoadingScreen />}>
-          <HostAdmin isOpen={true} onSwitchToGuest={() => setIsGuestPreview(true)} />
-        </Suspense>
+        <ErrorBoundary compact name="Host Admin">
+          <Suspense fallback={<LoadingScreen />}>
+            <HostAdmin isOpen={true} onSwitchToGuest={() => setIsGuestPreview(true)} />
+          </Suspense>
+        </ErrorBoundary>
         <InstallPrompt />
       </div>
     );
@@ -220,9 +229,11 @@ const App = () => {
   // Takes precedence over guest sessions so hosts can always log in
   if (isHostRoute) {
     return (
-      <Suspense fallback={<LoadingScreen />}>
-        <HostLoginPage />
-      </Suspense>
+      <ErrorBoundary compact name="Host Login">
+        <Suspense fallback={<LoadingScreen />}>
+          <HostLoginPage />
+        </Suspense>
+      </ErrorBoundary>
     );
   }
 
@@ -235,23 +246,29 @@ const App = () => {
     // can manage their RSVP, edit profile, and preview the hub.
     if (!hubUnlocked || user.status === 'Declined') {
       return (
-        <Suspense fallback={<LoadingScreen />}>
-          <EventLandingPage />
-          <InstallPrompt />
-        </Suspense>
+        <ErrorBoundary compact name="Event Dashboard">
+          <Suspense fallback={<LoadingScreen />}>
+            <EventLandingPage />
+            <InstallPrompt />
+          </Suspense>
+        </ErrorBoundary>
       );
     }
 
     // Hub is live — full guest app experience
     return (
       <div className="min-h-[100dvh] bg-background selection:bg-med-terracotta/30 overflow-hidden transition-colors duration-300">
-        <Suspense fallback={<LoadingScreen />}>
-          <OSContainer initialMode={'guest'} />
-        </Suspense>
+        <ErrorBoundary compact name="Guest Hub">
+          <Suspense fallback={<LoadingScreen />}>
+            <OSContainer initialMode={'guest'} />
+          </Suspense>
+        </ErrorBoundary>
         <InstallPrompt />
-        <Suspense fallback={null}>
-          <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
-        </Suspense>
+        <ErrorBoundary compact name="Travel Hub">
+          <Suspense fallback={null}>
+            <TravelHub isOpen={isProfileOpen} onClose={toggleProfile} />
+          </Suspense>
+        </ErrorBoundary>
       </div>
     );
   }
@@ -264,25 +281,31 @@ const App = () => {
       <main id="main-content" className="flex-1 w-full">
         {showGuestOnboarding ? (
           // Guest Hub is triggered for onboarding or profile view
-          <Suspense fallback={<LoadingScreen />}>
-            <TravelHub isOpen={true} onClose={toggleProfile} />
-          </Suspense>
+          <ErrorBoundary compact name="Travel Hub">
+            <Suspense fallback={<LoadingScreen />}>
+              <TravelHub isOpen={true} onClose={toggleProfile} />
+            </Suspense>
+          </ErrorBoundary>
         ) : (
           // Standard public marketing page
-          <Suspense fallback={<LoadingScreen />}>
-            <MarketingPage onShowLogin={() => setIsHostRoute(true)} onRSVP={() => setShowLogin(true)} />
-          </Suspense>
+          <ErrorBoundary compact name="Marketing">
+            <Suspense fallback={<LoadingScreen />}>
+              <MarketingPage onShowLogin={() => setIsHostRoute(true)} onRSVP={() => setShowLogin(true)} />
+            </Suspense>
+          </ErrorBoundary>
         )}
       </main>
 
       {/* OnboardingFlow triggers on login */}
       <AnimatePresence mode="wait">
         {showLogin && (
-          <Suspense fallback={null}>
-            <div className="fixed inset-0 z-[1000] bg-background">
-                <OnboardingFlow onClose={() => setShowLogin(false)} />
-            </div>
-          </Suspense>
+          <ErrorBoundary compact name="Onboarding">
+            <Suspense fallback={null}>
+              <div className="fixed inset-0 z-[1000] bg-background">
+                  <OnboardingFlow onClose={() => setShowLogin(false)} />
+              </div>
+            </Suspense>
+          </ErrorBoundary>
         )}
       </AnimatePresence>
 

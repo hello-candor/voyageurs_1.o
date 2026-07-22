@@ -16,7 +16,7 @@ import { NotificationCenter } from './NotificationCenter';
 import { WelcomeTour } from './WelcomeTour';
 import { useNotification } from '../context/NotificationContext';
 import { UnifiedHeader } from './UnifiedHeader';
-import { X, Search, Map, Bell, GripHorizontal, Sun, Moon, UserCircle, LogOut, ChevronLeft, ChevronRight, HelpCircle, Lock } from 'lucide-react';
+import { X, Search, Map, Bell, GripHorizontal, Sun, Moon, UserCircle, LogOut, ChevronLeft, ChevronRight, HelpCircle, Lock, RefreshCw } from 'lucide-react';
 import { PlanningTab } from './TripPlanner';
 import { useGuidance } from '../hooks/useGuidance';
 

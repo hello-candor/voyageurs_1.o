@@ -10,6 +10,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ChatProvider } from './context/ChatContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { AppConfigProvider } from './context/AppConfigContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 const rootElement = document.getElementById('root');
@@ -20,21 +21,23 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <AppConfigProvider>
-      <ThemeProvider>
-        <NotificationProvider>
-          <AuthProvider>
-            <UserProvider>
-              <TripPlannerProvider>
-                <ChatProvider>
-                  <App />
-                </ChatProvider>
-              </TripPlannerProvider>
-            </UserProvider>
-          </AuthProvider>
-        </NotificationProvider>
-      </ThemeProvider>
-    </AppConfigProvider>
+    <ErrorBoundary name="Voyageurs">
+      <AppConfigProvider>
+        <ThemeProvider>
+          <NotificationProvider>
+            <AuthProvider>
+              <UserProvider>
+                <TripPlannerProvider>
+                  <ChatProvider>
+                    <App />
+                  </ChatProvider>
+                </TripPlannerProvider>
+              </UserProvider>
+            </AuthProvider>
+          </NotificationProvider>
+        </ThemeProvider>
+      </AppConfigProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );
 
