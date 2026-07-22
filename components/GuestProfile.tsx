@@ -164,7 +164,8 @@ export const GuestProfile: React.FC = () => {
                   shareSocial: formData.shareSocial,
                   sharePhone: formData.sharePhone,
                   shareInterests: formData.shareInterests,
-                  publicRegistry: formData.publicRegistry
+                  publicRegistry: formData.publicRegistry,
+                  smsConsent: formData.notifySMS ?? true
               }
           });
 

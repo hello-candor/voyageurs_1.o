@@ -783,6 +783,7 @@ export const HostAdmin: React.FC<HostAdminProps> = ({ onSwitchToGuest, isOpen, o
                                     stackIndex={cardIdx}
                                     stackSize={stack.cards.length}
                                     onClose={() => closeCard(stack.id, card.id)}
+                                    onMinimize={() => setIsOverviewMode(true)}
                                     onFocus={() => {
                                         setIsOverviewMode(false);
                                         setWebOS(prev => ({ ...prev, activeStackId: stack.id }));

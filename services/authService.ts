@@ -6,10 +6,11 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  signInAnonymously,
   User
 } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 
 // Host passcodes for admin access
 const HOST_PASSCODES = ['BRYAN', 'BAXTER', 'QUINCY', '_ADMIN'];
@@ -119,9 +120,6 @@ export const authService = {
     ].filter(Boolean).join('-');
     
     try {
-      const { doc, getDoc } = await import('firebase/firestore');
-      const { signInAnonymously } = await import('firebase/auth');
-
       // Ensure we have an authenticated user before querying
       // (Firestore rules require auth != null)
       if (!auth.currentUser) {

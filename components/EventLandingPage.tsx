@@ -938,7 +938,7 @@ export const EventLandingPage: React.FC = () => {
                                                             <button
                                                                 onClick={async () => {
                                                                     if (declineNote.trim()) {
-                                                                        await updateProfile({ declineNote: declineNote.trim() });
+                                                                        await updateProfile({ note: declineNote.trim() });
                                                                     }
                                                                     setShowDeclineNote(false);
                                                                     handleRSVPChange('Declined');
@@ -1421,12 +1421,12 @@ export const EventLandingPage: React.FC = () => {
                                                                             <div className="w-3.5 h-3.5 rounded-full bg-med-olive/20 dark:bg-med-olive/20 flex items-center justify-center shrink-0">
                                                                                 <Check size={8} className="text-med-olive" strokeWidth={3} />
                                                                             </div>
-                                                                            {typeof item === 'object' && item.link ? (
+                                                                            {item && typeof item === 'object' && item.link ? (
                                                                                 <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-[11px] font-body text-med-terracotta hover:underline inline-flex items-center gap-1">
                                                                                     {item.text} <ExternalLink size={8} />
                                                                                 </a>
                                                                             ) : (
-                                                                                <span className="text-[11px] font-body text-slate-600 dark:text-gray-300">{typeof item === 'string' ? item : item.text}</span>
+                                                                                <span className="text-[11px] font-body text-slate-600 dark:text-gray-300">{typeof item === 'string' ? item : item?.text ?? ''}</span>
                                                                             )}
                                                                         </div>
                                                                     );
