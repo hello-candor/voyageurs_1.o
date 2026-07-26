@@ -94,7 +94,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
     const [isNotificationCenterOpen, setIsNotificationCenterOpen] = useState(false);
 
     // App Specific Contexts
-    const { user, isVerified, isProfileOpen, toggleProfile, logout } = useUser();
+    const { user, isVerified, isProfileOpen, toggleProfile, logout, resetRSVP } = useUser();
     const { isHost } = useAuth();
     const { items, focusedItem } = useTripPlanner();
     const { config } = useAppConfig();
@@ -387,7 +387,7 @@ export const HubLayout: React.FC<HubLayoutProps> = ({ onSwitchToHost }) => {
                     { label: 'Help & FAQ', icon: HelpCircle, onClick: () => launchApp('faq') },
                     { label: theme === 'dark' ? 'Light Mode' : 'Dark Mode', icon: theme === 'dark' ? Sun : Moon, onClick: toggleTheme },
                     ...(user?.isAdmin ? [{ label: 'Host Admin', icon: Lock, onClick: onSwitchToHost }] : []),
-                    { label: 'Reset RSVP', icon: RefreshCw, onClick: () => { sessionStorage.clear(); localStorage.clear(); window.location.reload(); } },
+                    { label: 'Reset RSVP', icon: RefreshCw, onClick: () => resetRSVP() },
                     { label: 'Sign Out', icon: LogOut, onClick: logout, danger: true }
                 ]}
                 menuHeader={

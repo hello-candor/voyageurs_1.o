@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, RefreshCw, User } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-
+import { useUser } from '../context/UserContext';
 export interface AppMenuItem {
     label: string;
     icon: React.ElementType;
@@ -18,6 +18,7 @@ export const MarketingHeader: React.FC<MarketingHeaderProps> = ({
     appMenuItems = []
 }) => {
     const { theme, toggleTheme } = useTheme();
+    const { resetRSVP } = useUser();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,7 @@ export const MarketingHeader: React.FC<MarketingHeaderProps> = ({
         {
             label: 'Reset RSVP',
             icon: RefreshCw,
-            onClick: () => { sessionStorage.clear(); localStorage.clear(); window.location.reload(); }
+            onClick: () => resetRSVP()
         }
     ];
 

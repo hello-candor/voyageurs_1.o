@@ -16,6 +16,18 @@ export interface PartyMember {
     isPrimary?: boolean;
 }
 
+export interface OriginalInvite {
+    status?: 'Confirmed' | 'Pending' | 'Declined';
+    partyMembers?: PartyMember[];
+    travelDetails?: UserProfile['travelDetails'];
+    eventConfirmations?: Record<string, boolean>;
+}
+
+export const cleanPartyName = (name: string): string => {
+    if (!name) return name;
+    return name.replace(/\s*&\s*Guest/ig, '').trim();
+};
+
 export interface TravelOption {
     id: string;
     type: 'flight' | 'train';
@@ -61,6 +73,7 @@ export interface UserProfile {
     phone?: string;
     isAdmin?: boolean;
     invitationCode?: string;
+    originalInvite?: OriginalInvite;
 }
 
 export interface Guest {
@@ -81,6 +94,7 @@ export interface Guest {
     privacy: PrivacySettings;
     interests?: string[];
     travelDetails?: UserProfile['travelDetails'];
+    originalInvite?: OriginalInvite;
 }
 
 const DEFAULT_PRIVACY: PrivacySettings = {
@@ -147,6 +161,7 @@ interface UserContextType {
     toggleProfile: (mode?: 'login' | 'rsvp') => void;
     setAuthMode: (mode: 'login' | 'rsvp') => void;
     submitRSVP: (data: Partial<Guest & UserProfile>) => void;
+    resetRSVP: () => void;
     completeOnboarding: () => void;
     updateTravelDetails: (details: UserProfile['travelDetails']) => void;
     updateProfile: (data: Partial<UserProfile>) => void;
@@ -257,7 +272,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         if (myGuestDoc) {
                             setUser(prev => prev ? {
                                 ...prev,
-                                name: myGuestDoc.name,
+                                name: cleanPartyName(myGuestDoc.name),
                                 status: myGuestDoc.status,
                                 guestsCount: myGuestDoc.guestsCount,
                                 dietary: myGuestDoc.dietary,
@@ -266,7 +281,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                                 social: myGuestDoc.social,
                                 privacy: myGuestDoc.privacy,
                                 interests: myGuestDoc.interests,
-                                travelDetails: myGuestDoc.travelDetails
+                                travelDetails: myGuestDoc.travelDetails,
+                                originalInvite: myGuestDoc.originalInvite || prev.originalInvite
                             } : null);
                         }
                     }
@@ -353,8 +369,45 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const finalCode = invitationCode || '';
 
+        const cleanName = cleanPartyName(name);
+
+        const allowedGuests = Math.min(guestsCount || 1, 6);
+        let defaultPartyMembers: PartyMember[] = [];
+        
+        if (cleanName.includes(' & ')) {
+            const parts = cleanName.split(' & ');
+            defaultPartyMembers.push({ id: 'primary', name: parts[0].trim(), email: normalizedEmail, avatar, status: 'Member', isPrimary: true });
+            defaultPartyMembers.push({ id: 'guest-1', name: parts[1].trim(), email: '', avatar: '', status: 'Pending', isPrimary: false });
+            
+            for (let i = 2; i < allowedGuests; i++) {
+                defaultPartyMembers.push({
+                    id: `guest-${i}`,
+                    name: `Plus One ${i-1}`,
+                    email: '',
+                    avatar: '',
+                    status: 'Pending',
+                    isPrimary: false
+                });
+            }
+        } else {
+            defaultPartyMembers.push({ id: 'primary', name: cleanName, email: normalizedEmail, avatar, status: 'Member', isPrimary: true });
+            
+            for (let i = 1; i < allowedGuests; i++) {
+                defaultPartyMembers.push({
+                    id: `guest-${i}`,
+                    name: allowedGuests === 2 ? 'Plus One' : `Plus One ${i}`,
+                    email: '',
+                    avatar: '',
+                    status: 'Pending',
+                    isPrimary: false
+                });
+            }
+        }
+
+        const initialPartyMembers = existingGuest?.originalInvite?.partyMembers || defaultPartyMembers;
+
         const newUser: UserProfile = {
-            name,
+            name: cleanName,
             email: normalizedEmail,
             guestsCount,
             isConfirmed: status !== 'Pending',
@@ -370,14 +423,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             phone: phone || '',
             isAdmin,
             invitationCode: finalCode,
-            partyMembers: [{
-                id: 'primary',
-                name,
-                email: normalizedEmail,
-                avatar,
-                status: 'Member',
-                isPrimary: true
-            }],
+            partyMembers: initialPartyMembers,
+            originalInvite: existingGuest?.originalInvite || {
+                status: status,
+                partyMembers: initialPartyMembers
+            }
         };
 
         setUser(newUser);
@@ -394,7 +444,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", docId);
                 const guestData: Partial<Guest> = {
                     id: docId,
-                    name,
+                    name: cleanName,
                     email: normalizedEmail,
                     status,
                     guestsCount,
@@ -404,6 +454,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     social: social || {},
                     privacy: privacy || DEFAULT_PRIVACY,
                     invitationCode: finalCode,
+                    originalInvite: existingGuest?.originalInvite || {
+                        status: status,
+                        partyMembers: initialPartyMembers
+                    }
                 };
                 await setDoc(guestDocRef, guestData, { merge: true });
             } catch (e: any) {
@@ -539,28 +593,58 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const submitRSVP = useCallback(async (data: Partial<Guest & UserProfile>) => {
         if (!user) return;
 
+        const cleanedData = { ...data };
+        if (cleanedData.name) {
+            cleanedData.name = cleanPartyName(cleanedData.name);
+        }
+
         const updatedUser = {
             ...user,
-            ...data,
-            isConfirmed: data.status === 'Confirmed' || user.isConfirmed
+            ...cleanedData,
+            isConfirmed: cleanedData.status === 'Confirmed' || user.isConfirmed
         } as UserProfile;
 
         const docId = user.invitationCode || user.email;
         setUser(updatedUser);
-        setAllGuests(prev => prev.map(g => g.id === docId ? { ...g, ...data } : g));
+        setAllGuests(prev => prev.map(g => g.id === docId ? { ...g, ...cleanedData } : g));
 
         if (isCloudEnabled && auth.currentUser) {
             try {
                 const docId = user.invitationCode || user.email;
                 if (docId) {
                     const guestDocRef = doc(db, "events", CURRENT_EVENT_ID, "guests", docId);
-                    await updateDoc(guestDocRef, data);
+                    await updateDoc(guestDocRef, cleanedData);
                 }
             } catch (e: any) {
                 if (e.code === 'permission-denied') setIsCloudEnabled(false);
             }
         }
     }, [user, isCloudEnabled]);
+
+    const resetRSVP = useCallback(async () => {
+        if (!user) return;
+        const original = user.originalInvite || {};
+        const defaultParty = [{
+            id: 'primary',
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar || '',
+            status: 'Member' as const,
+            isPrimary: true
+        }];
+
+        const resetData = {
+            status: original.status || 'Pending',
+            isConfirmed: original.status === 'Confirmed',
+            partyMembers: original.partyMembers || defaultParty,
+            travelDetails: null,
+            eventConfirmations: original.eventConfirmations || null,
+        };
+        
+        await submitRSVP(resetData as any);
+        logout();
+        window.location.reload();
+    }, [user, submitRSVP, logout]);
 
     const completeOnboarding = useCallback(() => {
         if (user) {
@@ -748,6 +832,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         toggleProfile,
         setAuthMode,
         submitRSVP,
+        resetRSVP,
         completeOnboarding,
         updateTravelDetails,
         updateProfile,
@@ -767,7 +852,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         shareGalleryPhoto
     }), [
         user, isVerified, isProfileOpen, authMode, hasRSVPd, allGuests, sharedExpenses, coordinatedGroups, galleryPosts,
-        setVerified, login, loginWithGoogle, loginWithCode, logout, toggleProfile, setAuthMode, submitRSVP,
+        setVerified, login, loginWithGoogle, loginWithCode, logout, toggleProfile, setAuthMode, submitRSVP, resetRSVP,
         completeOnboarding, updateTravelDetails, updateProfile, updateOfficialItinerary,
         inviteToParty, removeFromParty, syncPartyTravel, updateGuestStatus, updateAnyGuest,
         addGuest, bulkAddGuests, deleteGuest, updateUserInterests, addSharedExpense,

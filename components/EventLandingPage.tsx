@@ -424,7 +424,7 @@ const SectionCard = ({ children, className = '' }: { children: React.ReactNode; 
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className={`bg-[#1e293b]/70 backdrop-blur-xl rounded-[32px] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.4)] border border-white/10 px-6 py-8 sm:px-8 sm:py-10 relative overflow-hidden flex flex-col h-full ${className}`}
+        className={`bg-[#1e293b]/70 backdrop-blur-xl rounded-[32px] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.4)] border border-white/10 px-6 py-8 sm:px-8 sm:py-10 relative overflow-visible flex flex-col h-auto ${className}`}
     >
         {children}
     </motion.div>
@@ -433,7 +433,7 @@ const SectionCard = ({ children, className = '' }: { children: React.ReactNode; 
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export const EventLandingPage: React.FC = () => {
-    const { user, submitRSVP, updateProfile, inviteToParty, removeFromParty, logout } = useUser();
+    const { user, submitRSVP, updateProfile, inviteToParty, removeFromParty, logout, resetRSVP } = useUser();
     const { addNotification } = useNotification();
 
     const cutoff = useCountdown(RSVP_CUTOFF);
@@ -724,7 +724,7 @@ export const EventLandingPage: React.FC = () => {
             {/* ────── Sticky Header ────── */}
             <MarketingHeader 
                 appMenuItems={[
-                    { label: 'Reset RSVP', icon: RefreshCw, onClick: () => { sessionStorage.clear(); localStorage.clear(); window.location.reload(); } },
+                    { label: 'Reset RSVP', icon: RefreshCw, onClick: () => resetRSVP() },
                     { label: 'Sign Out', icon: LogOut, onClick: logout, danger: true }
                 ]}
             />
@@ -748,24 +748,6 @@ export const EventLandingPage: React.FC = () => {
                         <span className="italic text-med-terracotta dark:text-[#C25E3E]">{displayPrimary?.split(' ')[0] || 'Voyager'}.</span>
                     </h1>
 
-                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mx-auto px-4">
-                        <div className="bg-white/60 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 rounded-2xl p-4 flex flex-col gap-2 items-center justify-center text-center shadow-sm backdrop-blur-sm">
-                            <Calendar size={20} className="text-med-terracotta" />
-                            <p className="text-xs md:text-sm font-body font-medium text-slate-600 dark:text-gray-300">
-                                RSVP Before <br />
-                                <span className="font-heading italic font-normal text-med-blue dark:text-white block text-2xl md:text-2xl lg:text-3xl whitespace-nowrap mt-1">August 15th</span>
-                            </p>
-                        </div>
-                        
-                        <div className="bg-white/60 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 rounded-2xl p-4 flex flex-col gap-2 items-center justify-center text-center shadow-sm backdrop-blur-sm">
-                            <CalendarDays size={20} className="text-med-terracotta" />
-                            <p className="text-xs md:text-sm font-body font-medium text-slate-600 dark:text-gray-300">
-                                Events Kickoff <br />
-                                <span className="font-heading italic font-normal text-med-blue dark:text-white block text-2xl md:text-2xl lg:text-3xl whitespace-nowrap mt-1">September 18th</span>
-                            </p>
-                        </div>
-                    </div>
-
                     {/* Dashboard Tiles */}
                     <div className="flex flex-col gap-4 mt-8 w-full max-w-lg mx-auto">
                         <div className="flex items-center gap-3">
@@ -779,10 +761,10 @@ export const EventLandingPage: React.FC = () => {
                             <div className="flex-1 min-w-0">
                                 <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white mb-2">Manage Your RSVP & Party</h3>
                                 <div className="flex items-center gap-2 flex-wrap mt-1">
-                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusConfig.color} ${statusConfig.bg} ${statusConfig.border}`}>
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-med-terracotta/20 bg-med-terracotta/10 text-med-terracotta">
                                         {statusConfig.label}
                                     </span>
-                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-200 bg-slate-50 text-slate-500 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400">
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-med-terracotta/20 bg-med-terracotta/10 text-med-terracotta">
                                         Party of {parsedCouple.isCouple ? 2 + nonPrimaryMembers.length : 1 + nonPrimaryMembers.length}
                                     </span>
                                 </div>
@@ -802,11 +784,11 @@ export const EventLandingPage: React.FC = () => {
                             <div className="flex-1 min-w-0">
                                 <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white mb-2">Manage Events Attendance</h3>
                                 <div className="flex items-center gap-2 flex-wrap mt-1">
-                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-200 bg-slate-50 text-slate-500 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400">
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-med-terracotta/20 bg-med-terracotta/10 text-med-terracotta">
                                         Attending {attendingCount} of {selectableEvents.length}
                                     </span>
                                     {totalEventCost > 0 && (
-                                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-med-olive/20 bg-med-olive/10 text-med-olive">
+                                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-med-terracotta/20 bg-med-terracotta/10 text-med-terracotta">
                                             ${totalEventCost}
                                         </span>
                                     )}
@@ -827,11 +809,15 @@ export const EventLandingPage: React.FC = () => {
                             <div className="flex-1 min-w-0">
                                 <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white mb-2">Share Your Arrival & Accommodation</h3>
                                 <div className="flex items-center gap-2 flex-wrap mt-1">
-                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-200 bg-slate-50 text-slate-500 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400">
-                                        9/15 - 9/22
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-med-terracotta/20 bg-med-terracotta/10 text-med-terracotta">
+                                        {user?.travelDetails?.arrivalDate && user?.travelDetails?.departureDate 
+                                            ? `${new Date(user.travelDetails.arrivalDate).toLocaleDateString('en-US', {timeZone: 'UTC', month: 'numeric', day: 'numeric'})} - ${new Date(user.travelDetails.departureDate).toLocaleDateString('en-US', {timeZone: 'UTC', month: 'numeric', day: 'numeric'})}` 
+                                            : 'Dates Pending'}
                                     </span>
-                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-200 bg-slate-50 text-slate-500 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400">
-                                        Place de la Comédie
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-med-terracotta/20 bg-med-terracotta/10 text-med-terracotta max-w-[150px] truncate">
+                                        {user?.travelDetails?.accommodation 
+                                            ? user.travelDetails.accommodation.replace('Other: ', '') 
+                                            : 'Location Pending'}
                                     </span>
                                 </div>
                             </div>
@@ -1247,14 +1233,16 @@ export const EventLandingPage: React.FC = () => {
                                                 </div>
                                             </motion.div>
                                         ) : (
-                                            <motion.button
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                onClick={() => setAddingMember(true)}
-                                                className="w-full mt-3 h-12 rounded-2xl border-2 border-dashed border-slate-200 dark:border-gray-700 hover:border-med-terracotta/40 flex items-center justify-center gap-2 text-[11px] font-body font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-gray-500 hover:text-med-terracotta transition-all"
-                                            >
-                                                <Plus size={13} /> Add Guest to Party
-                                            </motion.button>
+                                            (user?.partyMembers || []).length < 6 && (
+                                                <motion.button
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    onClick={() => setAddingMember(true)}
+                                                    className="w-full mt-3 h-12 rounded-2xl border-2 border-dashed border-slate-200 dark:border-gray-700 hover:border-med-terracotta/40 flex items-center justify-center gap-2 text-[11px] font-body font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-gray-500 hover:text-med-terracotta transition-all"
+                                                >
+                                                    <Plus size={13} /> Add Guest to Party
+                                                </motion.button>
+                                            )
                                         )}
                                     </AnimatePresence>
                                 </div>
@@ -1561,8 +1549,6 @@ export const EventLandingPage: React.FC = () => {
                                 type="date"
                                 value={editArrivalDate}
                                 onChange={e => setEditArrivalDate(e.target.value)}
-                                min="2026-09-15"
-                                max="2026-09-20"
                                 className="w-full bg-transparent border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta px-1 py-2.5 text-base font-body font-medium text-med-blue dark:text-white outline-none transition-all"
                             />
                         </div>
@@ -1574,8 +1560,6 @@ export const EventLandingPage: React.FC = () => {
                                 type="date"
                                 value={editDepartureDate}
                                 onChange={e => setEditDepartureDate(e.target.value)}
-                                min="2026-09-17"
-                                max="2026-09-25"
                                 className="w-full bg-transparent border-b-2 border-slate-100 dark:border-gray-800 focus:border-med-terracotta px-1 py-2.5 text-base font-body font-medium text-med-blue dark:text-white outline-none transition-all"
                             />
                         </div>
@@ -1668,8 +1652,6 @@ export const EventLandingPage: React.FC = () => {
                                             type="date"
                                             value={editArrivalDate}
                                             onChange={e => setEditArrivalDate(e.target.value)}
-                                            min="2026-09-15"
-                                            max="2026-09-20"
                                             className="w-full bg-white dark:bg-gray-800 border-2 border-slate-100 dark:border-gray-700 rounded-xl focus:border-med-terracotta px-3 py-2.5 text-sm font-body font-medium text-med-blue dark:text-white outline-none transition-all"
                                         />
                                     </div>
@@ -1681,8 +1663,6 @@ export const EventLandingPage: React.FC = () => {
                                             type="date"
                                             value={editDepartureDate}
                                             onChange={e => setEditDepartureDate(e.target.value)}
-                                            min="2026-09-17"
-                                            max="2026-09-25"
                                             className="w-full bg-white dark:bg-gray-800 border-2 border-slate-100 dark:border-gray-700 rounded-xl focus:border-med-terracotta px-3 py-2.5 text-sm font-body font-medium text-med-blue dark:text-white outline-none transition-all"
                                         />
                                     </div>
