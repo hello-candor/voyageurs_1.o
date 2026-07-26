@@ -18,6 +18,7 @@ interface AuthContextType {
   loginHostWithGooglePopup: () => Promise<boolean>;
   logoutHost: () => Promise<void>;
   verifyGuestCode: (code: string) => Promise<boolean>;
+  resetPassword: (email: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -209,6 +210,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  const resetPassword = useCallback(async (email: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const { sendPasswordResetEmail } = await import('firebase/auth');
+      await sendPasswordResetEmail(auth, email);
+      return true;
+    } catch (err: any) {
+      setError(err.message || 'Failed to send reset email.');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   const value = useMemo(() => ({
     isHost,
     firebaseUser,
@@ -221,8 +237,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signupHostWithEmail,
     loginHostWithGooglePopup,
     logoutHost,
-    verifyGuestCode
-  }), [isHost, firebaseUser, isLoading, error, loginHost, loginHostWithGoogle, signupHost, loginHostWithEmail, signupHostWithEmail, loginHostWithGooglePopup, logoutHost, verifyGuestCode]);
+    verifyGuestCode,
+    resetPassword
+  }), [isHost, firebaseUser, isLoading, error, loginHost, loginHostWithGoogle, signupHost, loginHostWithEmail, signupHostWithEmail, loginHostWithGooglePopup, logoutHost, verifyGuestCode, resetPassword]);
 
   return (
     <AuthContext.Provider value={value}>

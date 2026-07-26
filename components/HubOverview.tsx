@@ -173,10 +173,10 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
   if (!user || !displayedStepFinal) return null;
 
   // Shared card classes — Onyx webOS design system
-  const cardBase = `rounded-[32px] ring-1 overflow-hidden cursor-pointer hover:-translate-y-1 hover:scale-[1.01] shadow-2xl transition-all duration-300 ${
+  const cardBase = `rounded-[32px] ring-1 overflow-hidden cursor-pointer hover:-translate-y-1 hover:scale-[1.01] transition-all duration-300 ${
       theme === 'light'
-          ? 'bg-white/60 backdrop-blur-3xl border-white/50 shadow-xl ring-black/5'
-          : 'bg-[#330046]/30 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-white/20'
+          ? 'bg-white/60 backdrop-blur-xl border-white/40 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] ring-black/5'
+          : 'bg-[#1e293b]/70 backdrop-blur-xl border border-white/10 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.4)] ring-white/10'
   }`;
   // Springy hover transition via inline style (Tailwind can't do custom cubic-bezier easily)
   const cardTransitionStyle = { transition: 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.15), box-shadow 0.3s ease, filter 0.3s ease' };
@@ -222,7 +222,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                     style={cardTransitionStyle}
                 >
                     {/* Onyx Header Chrome — matches WebOSCard exactly */}
-                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${theme === 'light' ? 'bg-white/40 border-white/40' : 'bg-transparent border-white/10'}`}>
+                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${theme === 'light' ? 'bg-white/40 border-black/5' : 'bg-[#1e293b]/40 border-white/10'}`}>
                         <div className="flex items-center gap-3">
                             <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
                             <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>Your Journey</span>
@@ -316,7 +316,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                     style={cardTransitionStyle}
                 >
                     {/* Onyx Header Chrome — matches WebOSCard exactly */}
-                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${theme === 'light' ? 'bg-white/40 border-white/40' : 'bg-transparent border-white/10'}`}>
+                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${theme === 'light' ? 'bg-white/40 border-black/5' : 'bg-[#1e293b]/40 border-white/10'}`}>
                         <div className="flex items-center gap-3">
                             <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
                             <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>Official Agenda</span>
@@ -347,7 +347,7 @@ export const HubOverview: React.FC<HubOverviewProps> = ({
                     style={cardTransitionStyle}
                 >
                     {/* Onyx Header Chrome — matches WebOSCard exactly */}
-                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${theme === 'light' ? 'bg-white/40 border-white/40' : 'bg-transparent border-white/10'}`}>
+                    <div className={`h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none ${theme === 'light' ? 'bg-white/40 border-black/5' : 'bg-[#1e293b]/40 border-white/10'}`}>
                         <div className="flex items-center gap-3">
                             <div className="w-2 h-2 rounded-full bg-med-terracotta shadow-[0_0_8px_#D67252]"></div>
                             <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>Your Destination</span>

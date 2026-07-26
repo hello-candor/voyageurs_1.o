@@ -147,19 +147,19 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
       `}
     >
         <div className={`
-            w-full h-full flex flex-col overflow-hidden shadow-2xl transition-all duration-300 relative
+            w-full h-full flex flex-col overflow-hidden transition-all duration-300 relative
             ${theme === 'light' 
-              ? 'bg-white/75 backdrop-blur-3xl border border-white/60 shadow-xl text-gray-900' 
-              : 'dark bg-[#1a202c]/80 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white/90'
+              ? 'bg-white/60 backdrop-blur-xl border border-white/40 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] text-gray-900' 
+              : 'dark bg-[#1e293b]/70 backdrop-blur-xl border border-white/10 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.4)] text-white/90'
             }
             ${isOverview 
-              ? `rounded-[32px] ring-1 ${theme === 'light' ? 'ring-black/5 shadow-[inset_0_0_20px_rgba(0,0,0,0.02)]' : 'ring-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]'}` 
+              ? `rounded-[32px] ring-1 ${theme === 'light' ? 'ring-black/5' : 'ring-white/10'}` 
               : isFullScreen ? 'rounded-none' : `rounded-none md:rounded-[24px] ring-1 ${theme === 'light' ? 'ring-black/5' : 'ring-white/10'}`}
         `}>
             {/* Header Bar */}
             <div className={`
                 h-14 shrink-0 flex items-center justify-between px-6 backdrop-blur-md border-b relative z-20 select-none
-                ${theme === 'light' ? 'bg-white/40 border-black/5' : 'bg-transparent border-white/10'}
+                ${theme === 'light' ? 'bg-white/40 border-black/5' : 'bg-[#1e293b]/40 border-white/10'}
                 ${isOverview ? 'pointer-events-none' : ''}
             `}>
                 <div className="flex items-center gap-3">

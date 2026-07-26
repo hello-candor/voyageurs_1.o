@@ -37,6 +37,7 @@ import { Gallery } from './Gallery';
 import { AgendaView } from './AgendaView';
 import { PublicLogistics } from './PublicLogistics';
 import { UnifiedHeader } from './UnifiedHeader';
+import { EmailCampaigns } from './EmailCampaigns';
 
 
 interface HostAdminProps {
@@ -497,7 +498,7 @@ const DashboardApp = ({ allGuests, onLaunch, config }: any) => {
 // GuestsApp is imported from './GuestsApp'
 
 const CommsApp = () => {
-    return <div className="p-6">Communications Component Placeholder</div>;
+    return <EmailCampaigns />;
 };
 
 const SetupApp = ({ config, updateConfig, toggleModule, toggleAI }: any) => {

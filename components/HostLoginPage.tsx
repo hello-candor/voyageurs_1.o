@@ -31,6 +31,7 @@ export const HostLoginPage = () => {
   const {
     loginHost,
     loginHostWithEmail,
+    resetPassword,
     error: authError,
     isLoading: authLoading,
   } = useAuth();
@@ -41,6 +42,7 @@ export const HostLoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [showPasscodeSection, setShowPasscodeSection] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
@@ -66,6 +68,21 @@ export const HostLoginPage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError('Please enter your email address first.');
+      return;
+    }
+    setIsLoading(true);
+    setError('');
+    setSuccessMsg('');
+    const success = await resetPassword(email.trim());
+    if (success) {
+      setSuccessMsg('Password reset email sent. Please check your inbox.');
+    }
+    setIsLoading(false);
   };
 
   const handlePasscode = async (e: React.FormEvent) => {
@@ -185,6 +202,17 @@ export const HostLoginPage = () => {
                     'Sign In'
                   )}
                 </button>
+                
+                <div className="flex justify-center mt-2">
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    disabled={busy}
+                    className="text-[10px] text-white/50 hover:text-white/80 transition-colors uppercase tracking-widest font-body"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
               </form>
 
 
@@ -234,7 +262,7 @@ export const HostLoginPage = () => {
                 </AnimatePresence>
               </div>
 
-              {/* ── Error ── */}
+              {/* ── Messages ── */}
               <AnimatePresence>
                 {error && (
                   <motion.div
@@ -245,6 +273,18 @@ export const HostLoginPage = () => {
                   >
                     <p className="text-red-400 text-[11px] font-medium text-center font-body">
                       {error}
+                    </p>
+                  </motion.div>
+                )}
+                {successMsg && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    className="mt-6 px-4 py-3 bg-green-500/10 border border-green-500/20 rounded-xl"
+                  >
+                    <p className="text-green-400 text-[11px] font-medium text-center font-body">
+                      {successMsg}
                     </p>
                   </motion.div>
                 )}
