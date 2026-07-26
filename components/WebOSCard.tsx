@@ -196,7 +196,7 @@ export const WebOSCard: React.FC<WebOSCardProps> = ({
 
             {/* Content Mask */}
             <div className={`flex-1 relative overflow-hidden ${isOverview ? 'pointer-events-none' : ''}`}>
-                <div className="w-full h-full overflow-y-auto scrollbar-hide">
+                <div className="w-full h-full overflow-y-auto overflow-x-hidden scrollbar-hide">
                     {children}
                 </div>
                 {/* Click guard in overview mode */}

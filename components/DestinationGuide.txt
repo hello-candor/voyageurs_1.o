@@ -1,0 +1,174 @@
+{/* ── Destination Popup Modal ── */}
+            <AnimatePresence>
+                {showDestinationPopup && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6"
+                        onClick={() => setShowDestinationPopup(false)}
+                    >
+                        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            onClick={e => e.stopPropagation()}
+                            className="relative bg-white dark:bg-gray-900 rounded-3xl w-full max-w-2xl max-h-[90vh] shadow-2xl border border-slate-100 dark:border-gray-800 flex flex-col overflow-hidden"
+                        >
+                            {/* Header */}
+                            <div className="flex-shrink-0 flex items-center justify-between p-6 border-b border-slate-100 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl z-10">
+                                <h2 className="font-heading text-2xl md:text-3xl font-bold text-med-blue dark:text-white">Your Destination</h2>
+                                <button
+                                    onClick={() => setShowDestinationPopup(false)}
+                                    className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors"
+                                >
+                                    <X size={20} className="text-slate-400" />
+                                </button>
+                            </div>
+
+                            {/* Tabs */}
+                            <div className="flex-shrink-0 flex overflow-x-auto hide-scrollbar border-b border-slate-100 dark:border-gray-800 bg-white dark:bg-gray-900 z-10 px-2">
+                                {['Getting There', 'Where to Stay', 'Where to Eat', 'Explore'].map((tab) => (
+                                    <button
+                                        key={tab}
+                                        onClick={() => setActiveDestinationTab(tab as any)}
+                                        className={`whitespace-nowrap px-4 py-3 text-sm font-body font-bold transition-all border-b-2 ${
+                                            activeDestinationTab === tab
+                                                ? 'border-med-terracotta text-med-terracotta'
+                                                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-slate-50 dark:hover:bg-gray-800/50'
+                                        }`}
+                                    >
+                                        {tab}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Scrollable Content Area */}
+                            <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50/50 dark:bg-gray-900/50 custom-scrollbar">
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={activeDestinationTab}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        {activeDestinationTab === 'Getting There' && (
+                                            <div className="space-y-4">
+                                                <SectionCard>
+                                                                    <Eyebrow label="Getting There" rightContent={
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                if (!helpRequested) {
+                                                                                    setShowHelpModal(true);
+                                                                                    setHelpRequested(true);
+                                                                                }
+                                                                            }}
+                                                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-body font-bold uppercase tracking-wider transition-all ${
+                                                                                helpRequested
+                                                                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800 cursor-default'
+                                                                                    : 'bg-med-terracotta/10 text-med-terracotta hover:bg-med-terracotta/20 active:scale-95 cursor-pointer'
+                                                                            }`}
+                                                                        >
+                                                                            {helpRequested ? 'Help Requested' : 'Request Help'}
+                                                                            {helpRequested ? <Check size={10} /> : <HelpCircle size={10} />}
+                                                                        </button>
+                                                                    } />
+
+                                                                    <div className="space-y-3">
+
+                                                                        {[
+                                                                            {
+                                                                                id: 'mpl',
+                                                                                icon: MapPin,
+                                                                                title: 'Direct to Montpellier (MPL)',
+                                                                                badge: 'Fastest & Easiest',
+                                                                                preview: 'Fly directly into Montpellier (MPL) for the quickest and easiest arrival.',
+                                                                                detail: <>The airport is well-connected to major European hubs like London, Amsterdam, Paris, and Madrid, making layovers a breeze no matter where you are flying from. Once you land, you are incredibly close to the action, grab an Uber or taxi right outside the terminal—you'll be at your hotel or Airbnb in the city center in just <span className="font-semibold text-med-blue dark:text-white">15 minutes</span>.</>,
+                                                                                links: [
+                                                                                    { href: 'https://www.google.com/travel/flights?q=Flights+to+Montpellier', icon: Plane, label: 'Search Flights' },
+                                                                                ],
+                                                                            },
+                                                                            {
+                                                                                id: 'cdg',
+                                                                                icon: PlaneTakeoff,
+                                                                                title: 'Via Paris (CDG)',
+                                                                                badge: 'Seamless Air-to-Rail Transfer',
+                                                                                preview: 'Fly into Paris and effortlessly transfer from your plane to the train in the same terminal. Watch the French countryside change from rolling green hills to sun soaked Mediterranean beaches on the 3.5 hour ride.',
+                                                                                detail: <>For the smoothest trip, book a direct TGV or OUIGO train from the airport station (Aéroport Charles de Gaulle 2 TGV) to Montpellier St-Roch or Montpellier Sud de France. The ride takes about <span className="font-semibold text-med-blue dark:text-white">3.5 to 4 hours</span>. IMPORTANT: Ensure your route is direct from the airport station to avoid a stressful transfer from the airport to central Paris.</>,
+                                                                                links: [
+                                                                                    { href: 'https://www.google.com/travel/flights?q=Flights+to+Paris', icon: Plane, label: 'Search Flights' },
+                                                                                    { href: 'https://www.thetrainline.com/', icon: Train, label: 'Find Train' },
+                                                                                ],
+                                                                            },
+                                                                            {
+                                                                                id: 'bcn',
+                                                                                icon: Train,
+                                                                                title: 'Via Barcelona (BCN)',
+                                                                                badge: 'Scenic Coastal Ride',
+                                                                                preview: 'Transit via Barcelona and marvel at the Mediterranean as your train winds between mountainous cliffs and sandy beaches for the short 3 hour journey.',
+                                                                                detail: <>Catch the local Renfe (Rodalies) commuter train from Terminal 2 directly to Barcelona Sants Station. From there, board your high-speed train to Montpellier Saint-Roch or Montpellier Sud de France. The highly scenic ride along the Mediterranean coast takes about <span className="font-semibold text-med-blue dark:text-white">3 hours</span>. NOTE: If your flight lands at Terminal 1, don't sweat it—just hop on the free airport shuttle bus over to Terminal 2 to catch your commuter train.</>,
+                                                                                links: [
+                                                                                    { href: 'https://www.google.com/travel/flights?q=Flights+to+Barcelona', icon: Plane, label: 'Search Flights' },
+                                                                                    { href: 'https://www.thetrainline.com/', icon: Train, label: 'Find Train' },
+                                                                                ],
+                                                                            },
+                                                                        ].map((route) => {
+                                                                            const RouteIcon = route.icon;
+                                                                            const isOpen = expandedRoute === route.id;
+                                                                            return (
+                                                                                <div
+                                                                                    key={route.id}
+                                                                                    className="rounded-2xl border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 overflow-hidden transition-all duration-300"
+                                                                                >
+                                                                                    <button
+                                                                                        onClick={() => setExpandedRoute(isOpen ? null : route.id)}
+                                                                                        className="w-full flex items-start gap-4 p-4 text-left"
+                                                                                    >
+                                                                                        <div className="flex items-start gap-3 flex-1">
+                                                                                            <div className="w-10 h-10 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5">
+                                                                                                <RouteIcon size={18} className="text-med-terracotta" />
+                                                                                            </div>
+                                                                                            <div className="flex-1 min-w-0">
+                                                                                                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                                                                                    <h4 className="text-base font-body font-bold text-med-blue dark:text-white">{route.title}</h4>
+                                                                                                    <span className="text-[9px] font-body font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-med-terracotta/10 text-med-terracotta">{route.badge}</span>
+                                                                                                </div>
+                                                                                                <p className="text-[12px] font-body text-slate-400 dark:text-gray-500 leading-relaxed">
+                                                                                                    {route.preview}
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <ChevronDown size={16} className={`text-slate-400 shrink-0 mt-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                                                                                    </button>
+                                                                                    <AnimatePresence>
+                                                                                        {isOpen && (
+                                                                                            <motion.div
+                                                                                                initial={{ height: 0, opacity: 0 }}
+                                                                                                animate={{ height: 'auto', opacity: 1 }}
+                                                                                                exit={{ height: 0, opacity: 0 }}
+                                                                                                transition={{ duration: 0.3 }}
+                                                                                                className="overflow-hidden"
+                                                                                            >
+                                                                                                <div className="px-4 pb-4 pl-[4.25rem]">
+                                                                                                    <p className="text-[12px] font-body text-slate-400 dark:text-gray-500 leading-relaxed">
+                                                                                                        {route.detail}
+                                                                                                    </p>
+                                                                                                    <div className="flex gap-2 mt-3 flex-wrap">
+                                                                                                        {route.links.map((link) => {
+                                                                                                            const LinkIcon = link.icon;
+                                                                                                            return (
+                                                                                                                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
+                                                                                                                    onClick={e => e.stopPropagation()}
+                                                                                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-[10px] font-body font-bold uppercase tracking-wider text-med-blue dark:text-white hover:border-med-terracotta/40 transition-colors">
+                                                                                                                    <LinkIcon size={10} /> {link.label}
+                                                                                                                </a>
+                                                                                                            );
+                                                                                                        })}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </motion.div>
+                                                                                        )}
+                                                                                    </AnimatePresence>

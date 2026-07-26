@@ -49,6 +49,7 @@ class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBounda
     handleClearAndReload() {
         try {
             const theme = localStorage.getItem('theme');
+            sessionStorage.clear();
             localStorage.clear();
             if (theme) localStorage.setItem('theme', theme);
         } catch (_e) {
@@ -188,7 +189,7 @@ class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBounda
                 {/* Action buttons */}
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' as const, justifyContent: 'center' }}>
                     <button
-                        onClick={this.handleReload}
+                        onClick={this.handleClearAndReload}
                         style={{
                             padding: '12px 32px',
                             fontSize: '13px',
@@ -203,7 +204,7 @@ class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBounda
                             transition: 'transform 0.2s, box-shadow 0.2s',
                         }}
                     >
-                        Reload App
+                        Reset RSVP
                     </button>
                     <button
                         onClick={this.handleClearAndReload}

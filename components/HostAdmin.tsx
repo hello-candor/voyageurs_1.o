@@ -736,7 +736,7 @@ export const HostAdmin: React.FC<HostAdminProps> = ({ onSwitchToGuest, isOpen, o
                 subtitle="Host Console"
                 appMenuItems={[
                     { label: theme === 'dark' ? 'Light Mode' : 'Dark Mode', icon: theme === 'dark' ? Sun : Moon, onClick: toggleTheme },
-                    { label: 'Reload App', icon: RefreshCw, onClick: () => { localStorage.clear(); window.location.reload(); } },
+                    { label: 'Reset RSVP', icon: RefreshCw, onClick: () => { sessionStorage.clear(); localStorage.clear(); window.location.reload(); } },
                     { label: 'Sign Out', icon: LogOut, onClick: handleSignOut, danger: true }
                 ]}
                 rightContent={

@@ -13,7 +13,7 @@ import {
     Wifi, CreditCard, Heart, Star, Utensils, StickyNote,
     CalendarDays, PlaneTakeoff, Train, Car, Wine, Sun, GlassWater,
     Info, Shirt, ListChecks, MapPinned, Clock3, AlertCircle, Pencil, Wallet,
-    Palette, Music, Eye, Building2, ChevronLeft, Moon, Martini, RefreshCw
+    Palette, Music, Eye, Building2, ChevronLeft, Moon, Martini, RefreshCw, Home
 } from 'lucide-react';
 import { MarketingHeader } from './MarketingHeader';
 import { MarketingFooter } from './MarketingFooter';
@@ -477,7 +477,7 @@ export const EventLandingPage: React.FC = () => {
     // ── Event Confirmations State ──
     const defaultConfirmations = useMemo(() => {
         const defaults: Record<string, boolean> = {};
-        WEEKEND_EVENTS.forEach(e => { defaults[e.id] = true; });
+        WEEKEND_EVENTS.forEach(e => { defaults[e.id] = (e.id === 'gala'); });
         return defaults;
     }, [currentStatus]);
     const [eventConfirms, setEventConfirms] = useState<Record<string, boolean>>(
@@ -494,7 +494,17 @@ export const EventLandingPage: React.FC = () => {
     const [helpRequested, setHelpRequested] = useState(false);
     const [showHelpModal, setShowHelpModal] = useState(false);
     const [expandedRoute, setExpandedRoute] = useState<string | null>(null);
-    const [activeModal, setActiveModal] = useState<'Event' | 'RSVP' | 'Destination' | null>(null);
+    const [activeModal, setActiveModal] = useState<'Event' | 'RSVP' | 'Destination' | 'Travel' | null>(null);
+
+    const [editAccommodation, setEditAccommodation] = useState(() => {
+        if (!user?.travelDetails?.accommodation) return '';
+        return user.travelDetails.accommodation.startsWith('Other: ') ? 'Somewhere Else' : user.travelDetails.accommodation;
+    });
+    const [editAccommodationAddress, setEditAccommodationAddress] = useState(() => {
+        if (!user?.travelDetails?.accommodation) return '';
+        return user.travelDetails.accommodation.startsWith('Other: ') ? user.travelDetails.accommodation.replace('Other: ', '') : '';
+    });
+    const [activeDestinationTab, setActiveDestinationTab] = useState<'Getting There' | 'Where to Stay' | 'Where to Eat' | 'Explore'>('Getting There');
     const toggleDarkMode = () => {
         const next = !isDark;
         setIsDark(next);
@@ -600,7 +610,7 @@ export const EventLandingPage: React.FC = () => {
                     departureDate: editDepartureDate,
                     arrivalMode: editArrivalMode,
                     arrivalNumber: editArrivalNumber,
-                    accommodation: user?.travelDetails?.accommodation || '',
+                    accommodation: editAccommodation === 'Somewhere Else' ? `Other: ${editAccommodationAddress}` : editAccommodation,
                     hub: user?.travelDetails?.hub,
                 },
             });
@@ -612,7 +622,7 @@ export const EventLandingPage: React.FC = () => {
         } finally {
             setIsSavingTravel(false);
         }
-    }, [editArrivalDate, editDepartureDate, editArrivalMode, editArrivalNumber, user?.travelDetails, updateProfile, addNotification]);
+    }, [editArrivalDate, editDepartureDate, editArrivalMode, editArrivalNumber, editAccommodation, editAccommodationAddress, user?.travelDetails, updateProfile, addNotification]);
 
     // ── Event Confirmation Handlers ──
     const toggleEvent = useCallback((eventId: string) => {
@@ -666,16 +676,20 @@ export const EventLandingPage: React.FC = () => {
     );
 
     const attendingCount = useMemo(() =>
-        selectableEvents.filter(evt => eventConfirms[evt.id] ?? true).length,
+        selectableEvents.filter(evt => eventConfirms[evt.id] ?? (evt.id === 'gala')).length,
         [eventConfirms, selectableEvents]
     );
 
     const totalEventCost = useMemo(() => {
         const guestCount = parsedCouple.isCouple ? 2 : 1;
         return selectableEvents
-            .filter(evt => eventConfirms[evt.id] ?? true)
+            .filter(evt => eventConfirms[evt.id] ?? (evt.id === 'gala'))
             .reduce((sum, evt) => sum + (evt.price * guestCount), 0);
     }, [eventConfirms, parsedCouple, selectableEvents]);
+
+    const isRsvpDone = user?.status === 'Confirmed' || user?.status === 'Declined';
+    const isEventsDone = user?.eventConfirmations !== undefined && Object.keys(user.eventConfirmations).length > 0;
+    const isArrivalDone = user?.travelDetails?.arrivalDate !== undefined && user?.travelDetails?.arrivalDate !== '';
 
     return (
         <div className="fixed inset-0 z-[100] flex w-full h-full overflow-hidden bg-med-sand dark:bg-[#111827] transition-colors duration-500">
@@ -710,7 +724,7 @@ export const EventLandingPage: React.FC = () => {
             {/* ────── Sticky Header ────── */}
             <MarketingHeader 
                 appMenuItems={[
-                    { label: 'Reload App', icon: RefreshCw, onClick: () => { localStorage.clear(); window.location.reload(); } },
+                    { label: 'Reset RSVP', icon: RefreshCw, onClick: () => { sessionStorage.clear(); localStorage.clear(); window.location.reload(); } },
                     { label: 'Sign Out', icon: LogOut, onClick: logout, danger: true }
                 ]}
             />
@@ -734,43 +748,96 @@ export const EventLandingPage: React.FC = () => {
                         <span className="italic text-med-terracotta dark:text-[#C25E3E]">{displayPrimary?.split(' ')[0] || 'Voyager'}.</span>
                     </h1>
 
+                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mx-auto px-4">
+                        <div className="bg-white/60 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 rounded-2xl p-4 flex flex-col gap-2 items-center justify-center text-center shadow-sm backdrop-blur-sm">
+                            <Calendar size={20} className="text-med-terracotta" />
+                            <p className="text-xs md:text-sm font-body font-medium text-slate-600 dark:text-gray-300">
+                                RSVP Before <br />
+                                <span className="font-heading italic font-normal text-med-blue dark:text-white block text-2xl md:text-2xl lg:text-3xl whitespace-nowrap mt-1">August 15th</span>
+                            </p>
+                        </div>
+                        
+                        <div className="bg-white/60 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-700 rounded-2xl p-4 flex flex-col gap-2 items-center justify-center text-center shadow-sm backdrop-blur-sm">
+                            <CalendarDays size={20} className="text-med-terracotta" />
+                            <p className="text-xs md:text-sm font-body font-medium text-slate-600 dark:text-gray-300">
+                                Events Kickoff <br />
+                                <span className="font-heading italic font-normal text-med-blue dark:text-white block text-2xl md:text-2xl lg:text-3xl whitespace-nowrap mt-1">September 18th</span>
+                            </p>
+                        </div>
+                    </div>
+
                     {/* Dashboard Tiles */}
                     <div className="flex flex-col gap-4 mt-8 w-full max-w-lg mx-auto">
-                        <button onClick={() => setActiveModal('RSVP')} className="flex items-center gap-4 p-5 rounded-2xl bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
-                            <div className={`w-14 h-14 rounded-full ${statusConfig.bg} border ${statusConfig.border} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
+                        <div className="flex items-center gap-3">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-body font-bold shrink-0 transition-colors ${isRsvpDone ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500'}`}>
+                                {isRsvpDone ? <Check size={12} strokeWidth={3} /> : '1'}
+                            </div>
+                            <button onClick={() => setActiveModal('RSVP')} className="flex-1 flex items-center gap-4 p-5 rounded-2xl bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group relative">
+                                <div className={`w-14 h-14 rounded-full ${statusConfig.bg} border ${statusConfig.border} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
                                 <StatusIcon size={24} className={statusConfig.color} />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white">Your RSVP</h3>
-                                <p className="text-sm font-body text-slate-500 dark:text-gray-400 mt-0.5">{statusConfig.label}</p>
-                                <p className="text-[11px] font-body font-bold text-med-terracotta mt-1">Party of {parsedCouple.isCouple ? 2 + nonPrimaryMembers.length : 1 + nonPrimaryMembers.length}</p>
+                                <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white mb-2">Manage Your RSVP & Party</h3>
+                                <div className="flex items-center gap-2 flex-wrap mt-1">
+                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusConfig.color} ${statusConfig.bg} ${statusConfig.border}`}>
+                                        {statusConfig.label}
+                                    </span>
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-200 bg-slate-50 text-slate-500 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400">
+                                        Party of {parsedCouple.isCouple ? 2 + nonPrimaryMembers.length : 1 + nonPrimaryMembers.length}
+                                    </span>
+                                </div>
                             </div>
                             <ChevronRight size={20} className="text-slate-300 dark:text-gray-600 group-hover:text-med-terracotta transition-colors" />
-                        </button>
+                            </button>
+                        </div>
 
-                        <button onClick={() => setActiveModal('Event')} className="flex items-center gap-4 p-5 rounded-2xl bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
-                            <div className="w-14 h-14 rounded-full bg-med-terracotta/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                        <div className="flex items-center gap-3">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-body font-bold shrink-0 transition-colors ${isEventsDone ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500'}`}>
+                                {isEventsDone ? <Check size={12} strokeWidth={3} /> : '2'}
+                            </div>
+                            <button onClick={() => setActiveModal('Event')} className="flex-1 flex items-center gap-4 p-5 rounded-2xl bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group relative">
+                                <div className="w-14 h-14 rounded-full bg-med-terracotta/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                 <Calendar size={24} className="text-med-terracotta" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white">The Event</h3>
-                                <p className="text-sm font-body text-slate-500 dark:text-gray-400 mt-0.5">Bryan's 40th • Sep 18–20, 2026</p>
-                                <p className="text-[11px] font-body font-bold text-med-terracotta mt-1">{attendingCount} events attending</p>
+                                <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white mb-2">Manage Events Attendance</h3>
+                                <div className="flex items-center gap-2 flex-wrap mt-1">
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-200 bg-slate-50 text-slate-500 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400">
+                                        Attending {attendingCount} of {selectableEvents.length}
+                                    </span>
+                                    {totalEventCost > 0 && (
+                                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-med-olive/20 bg-med-olive/10 text-med-olive">
+                                            ${totalEventCost}
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                             <ChevronRight size={20} className="text-slate-300 dark:text-gray-600 group-hover:text-med-terracotta transition-colors" />
                         </button>
+                    </div>
 
-                        <button onClick={() => setActiveModal('Destination')} className="flex items-center gap-4 p-5 rounded-2xl bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group">
-                            <div className="w-14 h-14 rounded-full bg-med-blue/10 dark:bg-blue-900/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                                <MapPin size={24} className="text-med-blue dark:text-blue-400" />
+                        <div className="flex items-center gap-3">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-body font-bold shrink-0 transition-colors ${isArrivalDone ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500'}`}>
+                                {isArrivalDone ? <Check size={12} strokeWidth={3} /> : '3'}
+                            </div>
+                            <button onClick={() => setActiveModal('Travel')} className="flex-1 flex items-center gap-4 p-5 rounded-2xl bg-white/70 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-lg hover:border-med-terracotta/40 transition-all text-left group relative">
+                                <div className="w-14 h-14 rounded-full bg-emerald-500/10 dark:bg-emerald-900/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                <PlaneTakeoff size={24} className="text-emerald-500 dark:text-emerald-400" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white">The Destination</h3>
-                                <p className="text-sm font-body text-slate-500 dark:text-gray-400 mt-0.5">Montpellier, France</p>
-                                <p className="text-[11px] font-body font-bold text-med-blue dark:text-blue-400 mt-1">Travel & Accommodation</p>
+                                <h3 className="font-heading text-xl font-bold text-med-blue dark:text-white mb-2">Share Your Arrival & Accommodation</h3>
+                                <div className="flex items-center gap-2 flex-wrap mt-1">
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-200 bg-slate-50 text-slate-500 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400">
+                                        9/15 - 9/22
+                                    </span>
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-200 bg-slate-50 text-slate-500 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400">
+                                        Place de la Comédie
+                                    </span>
+                                </div>
                             </div>
                             <ChevronRight size={20} className="text-slate-300 dark:text-gray-600 group-hover:text-med-terracotta transition-colors" />
                         </button>
+                    </div>
                     </div>
                 </motion.div>
             </div>
@@ -796,6 +863,7 @@ export const EventLandingPage: React.FC = () => {
                             <h2 className="font-heading text-3xl font-bold text-white tracking-tight">
                                 {activeModal === 'RSVP' && 'Your RSVP & Party'}
                                 {activeModal === 'Event' && 'The Event'}
+                                {activeModal === 'Travel' && 'Your Travel Details'}
                                 {activeModal === 'Destination' && 'The Destination'}
                             </h2>
                             {/* Removed the X button to rely on spatial navigation */}
@@ -1010,7 +1078,7 @@ export const EventLandingPage: React.FC = () => {
                                             >
                                                 {/* Editable fields */}
                                                 {[
-                                                    { label: 'Full Name', icon: User, value: editName, setter: setEditName, type: 'text', error: profileErrors.name, placeholder: 'Your name' },
+                                                    { label: 'Party Name', icon: User, value: editName, setter: setEditName, type: 'text', error: profileErrors.name, placeholder: 'Your party name' },
                                                     { label: 'Email', icon: Mail, value: editEmail, setter: setEditEmail, type: 'email', error: profileErrors.email, placeholder: 'email@example.com' },
                                                     { label: 'Phone / WhatsApp (Optional)', icon: Phone, value: editPhone, setter: setEditPhone, type: 'tel', error: undefined, placeholder: '+1 (555) 000-0000' },
                                                 ].map(({ label, icon: Icon, value, setter, type, error, placeholder }) => (
@@ -1148,7 +1216,7 @@ export const EventLandingPage: React.FC = () => {
                                                     <p className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta">Add Guest</p>
                                                     <input
                                                         type="text"
-                                                        placeholder="Full name"
+                                                        placeholder="Party name"
                                                         value={newMemberName}
                                                         onChange={e => setNewMemberName(e.target.value)}
                                                         autoFocus
@@ -1214,7 +1282,7 @@ export const EventLandingPage: React.FC = () => {
                         <div className="space-y-3">
                             {WEEKEND_EVENTS.map((evt, i) => {
                                 const Icon = evt.icon;
-                                const isAttending = eventConfirms[evt.id] ?? true;
+                                const isAttending = eventConfirms[evt.id] ?? (evt.id === 'gala');
                                 const isLocked = !!(evt as any).locked;
                                 return (
                                     <React.Fragment key={evt.id}>
@@ -1577,342 +1645,159 @@ export const EventLandingPage: React.FC = () => {
                 </>
                 )}
 
-                {activeModal === 'Destination' && (
+
+                        
+                {activeModal === 'Travel' && (
                 <>
-                {currentStatus !== 'Declined' && (<>
+                {/* ══════════════════════════════════════════════════════════════
+                    SECTION: TRAVEL DETAILS
+                ══════════════════════════════════════════════════════════════ */}
                 <SectionCard>
-                    <Eyebrow label="Getting There" rightContent={
-                        <button
-                            onClick={() => {
-                                if (!helpRequested) {
-                                    setShowHelpModal(true);
-                                    setHelpRequested(true);
-                                }
-                            }}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-body font-bold uppercase tracking-wider transition-all ${
-                                helpRequested
-                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800 cursor-default'
-                                    : 'bg-med-terracotta/10 text-med-terracotta hover:bg-med-terracotta/20 active:scale-95 cursor-pointer'
-                            }`}
-                        >
-                            {helpRequested ? 'Help Requested' : 'Request Help'}
-                            {helpRequested ? <Check size={10} /> : <HelpCircle size={10} />}
-                        </button>
-                    } />
+                    <Eyebrow label="Travel Information" />
+                    
+                    <div className="space-y-6 mt-4">
+                        
+                                
+                                {/* Dates */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1.5">
+                                        <label className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta flex items-center gap-2">
+                                            <CalendarDays size={10} /> Arrival
+                                        </label>
+                                        <input
+                                            type="date"
+                                            value={editArrivalDate}
+                                            onChange={e => setEditArrivalDate(e.target.value)}
+                                            min="2026-09-15"
+                                            max="2026-09-20"
+                                            className="w-full bg-white dark:bg-gray-800 border-2 border-slate-100 dark:border-gray-700 rounded-xl focus:border-med-terracotta px-3 py-2.5 text-sm font-body font-medium text-med-blue dark:text-white outline-none transition-all"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta flex items-center gap-2">
+                                            <CalendarDays size={10} /> Departure
+                                        </label>
+                                        <input
+                                            type="date"
+                                            value={editDepartureDate}
+                                            onChange={e => setEditDepartureDate(e.target.value)}
+                                            min="2026-09-17"
+                                            max="2026-09-25"
+                                            className="w-full bg-white dark:bg-gray-800 border-2 border-slate-100 dark:border-gray-700 rounded-xl focus:border-med-terracotta px-3 py-2.5 text-sm font-body font-medium text-med-blue dark:text-white outline-none transition-all"
+                                        />
+                                    </div>
+                                </div>
 
-                    <div className="space-y-3">
+                                {/* Mode */}
+                                <div>
+                                    <label className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta mb-3 block">
+                                        How are you arriving?
+                                    </label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {TRAVEL_MODES.map(mode => {
+                                            const Icon = mode.icon;
+                                            const isActive = editArrivalMode === mode.value;
+                                            return (
+                                                <button
+                                                    key={mode.value}
+                                                    onClick={() => setEditArrivalMode(mode.value as any)}
+                                                    className={`flex flex-col items-center gap-1.5 py-3 rounded-2xl border-2 transition-all duration-200 ${
+                                                        isActive
+                                                            ? 'border-med-terracotta bg-med-terracotta/10 shadow-sm text-med-terracotta'
+                                                            : 'border-slate-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-med-terracotta/30 text-slate-400 dark:text-gray-500'
+                                                    }`}
+                                                >
+                                                    <Icon size={20} className={isActive ? 'text-med-terracotta' : 'text-slate-400 dark:text-gray-500'} />
+                                                    <span className="text-[11px] font-body font-bold uppercase tracking-wider">
+                                                        {mode.label}
+                                                    </span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
 
-                        {[
-                            {
-                                id: 'mpl',
-                                icon: MapPin,
-                                title: 'Direct to Montpellier (MPL)',
-                                badge: 'Fastest & Easiest',
-                                preview: 'Fly directly into Montpellier (MPL) for the quickest and easiest arrival.',
-                                detail: <>The airport is well-connected to major European hubs like London, Amsterdam, Paris, and Madrid, making layovers a breeze no matter where you are flying from. Once you land, you are incredibly close to the action, grab an Uber or taxi right outside the terminal—you'll be at your hotel or Airbnb in the city center in just <span className="font-semibold text-med-blue dark:text-white">15 minutes</span>.</>,
-                                links: [
-                                    { href: 'https://www.google.com/travel/flights?q=Flights+to+Montpellier', icon: Plane, label: 'Search Flights' },
-                                ],
-                            },
-                            {
-                                id: 'cdg',
-                                icon: PlaneTakeoff,
-                                title: 'Via Paris (CDG)',
-                                badge: 'Seamless Air-to-Rail Transfer',
-                                preview: 'Fly into Paris and effortlessly transfer from your plane to the train in the same terminal. Watch the French countryside change from rolling green hills to sun soaked Mediterranean beaches on the 3.5 hour ride.',
-                                detail: <>For the smoothest trip, book a direct TGV or OUIGO train from the airport station (Aéroport Charles de Gaulle 2 TGV) to Montpellier St-Roch or Montpellier Sud de France. The ride takes about <span className="font-semibold text-med-blue dark:text-white">3.5 to 4 hours</span>. IMPORTANT: Ensure your route is direct from the airport station to avoid a stressful transfer from the airport to central Paris.</>,
-                                links: [
-                                    { href: 'https://www.google.com/travel/flights?q=Flights+to+Paris', icon: Plane, label: 'Search Flights' },
-                                    { href: 'https://www.thetrainline.com/', icon: Train, label: 'Find Train' },
-                                ],
-                            },
-                            {
-                                id: 'bcn',
-                                icon: Train,
-                                title: 'Via Barcelona (BCN)',
-                                badge: 'Scenic Coastal Ride',
-                                preview: 'Transit via Barcelona and marvel at the Mediterranean as your train winds between mountainous cliffs and sandy beaches for the short 3 hour journey.',
-                                detail: <>Catch the local Renfe (Rodalies) commuter train from Terminal 2 directly to Barcelona Sants Station. From there, board your high-speed train to Montpellier Saint-Roch or Montpellier Sud de France. The highly scenic ride along the Mediterranean coast takes about <span className="font-semibold text-med-blue dark:text-white">3 hours</span>. NOTE: If your flight lands at Terminal 1, don't sweat it—just hop on the free airport shuttle bus over to Terminal 2 to catch your commuter train.</>,
-                                links: [
-                                    { href: 'https://www.google.com/travel/flights?q=Flights+to+Barcelona', icon: Plane, label: 'Search Flights' },
-                                    { href: 'https://www.thetrainline.com/', icon: Train, label: 'Find Train' },
-                                ],
-                            },
-                        ].map((route) => {
-                            const RouteIcon = route.icon;
-                            const isOpen = expandedRoute === route.id;
-                            return (
-                                <div
-                                    key={route.id}
-                                    className="rounded-2xl border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 overflow-hidden transition-all duration-300"
-                                >
-                                    <button
-                                        onClick={() => setExpandedRoute(isOpen ? null : route.id)}
-                                        className="w-full flex items-start gap-4 p-4 text-left"
+                                {/* Flight / Train Num */}
+                                <div className="space-y-1.5">
+                                    <label className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta flex items-center gap-2">
+                                        {editArrivalMode === 'Car' ? <Car size={10} /> : editArrivalMode === 'Train' ? <Train size={10} /> : <PlaneTakeoff size={10} />}
+                                        {editArrivalMode === 'Car' ? 'Route / Notes' : `${editArrivalMode === 'Train' ? 'Train' : 'Flight'} Number (Optional)`}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={editArrivalNumber}
+                                        onChange={e => setEditArrivalNumber(e.target.value)}
+                                        placeholder={editArrivalMode === 'Car' ? 'e.g. Driving from Barcelona' : editArrivalMode === 'Train' ? 'e.g. TGV 6235' : 'e.g. AF 7650'}
+                                        className="w-full bg-white dark:bg-gray-800 border-2 border-slate-100 dark:border-gray-700 rounded-xl focus:border-med-terracotta px-3 py-2.5 text-sm font-body font-medium text-med-blue dark:text-white outline-none transition-all placeholder:text-slate-300 dark:placeholder:text-gray-600"
+                                    />
+                                </div>
+
+                                {/* Accommodation */}
+                                <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-gray-800">
+                                    <label className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta flex items-center gap-2">
+                                        <Home size={10} /> Where are you staying?
+                                    </label>
+                                    <select
+                                        value={editAccommodation}
+                                        onChange={e => setEditAccommodation(e.target.value)}
+                                        className="w-full bg-white dark:bg-gray-800 border-2 border-slate-100 dark:border-gray-700 rounded-xl focus:border-med-terracotta px-3 py-2.5 text-sm font-body font-medium text-med-blue dark:text-white outline-none transition-all appearance-none"
                                     >
-                                        <div className="flex items-start gap-3 flex-1">
-                                            <div className="w-10 h-10 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5">
-                                                <RouteIcon size={18} className="text-med-terracotta" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                                    <h4 className="text-base font-body font-bold text-med-blue dark:text-white">{route.title}</h4>
-                                                    <span className="text-[9px] font-body font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-med-terracotta/10 text-med-terracotta">{route.badge}</span>
-                                                </div>
-                                                <p className="text-[12px] font-body text-slate-400 dark:text-gray-500 leading-relaxed">
-                                                    {route.preview}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <ChevronDown size={16} className={`text-slate-400 shrink-0 mt-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
-                                    </button>
-                                    <AnimatePresence>
-                                        {isOpen && (
-                                            <motion.div
-                                                initial={{ height: 0, opacity: 0 }}
-                                                animate={{ height: 'auto', opacity: 1 }}
-                                                exit={{ height: 0, opacity: 0 }}
-                                                transition={{ duration: 0.3 }}
-                                                className="overflow-hidden"
-                                            >
-                                                <div className="px-4 pb-4 pl-[4.25rem]">
-                                                    <p className="text-[12px] font-body text-slate-400 dark:text-gray-500 leading-relaxed">
-                                                        {route.detail}
-                                                    </p>
-                                                    <div className="flex gap-2 mt-3 flex-wrap">
-                                                        {route.links.map((link) => {
-                                                            const LinkIcon = link.icon;
-                                                            return (
-                                                                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
-                                                                    onClick={e => e.stopPropagation()}
-                                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-[10px] font-body font-bold uppercase tracking-wider text-med-blue dark:text-white hover:border-med-terracotta/40 transition-colors">
-                                                                    <LinkIcon size={10} /> {link.label}
-                                                                </a>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                                        <option value="" disabled>Select an accommodation</option>
+                                        <option value="Hôtel Richer De Belleval">Hôtel Richer De Belleval</option>
+                                        <option value="Hôtel Oceania Le Métropole">Hôtel Oceania Le Métropole</option>
+                                        <option value="Miranove">Miranove</option>
+                                        <option value="JOST Hotel Montpellier">JOST Hotel Montpellier</option>
+                                        <option value="Somewhere Else">Somewhere Else</option>
+                                    </select>
                                 </div>
-                            );
-                        })}
+                                
+                                <AnimatePresence>
+                                    {editAccommodation === 'Somewhere Else' && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                                            animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                                            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                                            className="space-y-1.5 overflow-hidden"
+                                        >
+                                            <label className="text-[11px] font-body font-bold uppercase tracking-[0.3em] text-med-terracotta flex items-center gap-2">
+                                                <MapPin size={10} /> Address of Location
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={editAccommodationAddress}
+                                                onChange={e => setEditAccommodationAddress(e.target.value)}
+                                                placeholder="e.g. 123 Rue de la République"
+                                                className="w-full bg-white dark:bg-gray-800 border-2 border-slate-100 dark:border-gray-700 rounded-xl focus:border-med-terracotta px-3 py-2.5 text-sm font-body font-medium text-med-blue dark:text-white outline-none transition-all placeholder:text-slate-300 dark:placeholder:text-gray-600"
+                                            />
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
 
+                            
                     </div>
-
-
-
-                </SectionCard>
-
-                {/* ══════════════════════════════════════════════════════════════
-                    SECTION: WHERE TO STAY
-                ══════════════════════════════════════════════════════════════ */}
-                <SectionCard>
-                    <Eyebrow label="Where to Stay" />
-
-                    <div className="space-y-3">
-                        {[
-                            {
-                                name: 'Hôtel Richer De Belleval',
-                                stars: 5,
-                                parties: 3,
-                                subtitle: '~ €400 / night',
-                                description: 'Luxury boutique hotel in the heart of Place de la Comédie',
-                                walkToCenter: '5 min',
-                                ridePickup: '1 min',
-                                tramToCenter: '1 min',
-                                url: 'https://www.expedia.com/Montpellier-Hotels-Hotel-Richer-De-Belleval.h70875679.Hotel-Information?chkin=2026-09-16&chkout=2026-09-22',
-                                mapUrl: 'https://maps.google.com/?q=Hôtel+Richer+De+Belleval+Montpellier',
-                            },
-                            {
-                                name: 'Hôtel Oceania Le Métropole',
-                                stars: 4,
-                                parties: 1,
-                                subtitle: '~ €180 / night',
-                                description: 'Classic 4-star hotel steps from the main train station',
-                                walkToCenter: '3 min',
-                                ridePickup: '1 min',
-                                tramToCenter: '2 min',
-                                url: 'https://www.expedia.com/Montpellier-Hotels-Hotel-Oceania-Le-Metropole-Montpellier.h25884.Hotel-Information?chkin=2026-09-16&chkout=2026-09-22',
-                                mapUrl: 'https://maps.google.com/?q=Hôtel+Oceania+Le+Métropole+Montpellier',
-                            },
-                            {
-                                name: 'Miranove',
-                                stars: 3,
-                                parties: 0,
-                                subtitle: '~ €90 / night',
-                                description: 'Modern apartment-style accommodations with full kitchens',
-                                walkToCenter: '20 min',
-                                ridePickup: '2 min',
-                                tramToCenter: '10 min',
-                                url: 'https://www.expedia.com/Montpellier-Hotels-AppartHotel-Marianne.h36016734.Hotel-Information?chkin=2026-09-16&chkout=2026-09-22',
-                                mapUrl: 'https://maps.google.com/?q=Miranove+Montpellier',
-                            },
-                            {
-                                name: 'JOST Hotel Montpellier',
-                                stars: 3,
-                                parties: 0,
-                                subtitle: '~ €100 / night',
-                                description: 'Lifestyle hotel near Saint-Roch station with rooftop pool & co-working',
-                                walkToCenter: '10 min',
-                                ridePickup: '2 min',
-                                tramToCenter: '3 min',
-                                url: 'https://www.expedia.com/Montpellier-Hotels-JOST-MONTPELLIER.h90915860.Hotel-Information?chkin=2026-09-16&chkout=2026-09-22',
-                                mapUrl: 'https://maps.google.com/?q=JOST+Hotel+Montpellier',
-                            },
-                        ].map((hotel, i) => (
-                            <motion.div
-                                key={hotel.name}
-                                initial={{ opacity: 0, x: -12 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.08 }}
-                                className="p-4 rounded-2xl border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 hover:border-med-terracotta/40 hover:shadow-md transition-all duration-300 group"
-                            >
-                                <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-med-terracotta/20 transition-colors">
-                                        <Building2 size={18} className="text-med-terracotta" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-base font-body font-bold text-med-blue dark:text-white leading-snug flex items-center flex-wrap gap-1.5">
-                                            {hotel.name} <span className="text-[11px] text-med-terracotta font-normal">{'★'.repeat(hotel.stars)}</span>
-                                            {hotel.parties > 0 && <span className="text-[9px] font-body font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-med-blue/10 text-med-blue dark:bg-white/10 dark:text-white">{hotel.parties} {hotel.parties === 1 ? 'party' : 'parties'} staying</span>}
-                                        </p>
-                                        <p className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-med-terracotta/70 mt-0.5">
-                                            {hotel.subtitle}
-                                        </p>
-                                        <p className="text-[12px] font-body text-slate-400 dark:text-gray-500 mt-1 leading-relaxed">
-                                            {hotel.description}
-                                        </p>
-                                        <div className="flex items-center gap-3 mt-2 text-[10px] font-body text-slate-400 dark:text-gray-500">
-                                            <span className="inline-flex items-center gap-1"><MapPin size={9} className="text-med-terracotta" />{hotel.walkToCenter} walk</span>
-                                            <span className="text-slate-200 dark:text-gray-700">·</span>
-                                            <span className="inline-flex items-center gap-1"><Train size={9} className="text-med-terracotta" />{hotel.tramToCenter} tram</span>
-                                            <span className="text-slate-200 dark:text-gray-700">·</span>
-                                            <span className="inline-flex items-center gap-1"><Car size={9} className="text-med-terracotta" />{hotel.ridePickup} to pickup</span>
-                                        </div>
-                                        <div className="flex items-center gap-3 mt-2">
-                                            <a href={hotel.mapUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11px] font-body font-bold text-med-terracotta hover:underline" onClick={e => e.stopPropagation()}>
-                                                <MapPin size={10} /> View on Map <ExternalLink size={8} />
-                                            </a>
-                                            <a href={hotel.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11px] font-body font-bold text-med-blue hover:underline" onClick={e => e.stopPropagation()}>
-                                                Book on Expedia <ExternalLink size={8} />
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </SectionCard>
-
-                {/* ══════════════════════════════════════════════════════════════
-                {/* WHERE TO EAT — hidden for now, restore by removing the false && wrapper */}
-                {false && (
-                <SectionCard>
-                    <Eyebrow label="Where to Eat" />
-
-                    <motion.a
-                        href="https://guide.michelin.com/fr/fr/occitanie/montpellier/restaurants/1-etoile-michelin/bib-gourmand"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        initial={{ opacity: 0, y: 8 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 hover:border-med-terracotta/40 hover:shadow-md transition-all duration-300 group"
-                    >
-                        <div className="w-10 h-10 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 group-hover:bg-med-terracotta/20 transition-colors">
-                            <UtensilsCrossed size={18} className="text-med-terracotta" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-base font-body font-bold text-med-blue dark:text-white leading-snug">
-                                Michelin Guide — Montpellier
-                            </p>
-                            <p className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-med-terracotta/70 mt-0.5">
-                                1-Star & Bib Gourmand
-                            </p>
-                            <p className="text-[12px] font-body text-slate-400 dark:text-gray-500 mt-1 leading-relaxed">
-                                Browse starred restaurants and top-value picks in the area
-                            </p>
-                        </div>
-                        <ExternalLink size={14} className="text-slate-300 dark:text-gray-600 group-hover:text-med-terracotta transition-colors shrink-0" />
-                    </motion.a>
-                </SectionCard>
-                )}
-
-                {/* ══════════════════════════════════════════════════════════════
-                    SECTION: GET TO KNOW MONTPELLIER
-                ══════════════════════════════════════════════════════════════ */}
-                <SectionCard>
-                    <Eyebrow label="Get to Know Montpellier" />
-
-                    <div className="space-y-3 mt-2">
-                        {[
-                            {
-                                title: 'City Guide: Montpellier 2025',
-                                source: 'Edible Reading',
-                                description: 'Food, wine, and culture — a curated guide to the city',
-                                url: 'https://ediblereading.com/2025/05/23/city-guide-montpellier-2025/',
-                                icon: Compass,
-                            },
-                            {
-                                title: 'Essential Guide to Montpellier',
-                                source: 'The Good Life France',
-                                description: 'History, neighborhoods, markets, and insider tips',
-                                url: 'https://thegoodlifefrance.com/essential-guide-to-montpellier-southern-france/',
-                                icon: Globe,
-                            },
-
-                            {
-                                title: 'A Thousand Years of History',
-                                source: 'Montpellier Tourism',
-                                description: 'The official guide to Montpellier\'s rich and storied past',
-                                url: 'https://www.montpellier-france.com/discover/a-thousand-years-of-history/',
-                                icon: MapPinned,
-                            },
-
-                        ].map((link, i) => {
-                            const Icon = link.icon;
-                            return (
-                                <motion.a
-                                    key={link.title}
-                                    href={link.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    initial={{ opacity: 0, x: -12 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: i * 0.08 }}
-                                    className="flex items-start gap-4 p-4 rounded-2xl border border-slate-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/30 hover:border-med-terracotta/40 hover:shadow-md transition-all duration-300 group"
+                    
+                    <div className="mt-8">
+                        <button
+                                    onClick={() => {
+                                        handleSaveTravel();
+                                        setTimeout(() => setActiveModal(null), 800);
+                                    }}
+                                    disabled={isSavingTravel}
+                                    className="w-full h-12 rounded-full bg-med-terracotta text-white text-[11px] font-body font-bold uppercase tracking-[0.2em] hover:bg-med-terracotta/90 hover:shadow-lg disabled:opacity-40 transition-all active:scale-95 flex items-center justify-center gap-2"
                                 >
-                                    <div className="w-10 h-10 rounded-2xl bg-med-terracotta/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-med-terracotta/20 transition-colors">
-                                        <Icon size={18} className="text-med-terracotta" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-base font-body font-bold text-med-blue dark:text-white leading-snug">
-                                            {link.title}
-                                        </p>
-                                        <p className="text-[10px] font-body font-bold uppercase tracking-[0.2em] text-med-terracotta/70 mt-0.5">
-                                            {link.source}
-                                        </p>
-                                        <p className="text-[12px] font-body text-slate-400 dark:text-gray-500 mt-1 leading-relaxed">
-                                            {link.description}
-                                        </p>
-                                    </div>
-                                    <ExternalLink size={14} className="text-slate-300 dark:text-gray-600 group-hover:text-med-terracotta transition-colors shrink-0 mt-1" />
-                                </motion.a>
-                            );
-                        })}
+                                    {isSavingTravel ? (
+                                        <Loader2 size={14} className="animate-spin" />
+                                    ) : travelJustSaved ? (
+                                        <><Check size={14} strokeWidth={3} /> Saved!</>
+                                    ) : (
+                                        'Save Travel Details'
+                                    )}
+                                </button>
                     </div>
                 </SectionCard>
-                </>)}
-
-
-
                 </>
                 )}
-                        </div>
+</div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -1965,6 +1850,7 @@ export const EventLandingPage: React.FC = () => {
                 )}
             </AnimatePresence>
 
-        </div>
+
+</div>
     );
 };

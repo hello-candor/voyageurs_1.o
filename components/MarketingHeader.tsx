@@ -33,9 +33,9 @@ export const MarketingHeader: React.FC<MarketingHeaderProps> = ({
 
     const defaultActions: AppMenuItem[] = [
         {
-            label: 'Reload App',
+            label: 'Reset RSVP',
             icon: RefreshCw,
-            onClick: () => { localStorage.clear(); window.location.reload(); }
+            onClick: () => { sessionStorage.clear(); localStorage.clear(); window.location.reload(); }
         }
     ];
 

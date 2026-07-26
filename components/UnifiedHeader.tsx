@@ -55,9 +55,9 @@ export const UnifiedHeader = ({
             onClick: toggleTheme
         },
         {
-            label: 'Reload App',
+            label: 'Reset RSVP',
             icon: RefreshCw,
-            onClick: () => { localStorage.clear(); window.location.reload(); }
+            onClick: () => { sessionStorage.clear(); localStorage.clear(); window.location.reload(); }
         }
     ];
 

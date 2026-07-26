@@ -468,7 +468,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                         /* Full editable form for new guests or when editing */
                         <>
                             <FlatInput
-                                label="Full Name"
+                                label="Party Name"
                                 icon={User}
                                 value={identity.name}
                                 onChange={e => setIdentity({ ...identity, name: e.target.value })}
@@ -548,7 +548,7 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                                     <div className="p-3 rounded-2xl bg-white dark:bg-gray-800 border-2 border-med-terracotta/20 space-y-2">
                                         <input
                                             type="text"
-                                            placeholder="Full name"
+                                            placeholder="Party name"
                                             value={newMemberName}
                                             onChange={e => setNewMemberName(e.target.value)}
                                             autoFocus
@@ -580,8 +580,8 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                     </div>
 
                     <div className="mt-auto pt-2 flex items-center gap-2 w-full">
-                        <Button variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
-                            ← BACK
+                        <Button variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1] whitespace-nowrap">
+                            <span className="whitespace-nowrap flex items-center justify-center gap-1">← BACK</span>
                         </Button>
                         <Button
                             onClick={() => {
@@ -623,8 +623,8 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                 </div>
 
                 <div className="w-full flex items-center gap-2">
-                    <Button variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1]">
-                        ← BACK
+                    <Button variant="ghost" onClick={() => setCurrentStep('rsvp')} fullWidth={false} className="flex-[1] whitespace-nowrap">
+                        <span className="whitespace-nowrap flex items-center justify-center gap-1">← BACK</span>
                     </Button>
                     <Button
                         onClick={() => handleFinish('Declined')}
@@ -801,9 +801,9 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                             <X size={16} />
                         </div>
                         <span className="text-[8px] font-body font-bold uppercase tracking-[0.2em] text-slate-400">No</span>
-                        <div className="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-48 p-3 rounded-xl bg-gray-900 dark:bg-gray-800 text-white dark:text-gray-200 text-[10px] leading-relaxed opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none hidden md:block shadow-xl text-center">
+                        <div className="absolute bottom-[calc(100%+8px)] right-[-10px] w-48 p-3 rounded-xl bg-gray-900 dark:bg-gray-800 text-white dark:text-gray-200 text-[10px] leading-relaxed opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none hidden md:block shadow-xl text-center">
                             If you're not sure, choose <span className="font-bold">Maybe</span> to explore the weekend itinerary, find accommodations, manage your party, and discover the destination before you decide.
-                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
+                            <div className="absolute top-full right-6 border-[6px] border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
                         </div>
                     </motion.button>
                 </div>
