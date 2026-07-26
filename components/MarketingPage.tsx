@@ -476,7 +476,7 @@ export const MarketingPage = ({ onHostLoginSuccess, onShowLogin, onRSVP }: any) 
                         />
                         <span className="text-[16px] font-body font-bold uppercase tracking-[0.3em] text-med-blue dark:text-white group-hover:!text-med-terracotta transition-colors duration-300 flex items-center gap-2">
                             Voyageurs
-                            <span className="text-[10px] tracking-normal font-sans normal-case px-2.5 py-0.5 rounded-full bg-med-terracotta/10 dark:bg-[#C25E3E]/20 text-med-terracotta dark:text-[#C25E3E] font-semibold border border-med-terracotta/20 dark:border-[#C25E3E]/30 shrink-0">
+                            <span className="hidden sm:inline-block text-[10px] tracking-normal font-sans normal-case px-2.5 py-0.5 rounded-full bg-med-terracotta/10 dark:bg-[#C25E3E]/20 text-med-terracotta dark:text-[#C25E3E] font-semibold border border-med-terracotta/20 dark:border-[#C25E3E]/30 shrink-0">
                                 Coming Soon
                             </span>
                         </span>

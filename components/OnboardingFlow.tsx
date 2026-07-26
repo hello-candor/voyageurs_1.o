@@ -736,85 +736,90 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                 <p className="text-sm leading-relaxed font-body text-slate-500 dark:text-gray-400">
                     You're invited to celebrate <span className="font-semibold text-med-blue dark:text-white">Bryan's 40th</span> in <span className="font-semibold text-med-blue dark:text-white">Montpellier, France</span> on <span className="font-semibold text-med-blue dark:text-white">September 18-20</span>.
                 </p>
-            </div>
 
+                {/* RSVP Options — Icon-Focused */}
+                <div className="w-full grid grid-cols-3 gap-2 my-5">
+                    {/* Yes */}
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setSelectedRSVP('Confirmed')}
+                        disabled={isFinishing}
+                        className={`flex flex-col items-center gap-1.5 p-2 rounded-3xl border-2 transition-all group ${
+                            selectedRSVP === 'Confirmed'
+                                ? 'border-med-terracotta bg-med-terracotta/10'
+                                : 'border-slate-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/50'
+                        }`}
+                    >
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                            selectedRSVP === 'Confirmed' ? 'bg-med-terracotta text-white' : 'bg-med-terracotta/10 text-med-terracotta'
+                        }`}>
+                            <PartyPopper size={16} />
+                        </div>
+                        <span className="text-[8px] font-body font-bold uppercase tracking-[0.2em] text-slate-500">Yes</span>
+                    </motion.button>
 
+                    {/* Maybe */}
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setSelectedRSVP('Pending')}
+                        disabled={isFinishing}
+                        className={`relative flex flex-col items-center gap-1.5 p-2 rounded-[1.2rem] border-2 transition-all group ${
+                            selectedRSVP === 'Pending'
+                                ? 'border-med-blue bg-med-blue/10'
+                                : 'border-slate-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/50'
+                        }`}
+                    >
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                            selectedRSVP === 'Pending' ? 'bg-med-blue text-white' : 'bg-med-blue/10 text-med-blue'
+                        }`}>
+                            <Compass size={16} />
+                        </div>
+                        <span className="text-[8px] font-body font-bold uppercase tracking-[0.2em] text-slate-500">Maybe</span>
+                        <div className="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-48 p-3 rounded-xl bg-gray-900 dark:bg-gray-800 text-white dark:text-gray-200 text-[10px] leading-relaxed opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none hidden md:block shadow-xl text-center">
+                            If you're not sure, choose <span className="font-bold">Maybe</span> to explore the weekend itinerary, find accommodations, manage your party, and discover the destination before you decide.
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
+                        </div>
+                    </motion.button>
 
-            {/* RSVP Options — Icon-Focused */}
-            <div className="w-full grid grid-cols-3 gap-2 mb-3">
-                {/* Yes */}
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setSelectedRSVP('Confirmed')}
-                    disabled={isFinishing}
-                    className={`flex flex-col items-center gap-1.5 p-2 rounded-3xl border-2 transition-all group ${
-                        selectedRSVP === 'Confirmed'
-                            ? 'border-med-terracotta bg-med-terracotta/10'
-                            : 'border-slate-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/50'
-                    }`}
-                >
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                        selectedRSVP === 'Confirmed' ? 'bg-med-terracotta text-white' : 'bg-med-terracotta/10 text-med-terracotta'
-                    }`}>
-                        <PartyPopper size={16} />
-                    </div>
-                    <span className="text-[8px] font-body font-bold uppercase tracking-[0.2em] text-slate-500">Yes</span>
-                </motion.button>
+                    {/* No */}
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setSelectedRSVP('Declined')}
+                        disabled={isFinishing}
+                        className={`relative flex flex-col items-center gap-1.5 p-2 rounded-[1.2rem] border-2 transition-all group ${
+                            selectedRSVP === 'Declined'
+                                ? 'border-slate-400 bg-slate-100 dark:bg-gray-700'
+                                : 'border-slate-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/50'
+                        }`}
+                    >
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                            selectedRSVP === 'Declined' ? 'bg-slate-400 text-white' : 'bg-slate-100 dark:bg-gray-700 text-slate-400'
+                        }`}>
+                            <X size={16} />
+                        </div>
+                        <span className="text-[8px] font-body font-bold uppercase tracking-[0.2em] text-slate-400">No</span>
+                        <div className="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-48 p-3 rounded-xl bg-gray-900 dark:bg-gray-800 text-white dark:text-gray-200 text-[10px] leading-relaxed opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none hidden md:block shadow-xl text-center">
+                            If you're not sure, choose <span className="font-bold">Maybe</span> to explore the weekend itinerary, find accommodations, manage your party, and discover the destination before you decide.
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
+                        </div>
+                    </motion.button>
+                </div>
 
-                {/* Maybe */}
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setSelectedRSVP('Pending')}
-                    disabled={isFinishing}
-                    className={`flex flex-col items-center gap-1.5 p-2 rounded-[1.2rem] border-2 transition-all group ${
-                        selectedRSVP === 'Pending'
-                            ? 'border-med-blue bg-med-blue/10'
-                            : 'border-slate-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/50'
-                    }`}
-                >
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                        selectedRSVP === 'Pending' ? 'bg-med-blue text-white' : 'bg-med-blue/10 text-med-blue'
-                    }`}>
-                        <Compass size={16} />
-                    </div>
-                    <span className="text-[8px] font-body font-bold uppercase tracking-[0.2em] text-slate-500">Maybe</span>
-                </motion.button>
-
-                {/* No */}
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setSelectedRSVP('Declined')}
-                    disabled={isFinishing}
-                    className={`flex flex-col items-center gap-1.5 p-2 rounded-[1.2rem] border-2 transition-all group ${
-                        selectedRSVP === 'Declined'
-                            ? 'border-slate-400 bg-slate-100 dark:bg-gray-700'
-                            : 'border-slate-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/50'
-                    }`}
-                >
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                        selectedRSVP === 'Declined' ? 'bg-slate-400 text-white' : 'bg-slate-100 dark:bg-gray-700 text-slate-400'
-                    }`}>
-                        <X size={16} />
-                    </div>
-                    <span className="text-[8px] font-body font-bold uppercase tracking-[0.2em] text-slate-400">No</span>
-                </motion.button>
-            </div>
-
-            {/* Combined Info Box */}
-            <div className="w-full mt-2 mb-2 py-2.5 px-5 rounded-[1.5rem] bg-med-blue/5 dark:bg-med-blue/10 border border-med-blue/10 dark:border-med-blue/20 text-center">
-                <p className="text-[10px] leading-relaxed font-body text-slate-500 dark:text-gray-400">
-                    Please RSVP by <span className="font-bold text-med-terracotta">August 15th</span> to help us finalize the guest list. Don't worry if your plans shift—you can always update your response before the deadline. If you're not sure, choose <span className="font-bold">Maybe</span> to explore the weekend itinerary, find accommodations, manage your party, and discover the destination before you decide.
+                <p className="text-sm leading-relaxed font-body text-slate-500 dark:text-gray-400">
+                    Please RSVP by <span className="font-bold text-med-terracotta">August 15th</span> to help us finalize the guest list. Don't worry if your plans shift—you can always update your response before the deadline.
                 </p>
             </div>
+
+
 
             </div>
             </div>
             <div className="w-full mt-auto pt-4 flex items-center gap-3">
-                <Button variant="ghost" onClick={() => setCurrentStep('invite')} fullWidth={false} className="flex-[1]">
-                    ← BACK
+                <Button variant="ghost" onClick={() => setCurrentStep('invite')} fullWidth={false} className="flex-[1] whitespace-nowrap">
+                    <span className="whitespace-nowrap flex items-center justify-center gap-1">← BACK</span>
                 </Button>
                 <AnimatePresence>
                     {selectedRSVP && (
@@ -836,8 +841,9 @@ export const OnboardingFlow: React.FC<{ onClose?: () => void }> = ({ onClose }) 
                                 }}
                                 fullWidth
                                 isLoading={isFinishing}
+                                className="whitespace-nowrap"
                             >
-                                CONTINUE &nbsp;<ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                <span className="whitespace-nowrap flex items-center justify-center gap-1">CONTINUE <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></span>
                             </Button>
                         </motion.div>
                     )}

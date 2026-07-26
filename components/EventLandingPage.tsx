@@ -716,7 +716,7 @@ export const EventLandingPage: React.FC = () => {
             />
 
             {/* ────── Main Content ────── */}
-            <div className="relative z-10 w-full max-w-2xl mx-auto px-4 sm:px-6 pb-16 pt-6 space-y-6">
+            <div className="relative z-10 w-full max-w-2xl mx-auto px-4 sm:px-6 pb-16 pt-24 md:pt-32 space-y-6">
 
                 {/* ────── Welcome Header ────── */}
                 <motion.div
